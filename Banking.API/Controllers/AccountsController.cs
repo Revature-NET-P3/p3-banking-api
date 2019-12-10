@@ -23,7 +23,7 @@ namespace Banking.API.Controllers
             _logger = newLogger;
         }
 
-        // GET: api/Accounts
+        // GET: api/Accounts/5
         [HttpGet("{id}")]
         [Produces(typeof(IEnumerable<object>))]
         [ProducesResponseType(403)]
@@ -34,28 +34,32 @@ namespace Banking.API.Controllers
             try
             {
                 IEnumerable<object> result = null;
-
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}", id.ToString()));
+                // TODO: Get List of accounts from repository _repo.
 
-                if (result.Count() < 1)
+                // Check if returned list has any elements.
+                if (result == null || result?.Count() < 1)
                 {
+                    // Return NotFound 404 response on empty list.
                     _logger?.LogWarning(string.Format("No Accounts found for UserID: {0}", id.ToString()));
                     return NotFound(id);
                 }
-                _logger?.LogInformation(string.Format("GetAllAccountsByUserID: {0} Succeeded.", id.ToString()));
 
+                // Return list of accounts on successful find.
+                _logger?.LogInformation(string.Format("GetAllAccountsByUserID: {0} Succeeded.", id.ToString()));
                 return result.ToList();
             }
             catch (Exception WTF)
             {
+                // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetAllAccountsByUserID!");
                 return StatusCode(500, WTF);
             }
         }
 
-        // GET: api/Accounts/5
+        // GET: api/Accounts/5/1
         [HttpGet("{id}/{typeid}")]
-        [Produces(typeof(object))]
+        [Produces(typeof(IEnumerable<object>))]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -64,11 +68,12 @@ namespace Banking.API.Controllers
             try
             {
                 IEnumerable<object> result = null;
-
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}, Filtered by TypeID: {1}", id.ToString(), typeid.ToString()));
+                // TODO: Get List of accounts, by typeid, from repository _repo.
 
-                if (result != null)
+                if (result == null || result?.Count() < 1)
                 {
+                    // Return NotFound 404 response on empty list.
                     _logger?.LogWarning(string.Format("No Accounts found for UserID: {0}, with Filter by TypeID: {1}", id.ToString(), typeid.ToString()));
                     return NotFound(id);
                 }
@@ -78,7 +83,41 @@ namespace Banking.API.Controllers
             }
             catch (Exception WTF)
             {
+                // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetAllAccountsByUserIDAndTypeID!");
+                return StatusCode(500, WTF);
+            }
+        }
+
+        // GET: api/Accounts/details/4
+        [HttpGet("details/{id}")]
+        [Produces(typeof(object))]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<object>> GetAccountDetailsByAccountID(int id)
+        {
+            try
+            {
+                object result = null;
+                _logger?.LogInformation(string.Format("Start GetAccountDetailsByAccountID: {0}", id.ToString()));
+                // TODO: Get account detail, for id, from repository _repo.
+
+                // Check if return object was null.
+                if (result == null)
+                {
+                    // Return NotFound 404 response if no account detail was found for ID.
+                    _logger?.LogWarning(string.Format("Account #{0} details not found!", id.ToString()));
+                    return NotFound(id);
+                }
+                _logger?.LogInformation(string.Format("GetAccountDetailsByAccountID: {0} Succeeded.", id.ToString()));
+
+                return result;
+            }
+            catch (Exception WTF)
+            {
+                // Return Internal Server Error 500 on general exception.
+                _logger?.LogError(WTF, "Unexpected Error in GetAccountDetailsByAccountID!");
                 return StatusCode(500, WTF);
             }
         }
