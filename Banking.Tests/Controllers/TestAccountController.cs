@@ -51,7 +51,7 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetAllAccountsByUserID_NoAccounts()
+        public void GetAllAccountsByUserID_NoAccountsAccociatedWithID()
         {
 
         }
