@@ -25,7 +25,7 @@ namespace Banking.API.Controllers
 
         // GET: api/Accounts
         [HttpGet("{id}")]
-        [Produces(typeof(object))]
+        [Produces(typeof(IEnumerable<object>))]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -35,16 +35,16 @@ namespace Banking.API.Controllers
             {
                 IEnumerable<object> result = null;
 
-                _logger.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}", id.ToString()));
+                _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}", id.ToString()));
 
                 if (result.Count() < 1)
                 {
-                    _logger.LogWarning(string.Format("No Accounts found for UserID: {0}", id.ToString()));
+                    _logger?.LogWarning(string.Format("No Accounts found for UserID: {0}", id.ToString()));
                     return NotFound(id);
                 }
-                _logger.LogInformation(string.Format("GetAllAccountsByUserID: {0} Succeded.", id.ToString()));
+                _logger?.LogInformation(string.Format("GetAllAccountsByUserID: {0} Succeeded.", id.ToString()));
 
-                return result;
+                return result.ToList();
             }
             catch (Exception WTF)
             {
@@ -54,10 +54,33 @@ namespace Banking.API.Controllers
         }
 
         // GET: api/Accounts/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("{id}/{typeid}")]
+        [Produces(typeof(object))]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<IEnumerable<object>>> GetAllAccountsByUserIDAndTypeID(int id, int typeid)
         {
-            return "value";
+            try
+            {
+                IEnumerable<object> result = null;
+
+                _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}, Filtered by TypeID: {1}", id.ToString(), typeid.ToString()));
+
+                if (result != null)
+                {
+                    _logger?.LogWarning(string.Format("No Accounts found for UserID: {0}, with Filter by TypeID: {1}", id.ToString(), typeid.ToString()));
+                    return NotFound(id);
+                }
+                _logger?.LogInformation(string.Format("GetAllAccountsByUserID: {0}, Filtered by TypeID: {1} Succeeded", id.ToString(), typeid.ToString()));
+
+                return result.ToList();
+            }
+            catch (Exception WTF)
+            {
+                _logger?.LogError(WTF, "Unexpected Error in GetAllAccountsByUserIDAndTypeID!");
+                return StatusCode(500, WTF);
+            }
         }
     }
 }
