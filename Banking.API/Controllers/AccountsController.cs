@@ -121,5 +121,38 @@ namespace Banking.API.Controllers
                 return StatusCode(500, WTF);
             }
         }
+
+        // GET: api/Accounts/details/4
+        [HttpGet("details/{id}")]
+        [Produces(typeof(IEnumerable<object>))]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<IEnumerable<object>>> GetTransactionDetailsByAccountID(int id)
+        {
+            try
+            {
+                IEnumerable<object> result = null;
+                _logger?.LogInformation(string.Format("Start GetTransactionDetailsByAccountID: {0}", id.ToString()));
+                // TODO: Get transaction detail, for id, from repository _repo.
+
+                // Check if return object was null.
+                if (result == null || result?.Count() < 1)
+                {
+                    // Return NotFound 404 response if no account detail was found for ID.
+                    _logger?.LogWarning(string.Format("Account #{0} transaction details not found!", id.ToString()));
+                    return NotFound(id);
+                }
+                _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
+
+                return result.ToList();
+            }
+            catch (Exception WTF)
+            {
+                // Return Internal Server Error 500 on general exception.
+                _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
+                return StatusCode(500, WTF);
+            }
+        }
     }
 }
