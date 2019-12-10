@@ -9,8 +9,9 @@ namespace Banking.Tests.Controllers
     public class TestAccountController
     {
         object testAccountRepo = null;
-        object testLogger = null;
-        
+        Mock<ILogger<AccountsController>> testLogger = null;
+        AccountsController testAccountController = null;
+
         [TestInitialize]
         public void BeforeEachTest()
         {
@@ -19,6 +20,9 @@ namespace Banking.Tests.Controllers
 
             // Generate testAccountRepo.
             testAccountRepo = new object();
+
+            // Generate controller
+            testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
         }
         
         [TestCleanup]
@@ -26,8 +30,30 @@ namespace Banking.Tests.Controllers
         {
             testLogger = null;
             testAccountRepo = null;
+            testAccountController = null;
         }
 
-      
+        [TestMethod]
+        public void GetAllAccountsByUserID_ValidID()
+        {
+        }
+
+        [TestMethod]
+        public void GetAllAccountsByUserID_NonExistingID()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetAllAccountsByUserID_InvalidID()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetAllAccountsByUserID_NoAccounts()
+        {
+
+        }
     }
 }
