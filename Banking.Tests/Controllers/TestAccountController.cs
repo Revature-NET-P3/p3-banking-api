@@ -81,19 +81,37 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetAccountDetailsByID_ValidID()
+        public void GetAccountDetailsByAccountID_ValidID()
         {
 
         }
 
         [TestMethod]
-        public void GetAccountDetailsByID_NonExistingID()
+        public void GetAccountDetailsByAccountID_NonExistingID()
         {
 
         }
 
         [TestMethod]
-        public void GetAccountDetailsByID_InvalidUser()
+        public void GetAccountDetailsByAccountID_InvalidUser()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetTransactionDetailsByAccountID_ValidID()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetTransactionDetailsByAccountID_NonExistingID()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetTransactionDetailsByAccountID_InvalidUser()
         {
 
         }
