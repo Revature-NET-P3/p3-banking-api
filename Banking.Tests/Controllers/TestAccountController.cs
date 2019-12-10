@@ -55,5 +55,29 @@ namespace Banking.Tests.Controllers
         {
 
         }
+
+        [TestMethod]
+        public void GetAllAccountsByUserIDAndAccountType_ValidIDAndValidAccountType()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetAllAccountsByUserIDAndAccountType_NonExistingID()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetAllAccountsByUserIDAndAccountType_InvalidID()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetAllAccountsByUserIDAndAccountType_ValidIDAndNoValidAccounts()
+        {
+
+        }
     }
 }
