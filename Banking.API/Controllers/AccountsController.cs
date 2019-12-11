@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using Banking.API.Models;
+using Banking.API.Repositories.Repos;
 
 namespace Banking.API.Controllers
 {
@@ -18,9 +19,9 @@ namespace Banking.API.Controllers
         // TODO: Add injection for repository when ready.
 
         readonly ILogger<AccountsController> _logger;
-        readonly object _repo;
+        readonly AccountRepo _repo;
 
-        public AccountsController(object newRepo, ILogger<AccountsController> newLogger)
+        public AccountsController(AccountRepo newRepo, ILogger<AccountsController> newLogger)
         {
             _logger = newLogger;
             _repo = newRepo;
@@ -38,7 +39,8 @@ namespace Banking.API.Controllers
             {
                 IEnumerable<Account> result = null;
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}", id.ToString()));
-                // TODO: Get List of accounts from repository _repo.
+                // TODO: Update following functionality:
+                // result = _repo?.GetAllAccountsByUserId(id) ?? null;
 
                 // Check if returned list has any elements.
                 if (result == null || result?.Count() < 1)
@@ -72,7 +74,8 @@ namespace Banking.API.Controllers
             {
                 IEnumerable<Account> result = null;
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}, Filtered by TypeID: {1}", id.ToString(), typeid.ToString()));
-                // TODO: Get List of accounts, by typeid, from repository _repo.
+                // TODO: Update following functionality:
+                // result = _repo?.GetAllAccountsByUserIdAndAccountType(id,AccountTypeId) ?? null;
 
                 if (result == null || result?.Count() < 1)
                 {
@@ -105,8 +108,8 @@ namespace Banking.API.Controllers
             {
                 Account result = null;
                 _logger?.LogInformation(string.Format("Start GetAccountDetailsByAccountID: {0}", id.ToString()));
-                // TODO: Get account detail, for id, from repository _repo.
-
+                result = _repo?.GetAccountDetailsByAccountID(id) ?? null;
+                
                 // Check if return object was null.
                 if (result == null)
                 {
@@ -140,7 +143,8 @@ namespace Banking.API.Controllers
             {
                 IEnumerable<Transaction> result = null;
                 _logger?.LogInformation(string.Format("Start GetTransactionDetailsByAccountID: {0}", id.ToString()));
-                // TODO: Get transaction detail, for id, from repository _repo.
+                // TODO: Update following functionality:
+                // result = _repo?.GetTransactionDetailsByAccountID(id) ?? null;
 
                 // Check if return object was null.
                 if (result == null || result?.Count() < 1)
@@ -174,7 +178,7 @@ namespace Banking.API.Controllers
                 IEnumerable<TransactionType> result = null;
                 _logger?.LogInformation("Start GetAllTransactionTypes.");
                 // TODO: get list of transaction types from repository _repo.
-
+                
                 // Check for empty return set.
                 if (result == null || result?.Count() < 1)
                 {
