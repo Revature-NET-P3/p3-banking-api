@@ -162,7 +162,18 @@ namespace Banking.Tests.DataObjects
 
         public Account OpenAccount(Account account)
         {
-            throw new NotImplementedException();
+            Account result = null;
+
+            var query = Accounts.Where(a => a.Id == account.Id);
+            if (query.Count() < 1)
+            {
+                int max = Accounts.Max(a => a.Id);
+                account.Id = max;
+                Accounts.Add(account);
+                result = account;
+            }
+
+            return result;
         }
 
         public Account PayLoan(int Id, decimal amount)
