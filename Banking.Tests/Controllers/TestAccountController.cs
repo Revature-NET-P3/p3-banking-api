@@ -36,24 +36,68 @@ namespace Banking.Tests.Controllers
         [TestMethod]
         public void GetAllAccountsByUserID_ValidID()
         {
+            // Arrange.
+
+            // Act. 
+            var response = testAccountController.GetAllAccountsByUserID(1);
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
         }
 
         [TestMethod]
         public void GetAllAccountsByUserID_NonExistingID()
         {
+            // Arrange.
 
+            // Act.
+            var response = testAccountController.GetAllAccountsByUserID(-1);
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+            
+            // Assert.
         }
 
         [TestMethod]
         public void GetAllAccountsByUserID_InvalidID()
         {
+            // Arrange.
 
+            // Act.
+            var response = testAccountController.GetAllAccountsByUserID(3);
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+            
+            // Assert.
         }
 
         [TestMethod]
         public void GetAllAccountsByUserID_NoAccountsAccociatedWithID()
         {
+            // Arrange.
 
+            // Act.
+            var response = testAccountController.GetAllAccountsByUserID(2);
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
+        }
+
+        [TestMethod]
+        public void GetAllAccountsByUserID_ServerError()
+        {
+            // Arrange.
+            // TODO: redefine testAccountRepo to be empty.
+            // TODO: reinject testAccountController.
+
+            // Act.
+            var response = testAccountController.GetAllAccountsByUserID(1);
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
         }
 
         [TestMethod]
