@@ -15,7 +15,6 @@ namespace Banking.API.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        // TODO: Replace objects with actual data types.
         // TODO: Add injection for repository when ready.
 
         readonly ILogger<AccountsController> _logger;

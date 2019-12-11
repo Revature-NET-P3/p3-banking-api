@@ -9,6 +9,7 @@ namespace Banking.Tests.Controllers
     [TestClass]
     public class TestAccountController
     {
+        // TODO: Swap out object for Test AccountRepo, when implemented.
         object testAccountRepo = null;
         Mock<ILogger<AccountsController>> testLogger = null;
         AccountsController testAccountController = null;
@@ -23,7 +24,8 @@ namespace Banking.Tests.Controllers
             testAccountRepo = new object();
 
             // Generate controller
-            testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
+            // TODO: Update following injection when functionality completed:
+            //testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
         }
         
         [TestCleanup]
