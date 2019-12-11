@@ -164,6 +164,7 @@ namespace Banking.API.Controllers
         // GET: api/Accounts/transactionTypes/
         [HttpGet("transactiontypes")]
         [Produces(typeof(IEnumerable<TransactionType>))]
+        [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<IEnumerable<TransactionType>>> GetAllTransactionTypes()
         {
