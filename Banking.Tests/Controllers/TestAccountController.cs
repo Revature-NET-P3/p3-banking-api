@@ -1,7 +1,8 @@
-using Banking.API.Controllers;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+
+using Banking.API.Controllers;
 
 namespace Banking.Tests.Controllers
 {
