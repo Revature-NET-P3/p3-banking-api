@@ -79,8 +79,9 @@ namespace Banking.API.Controllers
                     _logger?.LogWarning(string.Format("No Accounts found for UserID: {0}, with Filter by TypeID: {1}", id.ToString(), typeid.ToString()));
                     return NotFound(id);
                 }
-                _logger?.LogInformation(string.Format("GetAllAccountsByUserID: {0}, Filtered by TypeID: {1} Succeeded", id.ToString(), typeid.ToString()));
 
+                // Return list of accounts on successful find.
+                _logger?.LogInformation(string.Format("GetAllAccountsByUserID: {0}, Filtered by TypeID: {1} Succeeded", id.ToString(), typeid.ToString()));
                 return result.ToList();
             }
             catch (Exception WTF)
@@ -112,6 +113,8 @@ namespace Banking.API.Controllers
                     _logger?.LogWarning(string.Format("Account #{0} details not found!", id.ToString()));
                     return NotFound(id);
                 }
+
+                // Return account object found.
                 _logger?.LogInformation(string.Format("GetAccountDetailsByAccountID: {0} Succeeded.", id.ToString()));
 
                 return result;
@@ -124,7 +127,7 @@ namespace Banking.API.Controllers
             }
         }
 
-        // GET: api/Accounts/details/4
+        // GET: api/Accounts/transactions/4
         [HttpGet("transactions/{id}")]
         [Produces(typeof(IEnumerable<Transaction>))]
         [ProducesResponseType(403)]
@@ -145,8 +148,9 @@ namespace Banking.API.Controllers
                     _logger?.LogWarning(string.Format("Account #{0} transaction details not found!", id.ToString()));
                     return NotFound(id);
                 }
-                _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
 
+                // Return list of transactions found.
+                _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
                 return result.ToList();
             }
             catch (Exception WTF)
@@ -157,6 +161,36 @@ namespace Banking.API.Controllers
             }
         }
 
+        // GET: api/Accounts/transactionTypes/
+        [HttpGet("transactiontypes")]
+        [Produces(typeof(IEnumerable<TransactionType>))]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<IEnumerable<TransactionType>>> GetAllTransactionTypes()
+        {
+            try
+            {
+                IEnumerable<TransactionType> result = null;
+                _logger?.LogInformation("Start GetAllTransactionTypes.");
+                // TODO: get list of transaction types from repository _repo.
 
+                // Check for empty return set.
+                if (result == null || result?.Count() < 1)
+                {
+                    // Return NotFound 404 response if no transaction types were found.
+                    _logger?.LogWarning("No Transaction Types found!");
+                    return NotFound();
+                }
+
+                // Return list of transaction types.
+                _logger?.LogInformation("GetAllTransactionTypes Succeeded.");
+                return result.ToList();
+            }
+            catch (Exception WTF)
+            {
+                // Return Internal Server Error 500 on general exception.
+                _logger?.LogError(WTF, "Unexpected Error in GetAllTransactionTypes!");
+                return StatusCode(500, WTF);
+            }
+        }
     }
 }
