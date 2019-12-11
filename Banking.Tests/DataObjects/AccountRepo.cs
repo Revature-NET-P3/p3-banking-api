@@ -11,6 +11,7 @@ namespace Banking.Tests.DataObjects
     {
         List<Account> Accounts;
         List<Transaction> Transactions;
+        decimal businessRate = 1.0M;
 
         public AccountRepo(bool doFillData = true)
         {
@@ -195,7 +196,49 @@ namespace Banking.Tests.DataObjects
 
         public Account TransferBetweenAccounts(int Id, decimal amount, int toAccId)
         {
-            throw new NotImplementedException();
+            Account fromAccount = null;
+            Account toAccount = null;
+
+            if (amount > 0)
+            {
+                if (Id != toAccId)
+                {
+                    var fromQuery = Accounts.Where(a => a.Id == Id &&
+                                                       ((a.AccountTypeId == 1 && a.Balance >= amount) ||
+                                                        (a.AccountTypeId == 2)));
+                    var toQuery = Accounts.Where(a => a.Id == toAccId && 
+                                                (a.AccountTypeId == 1 || a.AccountTypeId == 2));
+
+                    if (fromQuery.Count() > 0)
+                    {
+                        if (toQuery.Count() > 0)
+                        {
+                            fromAccount = fromQuery.First();
+                            toAccount = toQuery.First();
+
+                            if (fromAccount.AccountTypeId == 2)
+                            {
+                                if (fromAccount.Balance > 0)
+                                {
+                                    decimal overDraft = fromAccount.Balance - amount < 0 ? amount - fromAccount.Balance : 0;
+                                    fromAccount.Balance = overDraft * businessRate;
+                                }
+                                else
+                                {
+                                    fromAccount.Balance -= amount * businessRate;
+                                }
+                            }
+                            else
+                            {
+                                fromAccount.Balance -= amount;
+                            }
+                            toAccount.Balance += amount;
+                        }
+                    }
+                }
+            }
+
+            return fromAccount;
         }
 
         public Account Withdraw(int Id, decimal amount)
