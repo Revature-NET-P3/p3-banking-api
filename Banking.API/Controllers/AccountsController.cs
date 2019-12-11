@@ -28,7 +28,7 @@ namespace Banking.API.Controllers
 
         // GET: api/Accounts/5
         [HttpGet("{id}")]
-        [Produces(typeof(IEnumerable<Account>))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -50,7 +50,7 @@ namespace Banking.API.Controllers
 
                 // Return list of accounts on successful find.
                 _logger?.LogInformation(string.Format("GetAllAccountsByUserID: {0} Succeeded.", id.ToString()));
-                return result.ToList();
+                return Ok(result.ToList());
             }
             catch (Exception WTF)
             {
@@ -62,7 +62,7 @@ namespace Banking.API.Controllers
 
         // GET: api/Accounts/5/1
         [HttpGet("{id}/{typeid}")]
-        [Produces(typeof(IEnumerable<Account>))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -83,7 +83,7 @@ namespace Banking.API.Controllers
 
                 // Return list of accounts on successful find.
                 _logger?.LogInformation(string.Format("GetAllAccountsByUserID: {0}, Filtered by TypeID: {1} Succeeded", id.ToString(), typeid.ToString()));
-                return result.ToList();
+                return Ok(result.ToList());
             }
             catch (Exception WTF)
             {
@@ -95,7 +95,7 @@ namespace Banking.API.Controllers
 
         // GET: api/Accounts/details/4
         [HttpGet("details/{id}")]
-        [Produces(typeof(Account))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -118,7 +118,7 @@ namespace Banking.API.Controllers
                 // Return account object found.
                 _logger?.LogInformation(string.Format("GetAccountDetailsByAccountID: {0} Succeeded.", id.ToString()));
 
-                return result;
+                return Ok(result);
             }
             catch (Exception WTF)
             {
@@ -130,7 +130,7 @@ namespace Banking.API.Controllers
 
         // GET: api/Accounts/transactions/4
         [HttpGet("transactions/{id}")]
-        [Produces(typeof(IEnumerable<Transaction>))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -152,7 +152,7 @@ namespace Banking.API.Controllers
 
                 // Return list of transactions found.
                 _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
-                return result.ToList();
+                return Ok(result.ToList());
             }
             catch (Exception WTF)
             {
@@ -164,7 +164,7 @@ namespace Banking.API.Controllers
 
         // GET: api/Accounts/transactionTypes/
         [HttpGet("transactiontypes")]
-        [Produces(typeof(IEnumerable<TransactionType>))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<TransactionType>>> GetAllTransactionTypes()
@@ -185,7 +185,7 @@ namespace Banking.API.Controllers
 
                 // Return list of transaction types.
                 _logger?.LogInformation("GetAllTransactionTypes Succeeded.");
-                return result.ToList();
+                return Ok(result.ToList());
             }
             catch (Exception WTF)
             {
