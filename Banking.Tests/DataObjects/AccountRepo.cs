@@ -243,7 +243,36 @@ namespace Banking.Tests.DataObjects
 
         public Account Withdraw(int Id, decimal amount)
         {
-            throw new NotImplementedException();
+            Account result = null;
+
+            if (amount > 0)
+            {
+                var query = Accounts.Where(a => a.Id == Id &&
+                                                           ((a.AccountTypeId == 1 && a.Balance >= amount) ||
+                                                            (a.AccountTypeId == 2)));
+                if (query.Count() > 0)
+                {
+                    result = query.First();
+                    if (result.AccountTypeId == 2)
+                    {
+                        if (result.Balance > 0)
+                        {
+                            decimal overDraft = result.Balance - amount < 0 ? amount - result.Balance : 0;
+                            result.Balance = overDraft * businessRate;
+                        }
+                        else
+                        {
+                            result.Balance -= amount * businessRate;
+                        }
+                    }
+                    else
+                    {
+                        result.Balance -= amount;
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
