@@ -64,7 +64,16 @@ namespace Banking.Tests.DataObjects
 
         public async Task<AccountType> GetAccountTypeById(int id)
         {
-            throw new NotImplementedException();
+            AccountType result = null;
+
+            var query = AccountTypes.Where(at => at.Id == id);
+            if (query.Count() > 0)
+            {
+                result = query.First();
+                await Task.Delay(10);
+            }
+
+            return result;
         }
 
         public async Task<AccountType> GetAccountTypeByName(string name)
