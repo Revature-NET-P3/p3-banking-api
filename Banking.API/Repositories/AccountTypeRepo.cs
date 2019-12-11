@@ -17,10 +17,9 @@ namespace Banking.API.Repositories
             _context = ctx;
         }
 
-        public async Task<IEnumerable<AccountType>> GetAccountTypes()
+        public async Task<List<AccountType>> GetAccountTypes()
         {
-            var AccountTypes = await _context.AccountTypes.ToListAsync();
-            return AccountTypes;
+            return await _context.AccountTypes.ToListAsync();
         }
         public async Task<AccountType> GetAccountTypeById(int id)
         {
