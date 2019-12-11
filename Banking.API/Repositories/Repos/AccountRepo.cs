@@ -32,6 +32,14 @@ namespace Banking.API.Repositories.Repos
             _context = ctx;
         }
 
+        //get a single account
+        public async Task<Account> GetAccount(int Id)
+        {
+            var account = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+            return account;
+            // return _accounts.FirstOrDefault(e => e.Id == Id); for mock data
+        }
+
         //get list of accounts belonging to a user.
         public Task<List<Account>> GetUserAccounts(int UserId)
         {
