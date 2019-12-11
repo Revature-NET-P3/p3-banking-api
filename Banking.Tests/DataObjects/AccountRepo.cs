@@ -10,6 +10,7 @@ namespace Banking.Tests.DataObjects
     class AccountRepo : IAccountRepo
     {
         List<Account> Accounts;
+        List<Transaction> Transactions;
 
         public AccountRepo(bool doFillData = true)
         {
@@ -57,6 +58,17 @@ namespace Banking.Tests.DataObjects
                            Balance = 2000.0M,
                             CreateDate = DateTime.Now
                     },
+                };
+
+                Transactions = new List<Transaction>()
+                {
+                    new Transaction()
+                    {
+                         Id = 1,
+                          AccountId=1,
+                           TransactionTypeId=1,
+                            Ammount=100,
+                    }
                 };
             }
         }
@@ -136,7 +148,16 @@ namespace Banking.Tests.DataObjects
 
         public Account GetTransactionDetailsByAccountID(int Id)
         {
-            throw new NotImplementedException();
+            //List<Transaction> result = null;
+
+            //var query = Transactions.Where(t => t.AccountId == Id);
+            //if (query.Count() > 0)
+            //{
+            //    result = query.ToList();
+            //}
+
+            //return result;
+            return null;
         }
 
         public Account OpenAccount(Account account)
