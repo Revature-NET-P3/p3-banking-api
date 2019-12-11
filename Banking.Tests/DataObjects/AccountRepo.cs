@@ -2,6 +2,7 @@
 using Banking.API.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Banking.Tests.DataObjects
@@ -62,12 +63,22 @@ namespace Banking.Tests.DataObjects
 
         public Account CloseAccount(int Id)
         {
-         
+            Account result = null;
+
+            var query = Accounts.Where(a => a.Id == Id);
+            if (query.Count() > 0)
+            {
+                result = query.First();
+                // Task.Delay(10);
+                Accounts.Remove(result);
+            }
+
+            return result;
         }
 
         public Account Deposit(int Id, decimal amount)
         {
-            throw new NotImplementedException();
+            
         }
 
         public Account GetAccountDetailsByAccountID(int Id)
