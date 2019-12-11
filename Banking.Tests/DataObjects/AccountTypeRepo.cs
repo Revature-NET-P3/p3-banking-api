@@ -78,7 +78,16 @@ namespace Banking.Tests.DataObjects
 
         public async Task<AccountType> GetAccountTypeByName(string name)
         {
-            throw new NotImplementedException();
+            AccountType result = null;
+
+            var query = AccountTypes.Where(at => at.Name.ToUpper().CompareTo(name.ToUpper()) == 0);
+            if (query.Count() > 0)
+            {
+                result = query.First();
+                await Task.Delay(10);
+            }
+
+            return result;
         }
 
         public async Task<List<AccountType>> GetAccountTypes()
