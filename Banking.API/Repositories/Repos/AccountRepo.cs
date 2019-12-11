@@ -1,5 +1,6 @@
 ﻿using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,9 +33,9 @@ namespace Banking.API.Repositories.Repos
         }
 
         //get a single account
-        public Task<Account> GetAccount(int Id)
+        public async Task<Account> GetAccount(int Id)
         {
-            var account = _context.Accounts.FirstOrDefault(e => e.Id == Id);
+            var account = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             return account;
             // return _accounts.FirstOrDefault(e => e.Id == Id); for mock data
         }
@@ -47,9 +48,9 @@ namespace Banking.API.Repositories.Repos
         }
 
         //add a new account
-        public Task<bool> AddAccount(Account account)
+        public async Task<bool> AddAccount(Account account)
         {
-            var accounts = _context.Accounts.FirstOrDefault(e => e.Id == account.Id);
+            var accounts = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == account.Id);
             _context.Add(account);
             _context.SaveChanges();
             return accounts;
