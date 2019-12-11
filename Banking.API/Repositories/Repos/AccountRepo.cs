@@ -1,5 +1,6 @@
 ﻿using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,23 +32,17 @@ namespace Banking.API.Repositories.Repos
             _context = ctx;
         }
 
-        //get a single account
-        public Task<Account> GetAccount(int Id)
-        {
-            var account = _context.Accounts.FirstOrDefault(e => e.Id == Id);
-            return account;
-            // return _accounts.FirstOrDefault(e => e.Id == Id); for mock data
-        }
-
         //get list of accounts belonging to a user.
         public Task<List<Account>> GetUserAccounts(int UserId)
         {
-            var account = _context.Accounts.Where(e => e.UserId == UserId).ToList();
+            var account = _context.Accounts.Where(e => e.UserId == UserId).ToListAsync();
+            // return _accounts.FirstOrDefault(e => e.Id == Id); for mock data
             return account;
         }
 
+
         //add a new account
-        public Task<bool> AddAccount(Account account)
+        public Account OpenAccount(Account account)
         {
             var accounts = _context.Accounts.FirstOrDefault(e => e.Id == account.Id);
             _context.Add(account);
@@ -55,40 +50,44 @@ namespace Banking.API.Repositories.Repos
             return accounts;
         }
 
-        Account IAccountRepo.GetUserAccounts(int UserId)
+        // deposit account method
+        public async Task<bool> Deposit(int Id, decimal amount)
         {
-            var account = _context.Accounts.Where(e => e.UserId == UserId).ToList();
-            return account;
+            var depositAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+            depositAccount.Balance = depositAccount.Balance + amount;
+            _context.Update(depositAccount);
+            return true;
         }
 
-        Account IAccountRepo.AddAccount(Account account)
+        // withdraw account method
+        public async Task<bool> Withdraw(int Id, decimal amount)
         {
-            throw new NotImplementedException();
+            var withdrawAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+            withdrawAccount.Balance = withdrawAccount.Balance - amount;
+            return true;
         }
 
-        public Account OpenAccount(Account account)
+        // method to transfer between accounts
+        public async Task<bool> TransferBetweenAccounts(int Id, decimal amount, int toAccId)
         {
-            throw new NotImplementedException();
+            var transferAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+            var accountTo = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == toAccId);
+            transferAccount.Balance = transferAccount.Balance - amount;
+            accountTo.Balance = accountTo.Balance + amount;
+            _context.Update(transferAccount);
+            _context.Update(accountTo);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Account Deposit(int Id, decimal amount)
+        // method to pay loan
+        public async Task<bool> PayLoan(int Id, decimal amount)
         {
-            throw new NotImplementedException();
-        }
-
-        public Account Withdraw(int Id, decimal amount)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Account TransferBetweenAccounts(int Id, decimal amount, int toAccId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Account PayLoan(int Id, decimal amount)
-        {
-            throw new NotImplementedException();
+            var loanAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+            loanAccount.Balance = loanAccount.Balance - amount;
+            _context.Update(loanAccount);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public Account CloseAccount(int Id)
@@ -98,7 +97,8 @@ namespace Banking.API.Repositories.Repos
 
         public Account GetAllAccountsByUserId(int UserId)
         {
-            throw new NotImplementedException();
+            var account = _context.Accounts.Where(e => e.UserId == UserId).ToList();
+            return account;
         }
 
         public Account GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
