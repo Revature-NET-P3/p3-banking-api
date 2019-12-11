@@ -9,6 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
+=======
+    <PackageReference Include="EntityFramework" Version="6.4.0" />
+>>>>>>> 91bc93e33e6e3287830bc7fa6e27e1ad5c8247d6
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
   </ItemGroup>
 
