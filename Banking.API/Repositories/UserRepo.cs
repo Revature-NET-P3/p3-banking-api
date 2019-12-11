@@ -43,7 +43,7 @@ namespace Banking.API.Repositories
         }
         public async Task<bool> VerifyLogin(string username, string passhash)
         {
-            User user = await _context.FirstOrDefaultAsync(o => o.Username == username);
+            User user = await _context.User.FirstOrDefaultAsync(o => o.Username == username);
             if(user is null) { throw new Exception("There is no user with that username."); }
             if(user.PasswordHash == passhash)
             {
