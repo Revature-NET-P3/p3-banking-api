@@ -297,7 +297,7 @@ namespace Banking.Tests.Controllers
         public void GetAllTransactionTypes_EmptyDataSet()
         {
             // Arrange.
-            // Empty TransactionType list in repository testAccountRepo.
+            // TODO: Empty TransactionType list in repository testAccountRepo.
 
             // Act.
             var response = testAccountController.GetAllTransactionTypes();
@@ -339,7 +339,7 @@ namespace Banking.Tests.Controllers
         public void GetAllAccountTypes_EmptyDataSet()
         {
             // Arrange.
-            // Empty AccountType list in repository testAccountRepo.
+            // TODO: Empty AccountType list in repository testAccountRepo.
 
             // Act.
             var response = testAccountController.GetAllAccountTypes();
