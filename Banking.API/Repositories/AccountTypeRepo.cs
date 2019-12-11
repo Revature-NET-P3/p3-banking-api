@@ -16,21 +16,26 @@ namespace Banking.API.Repositories
             _context = ctx;
         }
 
-        public Task<IEnumerable<AccountType>> GetAccountTypes()
+        public async Task<IEnumerable<AccountType>> GetAccountTypes()
         {
-            var AccountTypes = await _context.AccountType
+            var AccountTypes = await _context.AccountType.ToListAsync();
+            return AccountTypes;
         }
-        public Task<AccountType> GetAccountTypeById()
+        public async Task<AccountType> GetAccountTypeById(int id)
         {
-
+            AccountType accType = await _context.AccountType.FirstOrDefaultAsync(o => o.Id == id);
+            return accType;
         }
-        public Task<AccountType> GetAccountTypeByName()
+        public async Task<AccountType> GetAccountTypeByName(string name)
         {
-
+            AccountType accType = await _context.AccountType.FirstOrDefaultAsync(x => x.Name == name);
+            return accType;
         }
-        public Task<bool> AddAccountType()
+        public async Task<bool> AddAccountType(AccountType accType)
         {
-
+            _context.Add(accType);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
     }

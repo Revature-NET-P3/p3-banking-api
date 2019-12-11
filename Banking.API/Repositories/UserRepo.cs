@@ -18,21 +18,13 @@ namespace Banking.API.Repositories
 
         public async Task<bool> CreateUser(User user)
         {
-            User gotUsername = await _context.User.FirstOrDefaultAsync(o => o.Username == Username);
-            User gotUserid = await _context.User.FirstOrDefaultAsync(o => o.Username == Username);
-            if (!(gotUsername is null)) { throw new Exception("That username already exists!"); }
-            else if (!(gotUsername is null)) { throw new Exception("That UserId already exists! Id is identity, do not pass value."); }
-            else
-            {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return true;
-            }
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            return true;
         }
         public async Task<User> ViewById(int id)
         {
             User gotUser = await _context.User.FirstOrDefaultAsync(o => o.Id == id);
-            if(gotUser is null) { throw new Exception("No user exists with that id."); }
             return gotUser;
         }
         public async Task<bool> UpdateUser(User user)
@@ -44,7 +36,6 @@ namespace Banking.API.Repositories
         public async Task<bool> VerifyLogin(string username, string passhash)
         {
             User user = await _context.User.FirstOrDefaultAsync(o => o.Username == username);
-            if(user is null) { throw new Exception("There is no user with that username."); }
             if(user.PasswordHash == passhash)
             {
                 return true;
