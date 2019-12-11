@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Banking.API.Repositories.Interfaces
 {
-    interface IAccountTypeRepo
+    public interface IAccountTypeRepo
     {
-        public Task<IEnumerable<AccountType>> GetAccountTypes();
+        public Task<List<AccountType>> GetAccountTypes();
         public Task<AccountType> GetAccountTypeById(int id);
         public Task<AccountType> GetAccountTypeByName(string name);
         public Task<bool> AddAccountType(AccountType accType);
