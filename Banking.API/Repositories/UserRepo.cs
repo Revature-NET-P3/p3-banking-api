@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Banking.API.Repositories.Interfaces;
 using Banking.API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Banking.API.Repositories
 {
@@ -24,7 +25,7 @@ namespace Banking.API.Repositories
         }
         public async Task<User> ViewById(int id)
         {
-            User gotUser = await _context.User.FirstOrDefaultAsync(o => o.Id == id);
+            User gotUser = await _context.Users.FirstOrDefaultAsync(o => o.Id == id);
             return gotUser;
         }
         public async Task<bool> UpdateUser(User user)
@@ -35,7 +36,7 @@ namespace Banking.API.Repositories
         }
         public async Task<bool> VerifyLogin(string username, string passhash)
         {
-            User user = await _context.User.FirstOrDefaultAsync(o => o.Username == username);
+            User user = await _context.Users.FirstOrDefaultAsync(o => o.Username == username);
             if(user.PasswordHash == passhash)
             {
                 return true;
