@@ -1,20 +1,17 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Banking.API.Models
 {
-    public class AppDbContext
+    public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> context) : base(context)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         { }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(@"data source = .\SQLEXPRESS;initial catalog = Project3DB;integrated security =True;MultipleActiveResultSets=True;");
-            }
-        }
+        protected override void OnConfiguring(DbContextOptionsBuilder options) =>
+                options.UseSqlServer(@"data source = .\SQLEXPRESS;initial catalog = Project3DB;integrated security =True;MultipleActiveResultSets=True;");
+         
         
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountType> AccountTypes { get; set; }
