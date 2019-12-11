@@ -92,7 +92,16 @@ namespace Banking.Tests.DataObjects
 
         public async Task<List<AccountType>> GetAccountTypes()
         {
-            throw new NotImplementedException();
+            List<AccountType> result = null;
+
+            var query = AccountTypes.Where(at => at.Id == at.Id);
+            if (query.Count() > 0)
+            {
+                result = query.ToList();
+                await Task.Delay(10);
+            }
+
+            return result;
         }
     }
 }
