@@ -115,5 +115,23 @@ namespace Banking.Tests.Controllers
         {
 
         }
+
+        [TestMethod]
+        public void GetAllTransactionTypes_ValidData()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetAllTransactionTypes_EmptyDataSet()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetAllTransactionTypes_ServerError()
+        {
+
+        }
     }
 }
