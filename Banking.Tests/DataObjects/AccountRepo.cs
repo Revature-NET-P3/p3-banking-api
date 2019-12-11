@@ -78,7 +78,19 @@ namespace Banking.Tests.DataObjects
 
         public Account Deposit(int Id, decimal amount)
         {
-            
+            Account result = null;
+
+            if (amount > 0)
+            {
+                var query = Accounts.Where(a => a.Id == Id && (a.AccountTypeId == 1 || a.AccountTypeId == 2));
+                if (query.Count() > 0)
+                {
+                    result = query.First();
+                    result.Balance += amount;
+                }
+            }
+
+            return result;
         }
 
         public Account GetAccountDetailsByAccountID(int Id)
