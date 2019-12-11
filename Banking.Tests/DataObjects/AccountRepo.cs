@@ -216,23 +216,8 @@ namespace Banking.Tests.DataObjects
                             fromAccount = fromQuery.First();
                             toAccount = toQuery.First();
 
-                            if (fromAccount.AccountTypeId == 2)
-                            {
-                                if (fromAccount.Balance > 0)
-                                {
-                                    decimal overDraft = fromAccount.Balance - amount < 0 ? amount - fromAccount.Balance : 0;
-                                    fromAccount.Balance = overDraft * businessRate;
-                                }
-                                else
-                                {
-                                    fromAccount.Balance -= amount * businessRate;
-                                }
-                            }
-                            else
-                            {
-                                fromAccount.Balance -= amount;
-                            }
-                            toAccount.Balance += amount;
+                            Withdraw(fromAccount.Id, amount);
+                            Deposit(toAccount.Id, amount);
                         }
                     }
                 }
