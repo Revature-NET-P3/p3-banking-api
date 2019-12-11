@@ -13,7 +13,36 @@ namespace Banking.Tests.DataObjects
 
         public AccountTypeRepo(bool doFill = true)
         {
-            
+            if (doFill)
+            {
+                AccountTypes = new List<AccountType>()
+                {
+                    new AccountType()
+                    {
+                         Id = 1,
+                         InterestRate = 1.0M,
+                         Name = "Checking",
+                    },
+                    new AccountType()
+                    {
+                         Id = 2,
+                         InterestRate = 2.0M,
+                         Name = "Business",
+                    },
+                    new AccountType()
+                    {
+                         Id = 3,
+                         InterestRate = 3.0M,
+                         Name = "Loan",
+                    },
+                    new AccountType()
+                    {
+                         Id = 4,
+                         InterestRate = 4.0M,
+                         Name = "Term CD",
+                    },
+                };
+            }
         }
 
         public Task<bool> AddAccountType(AccountType accType)
