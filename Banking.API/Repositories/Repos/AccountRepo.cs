@@ -124,34 +124,26 @@ namespace Banking.API.Repositories.Repos
             return false;
         }
 
-        public Account GetAccountDetailsByAccountID(int Id)
+        // retruns a single account based on the account ID.
+        public async Task<bool> GetAccountDetailsByAccountID(int Id)
         {
-            throw new NotImplementedException();
+            var accDetails = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
+            if (accDetails != null)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public Account GetTransactionDetailsByAccountID(int Id)
+        // return the list of transactions for a particluar account ID.
+        public async Task<bool> GetTransactionDetailsByAccountID(int Id)
         {
-            throw new NotImplementedException();
+            var transactionDetails = await _context.Transactions.Where(e => e.Id == Id).ToListAsync();
+            if (transactionDetails != null)
+            {
+                return true;
+            }
+            return false;
         }
-
-        //delete an account by id
-        //public async Account DeleteAccount(int Id)
-        //{
-        //    Account account = _accounts.FirstorDefaultAsync(e => e.Id == Id);
-        //    if (account != null)
-        //    {
-        //        _accounts.Remove(account);
-        //    }
-        //    return await account;
-        //}
-
-        //update account
-        // will determin if this is needed.
-        //public async Task<bool> UpdateAccount(Account accountChanges)
-        //{
-        //    account.Id = _accounts.FirstOrDefaultAsync(e => e.Id == accountChanges.Id);
-        //    _accounts.Update(account);
-        //    return await account;
-        //}
     }
 }
