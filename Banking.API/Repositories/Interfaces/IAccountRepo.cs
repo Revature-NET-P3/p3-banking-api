@@ -8,9 +8,10 @@ namespace Banking.API.Repositories.Interfaces
     public interface IAccountRepo
     {
         Account GetAccount(int Id);
+        Account GetAccounts(int UserId);
         IEnumerable<Account> GetAllAccount();
         Account AddAccount(Account account);
-        Account UpdateAccount(Account accountChanges);
-        Account DeleteAccount(int Id);
+        //Account UpdateAccount(Account accountChanges);
+        //Account DeleteAccount(int Id);
     }
 }
