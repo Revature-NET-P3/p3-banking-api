@@ -125,7 +125,7 @@ namespace Banking.API.Controllers
         }
 
         // GET: api/Accounts/details/4
-        [HttpGet("details/{id}")]
+        [HttpGet("transactions/{id}")]
         [Produces(typeof(IEnumerable<Transaction>))]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
@@ -156,5 +156,7 @@ namespace Banking.API.Controllers
                 return StatusCode(500, WTF);
             }
         }
+
+
     }
 }
