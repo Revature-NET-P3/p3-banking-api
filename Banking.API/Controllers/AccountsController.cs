@@ -193,38 +193,5 @@ namespace Banking.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, WTF);
             }
         }
-
-        // GET: api/Accounts/accounttypes/
-        [HttpGet("accounttypes")]
-        [Produces(typeof(IEnumerable<AccountType>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<AccountType>>> GetAllAccountTypes()
-        {
-            try
-            {
-                IEnumerable<AccountType> result = null;
-                _logger?.LogInformation("Start GetAllAccountTypes.");
-                // TODO: get list of account types from repository _repo.
-
-                // Check for empty return set.
-                if (result == null || result?.Count() < 1)
-                {
-                    // Return NotFound 404 response if no account types were found.
-                    _logger?.LogWarning("No Account Types found!");
-                    return NotFound();
-                }
-
-                // Return list of account types.
-                _logger?.LogInformation("GetAllAccountTypes Succeeded.");
-                return result.ToList();
-            }
-            catch (Exception WTF)
-            {
-                // Return Internal Server Error 500 on general exception.
-                _logger?.LogError(WTF, "Unexpected Error in GetAllAccountTypes!");
-                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
-            }
-        }
     }
 }
