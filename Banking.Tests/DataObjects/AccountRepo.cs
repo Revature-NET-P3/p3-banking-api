@@ -12,12 +12,57 @@ namespace Banking.Tests.DataObjects
 
         public AccountRepo(bool doFillData = true)
         {
-
+            if (doFillData)
+            {
+                Accounts = new List<Account>()
+                {
+                    new Account()
+                    {
+                        Id = 1,
+                         UserId = 1,
+                          AccountTypeId = 1,
+                           Balance = 100.0M,
+                            CreateDate = DateTime.Now
+                    },
+                    new Account()
+                    {
+                        Id = 2,
+                         UserId = 1,
+                          AccountTypeId = 2,
+                           Balance = 200.0M,
+                            CreateDate = DateTime.Now
+                    },
+                    new Account()
+                    {
+                        Id = 3,
+                         UserId = 3,
+                          AccountTypeId = 1,
+                           Balance = 1000.0M,
+                            CreateDate = DateTime.Now
+                    },
+                    new Account()
+                    {
+                        Id = 4,
+                         UserId = 3,
+                          AccountTypeId = 3,
+                           Balance = 2000.0M,
+                            CreateDate = DateTime.Now
+                    },
+                    new Account()
+                    {
+                        Id = 5,
+                         UserId = 3,
+                          AccountTypeId = 4,
+                           Balance = 2000.0M,
+                            CreateDate = DateTime.Now
+                    },
+                };
+            }
         }
 
         public Account CloseAccount(int Id)
         {
-            throw new NotImplementedException();
+         
         }
 
         public Account Deposit(int Id, decimal amount)
