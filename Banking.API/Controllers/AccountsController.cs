@@ -28,9 +28,9 @@ namespace Banking.API.Controllers
         // GET: api/Accounts/5
         [HttpGet("{id}")]
         [Produces(typeof(IEnumerable<Account>))]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<Account>>> GetAllAccountsByUserID(int id)
         {
             try
@@ -55,16 +55,16 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetAllAccountsByUserID!");
-                return StatusCode(500, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
             }
         }
 
         // GET: api/Accounts/5/1
         [HttpGet("{id}/{typeid}")]
         [Produces(typeof(IEnumerable<Account>))]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<Account>>> GetAllAccountsByUserIDAndTypeID(int id, int typeid)
         {
             try
@@ -88,16 +88,16 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetAllAccountsByUserIDAndTypeID!");
-                return StatusCode(500, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
             }
         }
 
         // GET: api/Accounts/details/4
         [HttpGet("details/{id}")]
         [Produces(typeof(Account))]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Account>> GetAccountDetailsByAccountID(int id)
         {
             try
@@ -123,16 +123,16 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetAccountDetailsByAccountID!");
-                return StatusCode(500, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
             }
         }
 
         // GET: api/Accounts/transactions/4
         [HttpGet("transactions/{id}")]
         [Produces(typeof(IEnumerable<Transaction>))]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountID(int id)
         {
             try
@@ -157,15 +157,15 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
-                return StatusCode(500, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
             }
         }
 
         // GET: api/Accounts/transactionTypes/
         [HttpGet("transactiontypes")]
         [Produces(typeof(IEnumerable<TransactionType>))]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<TransactionType>>> GetAllTransactionTypes()
         {
             try
@@ -190,15 +190,15 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetAllTransactionTypes!");
-                return StatusCode(500, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
             }
         }
 
         // GET: api/Accounts/accounttypes/
         [HttpGet("accounttypes")]
         [Produces(typeof(IEnumerable<AccountType>))]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<AccountType>>> GetAllAccountTypes()
         {
             try
@@ -223,7 +223,7 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetAllAccountTypes!");
-                return StatusCode(500, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
             }
         }
     }
