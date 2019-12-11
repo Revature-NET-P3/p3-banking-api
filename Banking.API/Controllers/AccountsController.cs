@@ -28,7 +28,7 @@ namespace Banking.API.Controllers
         // GET: api/Accounts/5
         [HttpGet("{id}")]
         [Produces(typeof(IEnumerable<Account>))]
-        [ProducesResponseType(403)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<IEnumerable<Account>>> GetAllAccountsByUserID(int id)
@@ -62,7 +62,7 @@ namespace Banking.API.Controllers
         // GET: api/Accounts/5/1
         [HttpGet("{id}/{typeid}")]
         [Produces(typeof(IEnumerable<Account>))]
-        [ProducesResponseType(403)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<IEnumerable<Account>>> GetAllAccountsByUserIDAndTypeID(int id, int typeid)
@@ -95,7 +95,7 @@ namespace Banking.API.Controllers
         // GET: api/Accounts/details/4
         [HttpGet("details/{id}")]
         [Produces(typeof(Account))]
-        [ProducesResponseType(403)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<Account>> GetAccountDetailsByAccountID(int id)
@@ -130,7 +130,7 @@ namespace Banking.API.Controllers
         // GET: api/Accounts/transactions/4
         [HttpGet("transactions/{id}")]
         [Produces(typeof(IEnumerable<Transaction>))]
-        [ProducesResponseType(403)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountID(int id)

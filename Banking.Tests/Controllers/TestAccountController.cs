@@ -284,8 +284,6 @@ namespace Banking.Tests.Controllers
         public void GetAllTransactionTypes_ValidData()
         {
             // Arrange.
-            // TODO: redefine testAccountRepo to be empty.
-            // TODO: reinject testAccountController.
 
             // Act.
             var response = testAccountController.GetAllTransactionTypes();
@@ -313,6 +311,8 @@ namespace Banking.Tests.Controllers
         public void GetAllTransactionTypes_ServerError()
         {
             // Arrange.
+            // TODO: redefine testAccountRepo to be empty.
+            // TODO: reinject testAccountController.
 
             // Act.
             var response = testAccountController.GetAllTransactionTypes();
