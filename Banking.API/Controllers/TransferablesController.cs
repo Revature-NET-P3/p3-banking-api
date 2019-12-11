@@ -17,18 +17,18 @@ namespace Banking.API.Controllers
         // private readonly IAccount _repo; //access to account
         private readonly ILogger<TransferablesController> _logger;
 
-        public TransferablesController(ILogger<TransferablesController> logger) //dependency injection of repo
+        public TransferablesController(ILogger<TransferablesController> logger) //TODO: add dependency injection of repo
         {
-            //Object _repo = repo;
+            //_repo = repo;
             _logger = logger;
         }
 
-        private static List<Account> accountList = new List<Account>()
+        private static List<Account> accountList = new List<Account>() //JUST for testing
             {
                 new Account
                 {
                     Id = 10,
-                    AccountTypeId = 2,
+                    AccountTypeId = 1,
                     Balance = 15.50M,
                     UserId = 60,
                     CreateDate = DateTime.Today
@@ -36,7 +36,7 @@ namespace Banking.API.Controllers
                 new Account
                 {
                     Id = 20,
-                    AccountTypeId = 2,
+                    AccountTypeId = 1,
                     Balance = 15.50M,
                     UserId = 60,
                     CreateDate = DateTime.Today
@@ -81,7 +81,7 @@ namespace Banking.API.Controllers
 
         // PUT: api/Transferables/deposit/5/10.50
         /// <summary>
-        /// Takes the id passed, retrieves the correct account and updates the balance in the account
+        /// Retrieves account that matches id passed and deposits into the account by increasing the balance
         /// </summary>
         /// <param name="id">The id of the account</param>
         /// <param name="amount">the amount to deposit</param>
@@ -94,9 +94,9 @@ namespace Banking.API.Controllers
 
             try
             {
-                //Add Logic to find account and update its balance
+                //TODO: Add Logic to find account and update its balance
                 Account acctFound = null;
-                if (amount < 0)
+                if (amount < 0) //make sure deposit amount is positive
                 {
                     _logger?.LogWarning(string.Format("PUT request failed, Amount passed is less than 0.  Account with ID: {0}", id.ToString()));
                     return StatusCode(400);
@@ -112,7 +112,7 @@ namespace Banking.API.Controllers
 
                 if(acctFound == null)
                 {
-                    _logger?.LogWarning(string.Format("PUT request failed, No Accounts found with ID: {0}", id.ToString()));
+                    _logger?.LogWarning(string.Format("PUT request failed, No Account found with ID: {0}", id.ToString()));
                     return NotFound(id);
                 }
 
@@ -127,10 +127,80 @@ namespace Banking.API.Controllers
             }
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // PUT: api/Transferables/withdraw/5/10.50
+        /// <summary>
+        /// Retrieves account that matches id passed and withdraw from the account by decreasing the balance
+        /// </summary>
+        /// <param name="id">The id of the account</param>
+        /// <param name="amount">the amount to withdraw from account</param>
+        [HttpPut("withdraw/{id}/{amount}")]
+        public async Task<ActionResult> Withdraw(int id, decimal amount)
         {
+            try
+            {
+                //TODO: Add Logic to find account and decreaset balance based on amount
+                Account acctFound = null;
+                if (amount < 0) //make sure withdraw amount is positive
+                {
+                    _logger?.LogWarning(string.Format("PUT request failed, Amount passed is less than 0.  Account with ID: {0}", id.ToString()));
+                    return StatusCode(400);
+                }
+
+                foreach (var acct in accountList) //for testing
+                {
+                    if (acct.Id == id)
+                    {
+                        acctFound = acct;
+                    }
+                }
+
+                if (acctFound == null)
+                {
+                    _logger?.LogWarning(string.Format("PUT request failed, No Account found with ID: {0}", id.ToString()));
+                    return NotFound(id);
+                }
+
+
+                //check if withdraw causes overdraft, different actions based on account type 
+                if((acctFound.Balance - amount) < 0)
+                {
+                    //check if it is checking account return an error
+                    if (acctFound.AccountTypeId == 1) //TODO: 1 hard coded to represent checking account replace with actual AccountType check
+                    {
+                        _logger?.LogWarning(string.Format("PUT request failed, Withdraw would overdraft Checking Account with ID: {0}", id.ToString()));
+                        return StatusCode(400);
+                    }
+                    else//if business account do penalty calculation
+                    {
+                        decimal overdraftAmount;
+                        if (acctFound.Balance <= 0) //true means the business account already been overdrafted or no funds
+                        {
+                            //penalty on the whole withdraw amount
+                            overdraftAmount = amount * .25M; //TODO: Hard Coded interest rate of, replace with AccountType interest rate
+                            acctFound.Balance -= overdraftAmount + amount; //subtract overdraftamount plus the amount so total is still negative
+                        }
+                        else //first time account overdrafts
+                        {
+                            //user has funds in account, penalty only on the amount that user overdrafted on
+                            overdraftAmount = (acctFound.Balance - amount) * .25M; //TODO: Hard Coded interest rate of, replace with AccountType interest rate
+                            acctFound.Balance = (acctFound.Balance - amount) + overdraftAmount; //total should reflect negative balance
+                        }
+                        _logger?.LogInformation("PUT Success withdrew from account but with overdraft, account ID: {0}", id.ToString());
+                        return NoContent();
+                    }
+                }
+
+                //no overdraft
+                acctFound.Balance -= amount;
+                _logger?.LogInformation("PUT Success withdrew from account with ID: {0}", id.ToString());
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger?.LogError(e, "Unexpected Error in withdraw of account with ID: {0}", id.ToString());
+                return StatusCode(500, e);
+            }
+
         }
     }
 }
