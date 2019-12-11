@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Banking.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -21,19 +22,20 @@ namespace Banking.API.Controllers
         public AccountsController(object newRepo, ILogger<AccountsController> newLogger)
         {
             _logger = newLogger;
+            _repo = newRepo;
         }
 
         // GET: api/Accounts/5
         [HttpGet("{id}")]
-        [Produces(typeof(IEnumerable<object>))]
+        [Produces(typeof(IEnumerable<Account>))]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<IEnumerable<object>>> GetAllAccountsByUserID(int id)
+        public async Task<ActionResult<IEnumerable<Account>>> GetAllAccountsByUserID(int id)
         {
             try
             {
-                IEnumerable<object> result = null;
+                IEnumerable<Account> result = null;
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}", id.ToString()));
                 // TODO: Get List of accounts from repository _repo.
 
@@ -59,15 +61,15 @@ namespace Banking.API.Controllers
 
         // GET: api/Accounts/5/1
         [HttpGet("{id}/{typeid}")]
-        [Produces(typeof(IEnumerable<object>))]
+        [Produces(typeof(IEnumerable<Account>))]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<IEnumerable<object>>> GetAllAccountsByUserIDAndTypeID(int id, int typeid)
+        public async Task<ActionResult<IEnumerable<Account>>> GetAllAccountsByUserIDAndTypeID(int id, int typeid)
         {
             try
             {
-                IEnumerable<object> result = null;
+                IEnumerable<Account> result = null;
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}, Filtered by TypeID: {1}", id.ToString(), typeid.ToString()));
                 // TODO: Get List of accounts, by typeid, from repository _repo.
 
@@ -91,15 +93,15 @@ namespace Banking.API.Controllers
 
         // GET: api/Accounts/details/4
         [HttpGet("details/{id}")]
-        [Produces(typeof(object))]
+        [Produces(typeof(Account))]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<object>> GetAccountDetailsByAccountID(int id)
+        public async Task<ActionResult<Account>> GetAccountDetailsByAccountID(int id)
         {
             try
             {
-                object result = null;
+                Account result = null;
                 _logger?.LogInformation(string.Format("Start GetAccountDetailsByAccountID: {0}", id.ToString()));
                 // TODO: Get account detail, for id, from repository _repo.
 
@@ -124,15 +126,15 @@ namespace Banking.API.Controllers
 
         // GET: api/Accounts/details/4
         [HttpGet("details/{id}")]
-        [Produces(typeof(IEnumerable<object>))]
+        [Produces(typeof(IEnumerable<Transaction>))]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<IEnumerable<object>>> GetTransactionDetailsByAccountID(int id)
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountID(int id)
         {
             try
             {
-                IEnumerable<object> result = null;
+                IEnumerable<Transaction> result = null;
                 _logger?.LogInformation(string.Format("Start GetTransactionDetailsByAccountID: {0}", id.ToString()));
                 // TODO: Get transaction detail, for id, from repository _repo.
 
