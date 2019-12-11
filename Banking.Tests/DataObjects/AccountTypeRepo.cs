@@ -2,7 +2,9 @@
 using Banking.API.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.async Tasks;
 using System.Threading.Tasks;
 
 namespace Banking.Tests.DataObjects
@@ -45,22 +47,32 @@ namespace Banking.Tests.DataObjects
             }
         }
 
-        public Task<bool> AddAccountType(AccountType accType)
+        public async Task<bool> AddAccountType(AccountType accType)
+        {
+            bool result = false;
+
+            var query = AccountTypes.Where(at => at.Name.ToUpper().CompareTo(accType.Name.ToUpper()) != 0);
+            if (query.Count() < 1)
+            {
+                AccountTypes.Add(accType);
+                await Task.Delay(10);
+                result = true;
+            }
+
+            return result;
+        }
+
+        public async Task<AccountType> GetAccountTypeById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AccountType> GetAccountTypeById(int id)
+        public async Task<AccountType> GetAccountTypeByName(string name)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AccountType> GetAccountTypeByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<AccountType>> GetAccountTypes()
+        public async Task<List<AccountType>> GetAccountTypes()
         {
             throw new NotImplementedException();
         }
