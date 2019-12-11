@@ -63,6 +63,7 @@ namespace Banking.Tests.Controllers
         public void GetAllAccountsByUserID_InvalidID()
         {
             // Arrange.
+            // TODO: set user credentials to different user.
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserID(3);
@@ -103,25 +104,69 @@ namespace Banking.Tests.Controllers
         [TestMethod]
         public void GetAllAccountsByUserIDAndAccountType_ValidIDAndValidAccountType()
         {
+            // Arrange.
 
+            // Act.
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(1, 1);
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
         }
 
         [TestMethod]
         public void GetAllAccountsByUserIDAndAccountType_NonExistingID()
         {
+            // Arrange.
 
+            // Act.
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(-1, 1);
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
         }
 
         [TestMethod]
         public void GetAllAccountsByUserIDAndAccountType_InvalidID()
         {
+            // Arrange.
+            // TODO: set user credientals to different user.
 
+            // Act.
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(3, 1);
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
         }
 
         [TestMethod]
         public void GetAllAccountsByUserIDAndAccountType_ValidIDAndNoValidAccounts()
         {
+            // Arrange.
 
+            // Act.
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(2, 4);
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
+        }
+
+        [TestMethod]
+        public void GetAllAccountsByUserIDAndAccountType_ServerError()
+        {
+            // Arrange.
+            // TODO: redefine testAccountRepo to be empty.
+            // TODO: reinject testAccountController.
+
+            // Act.
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(1, 1);
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
         }
 
         [TestMethod]
