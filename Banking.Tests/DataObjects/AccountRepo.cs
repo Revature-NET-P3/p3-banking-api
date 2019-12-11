@@ -178,7 +178,19 @@ namespace Banking.Tests.DataObjects
 
         public Account PayLoan(int Id, decimal amount)
         {
-            throw new NotImplementedException();
+            Account result = null;
+
+            if (amount > 0)
+            {
+                var query = Accounts.Where(a => a.Id == Id && a.AccountTypeId == 3 && a.Balance >= amount);
+                if (query.Count() > 0)
+                {
+                    result = query.First();
+                    result.Balance -= amount;
+                }
+            }
+
+            return result;
         }
 
         public Account TransferBetweenAccounts(int Id, decimal amount, int toAccId)
