@@ -108,7 +108,16 @@ namespace Banking.Tests.DataObjects
 
         public Account GetAllAccountsByUserId(int UserId)
         {
-            throw new NotImplementedException();
+            //List<Account> result = null;
+
+            //var query = Accounts.Where(a => a.UserId == UserId);
+            //if (query.Count() > 0)
+            //{
+            //    result = query.ToList();
+            //}
+
+            //return result;
+            return null;
         }
 
         public Account GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
