@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Banking.API.Repositories.Repos
 {
-    public class AccountRepo : IAccountRepo
+    public class AccountRepo //: IAccountRepo
     {
         //private List<Account> _accounts;
 
@@ -54,7 +54,7 @@ namespace Banking.API.Repositories.Repos
         public async Task<bool> Deposit(int Id, decimal amount)
         {
             var depositAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
-            depositAccount.Balance = depositAccount.Balance + amount;
+            depositAccount.Balance += amount;
             _context.Update(depositAccount);
             return true;
         }
@@ -63,7 +63,7 @@ namespace Banking.API.Repositories.Repos
         public async Task<bool> Withdraw(int Id, decimal amount)
         {
             var withdrawAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
-            withdrawAccount.Balance = withdrawAccount.Balance - amount;
+            withdrawAccount.Balance -= amount;
             return true;
         }
 
@@ -72,8 +72,8 @@ namespace Banking.API.Repositories.Repos
         {
             var transferAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             var accountTo = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == toAccId);
-            transferAccount.Balance = transferAccount.Balance - amount;
-            accountTo.Balance = accountTo.Balance + amount;
+            transferAccount.Balance -= amount;
+            accountTo.Balance += amount;
             _context.Update(transferAccount);
             _context.Update(accountTo);
             await _context.SaveChangesAsync();
@@ -84,26 +84,44 @@ namespace Banking.API.Repositories.Repos
         public async Task<bool> PayLoan(int Id, decimal amount)
         {
             var loanAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
-            loanAccount.Balance = loanAccount.Balance - amount;
+            loanAccount.Balance -= amount;
             _context.Update(loanAccount);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public Account CloseAccount(int Id)
+        // if account id exists and not null, then close account
+        public async Task<bool> CloseAccount(int Id)
         {
-            throw new NotImplementedException();
+            var accToClose = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
+            if (accToClose != null)
+            {
+                _context.Remove(accToClose);
+            }
+            return true;
         }
 
-        public Account GetAllAccountsByUserId(int UserId)
+        // if user id exists, and not null, return all user accounts. Else return false.
+        public async Task<bool> GetAllAccountsByUserId(int UserId)
         {
-            var account = _context.Accounts.Where(e => e.UserId == UserId).ToList();
-            return account;
+            var account = await _context.Accounts.Where(e => e.UserId == UserId).ToListAsync();
+            if (account != null)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public Account GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
+        // check if user id and account type id are not null and compare if account exits.
+        // if parameters are empty, return false.
+        public async Task<bool> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
         {
-            throw new NotImplementedException();
+            var accByType = await _context.Accounts.Where(e => e.UserId == UserId && e.AccountTypeId == AccountTypeId).ToListAsync();
+            if (accByType != null)
+            {
+                return true;
+            }
+            return false;
         }
 
         public Account GetAccountDetailsByAccountID(int Id)
