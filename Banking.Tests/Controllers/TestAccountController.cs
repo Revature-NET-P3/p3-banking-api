@@ -297,7 +297,7 @@ namespace Banking.Tests.Controllers
         public void GetAllTransactionTypes_EmptyDataSet()
         {
             // Arrange.
-            // Empty TransactionType list in repositort testAccountRepo.
+            // Empty TransactionType list in repository testAccountRepo.
 
             // Act.
             var response = testAccountController.GetAllTransactionTypes();
@@ -316,6 +316,48 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllTransactionTypes();
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
+        }
+
+        [TestMethod]
+        public void GetAllAccountTypes_ValidData()
+        {
+            // Arrange.
+
+            // Act.
+            var response = testAccountController.GetAllAccountTypes();
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
+        }
+
+        [TestMethod]
+        public void GetAllAccountTypes_EmptyDataSet()
+        {
+            // Arrange.
+            // Empty AccountType list in repository testAccountRepo.
+
+            // Act.
+            var response = testAccountController.GetAllAccountTypes();
+            response.Wait(1);
+            var resultValue = response.Result.Value;
+
+            // Assert.
+        }
+
+        [TestMethod]
+        public void GetAllAccountTypes_ServerError()
+        {
+            // Arrange.
+            // TODO: redefine testAccountRepo to be empty.
+            // TODO: reinject testAccountController.
+
+            // Act.
+            var response = testAccountController.GetAllAccountTypes();
             response.Wait(1);
             var resultValue = response.Result.Value;
 
