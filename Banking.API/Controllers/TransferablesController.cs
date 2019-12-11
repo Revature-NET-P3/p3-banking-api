@@ -15,13 +15,13 @@ namespace Banking.API.Controllers
     public class TransferablesController : ControllerBase
     {
         // private readonly IAccount _repo; //access to account
-        //access to 
+        private readonly ILogger<TransferablesController> _logger;
 
-        //public TransferablesController(IAccount repo) //dependency injection of repo
-        //{
-        //    _repo = repo;
-
-        //}
+        public TransferablesController(ILogger<TransferablesController> logger) //dependency injection of repo
+        {
+            //Object _repo = repo;
+            _logger = logger;
+        }
 
         private static List<Account> accountList = new List<Account>()
             {
@@ -55,8 +55,6 @@ namespace Banking.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Account>>> Get() //For Testing API
         {
-       
-
             return accountList;
         }
 
@@ -74,23 +72,59 @@ namespace Banking.API.Controllers
         /// </summary>
         /// <param name="newAccount">new Account object to create and store</param>
         [HttpPost]
-        public void Post([FromBody] Account newAccount)
+        public async Task<ActionResult<Account>> Post([FromBody] Account newAccount)
         {
-
+            //TODO: add logic to create/store account using repo
             accountList.Add(newAccount);
-
+            return Ok();
         }
 
+        // PUT: api/Transferables/deposit/5/10.50
         /// <summary>
-        /// 
+        /// Takes the id passed, retrieves the correct account and updates the balance in the account
         /// </summary>
         /// <param name="id">The id of the account</param>
         /// <param name="amount">the amount to deposit</param>
-
-        // PUT: api/Transferables/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("deposit/{id}/{amount}")]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult> Deposit(int id, decimal amount)
         {
+            _logger?.LogInformation(string.Format("Attempting to deposit into account with id: {0}", id.ToString()));
+
+            try
+            {
+                //Add Logic to find account and update its balance
+                Account acctFound = null;
+                if (amount < 0)
+                {
+                    _logger?.LogWarning(string.Format("PUT request failed, Amount passed is less than 0.  Account with ID: {0}", id.ToString()));
+                    return StatusCode(400);
+                }
+
+                foreach (var acct in accountList) //for testing
+                {
+                    if (acct.Id == id)
+                    {
+                        acctFound = acct;
+                    }
+                }
+
+                if(acctFound == null)
+                {
+                    _logger?.LogWarning(string.Format("PUT request failed, No Accounts found with ID: {0}", id.ToString()));
+                    return NotFound(id);
+                }
+
+                acctFound.Balance += amount;
+                _logger?.LogInformation("PUT Success deposited into account with ID: {0}", id.ToString());
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger?.LogError(e, "Unexpected Error in deposit of account with ID: {0}", id.ToString());
+                return StatusCode(500, e);
+            }
         }
 
         // DELETE: api/ApiWithActions/5
