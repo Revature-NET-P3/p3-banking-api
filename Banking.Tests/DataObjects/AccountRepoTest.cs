@@ -158,8 +158,20 @@ namespace Banking.Tests.DataObjects
         public async Task<bool> Withdraw(int Id, decimal amount)
         {
             var withdrawAccount = _accounts.FirstOrDefault(e => e.Id == Id);
-            withdrawAccount.Balance -= amount;
-            return true;
+            await Task.Delay(10);
+            if (withdrawAccount != null)
+            {
+                if (withdrawAccount.AccountTypeId == 2)
+                {
+                    withdrawAccount.Balance -= amount;
+                }
+                else
+                {
+                    withdrawAccount.Balance = withdrawAccount.Balance <= amount ? 0 : withdrawAccount.Balance - amount;
+                }
+                return true;
+            }
+            return false;
         }
     }
 }
