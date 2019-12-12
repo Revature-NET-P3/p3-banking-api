@@ -70,7 +70,8 @@ namespace Banking.API
             {
                 options.AddPolicy("DefaultPolicy",
                     builder =>
-                    builder.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://p3ng.azurewebsites.net", "https://p3ng.azurewebsites.net")
+                    builder.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://p3ng.azurewebsites.net", "https://p3ng.azurewebsites.net",
+                    "35.167.74.121", "35.166.202.113", "35.160.3.103", "54.183.64.135", "54.67.77.38", "54.67.15.170", "54.183.204.205", "35.171.156.124", "18.233.90.226", "3.211.189.167")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
