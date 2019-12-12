@@ -202,5 +202,59 @@ namespace Banking.API.Controllers
             }
 
         }
+
+
+        // PUT: api/Transferables/transfer/5/9/10.50
+        /// <summary>
+        /// Retrieves account that matches id passed and withdraw from the account by decreasing the balance
+        /// </summary>
+        /// <param name="idFrom">The id of account from where we will transfer from</param>
+        /// <param name="idTo">The id of destination account we want to transfer into</param>
+        /// <param name="amount">the amount to withdraw from account to transfer from</param>
+        [HttpPut("transfer/{idFrom}/{idTo}/{amount}")]
+        public async Task<ActionResult> Transfer(int idFrom, int idTo, decimal amount)
+        {
+            _logger?.LogInformation(string.Format("starting transfer from account ID: {0} into account with id: {1}", idFrom.ToString(), idTo.ToString()));
+
+            try
+            {
+                //TODO: Add Logic to find account and update its balance
+                Account acctFoundFrom = null;
+                Account acctFoundTo = null;
+                if (amount < 0) //make sure transfer amount is positive
+                {
+                    _logger?.LogWarning(string.Format("PUT request failed, Amount passed is less than 0.  From Account with ID: {0}", idFrom.ToString()));
+                    return StatusCode(400);
+                }
+
+                foreach (var acct in accountList) //for testing
+                {
+                    if (acct.Id == idFrom)
+                    {
+                        acctFoundFrom = acct;
+                    }
+                    if (acct.Id == idTo)
+                    {
+                        acctFoundTo = acct;
+                    }
+                }
+
+                if (acctFoundFrom == null || acctFoundTo == null)
+                {
+                    _logger?.LogWarning(string.Format("PUT request failed, No Account found with ID: {0} or To ID: {1}", idFrom.ToString(), idTo.ToString()));
+                    return NotFound(idFrom);
+                }
+
+                acctFoundFrom.Balance -= amount;
+                acctFoundTo.Balance += amount;
+                _logger?.LogInformation("PUT Success deposited into account with ID: {0}", idTo.ToString());
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger?.LogError(e, "Unexpected Error in deposit of account with ID: {0}", idFrom.ToString());
+                return StatusCode(500, e);
+            }
+        }
     }
 }
