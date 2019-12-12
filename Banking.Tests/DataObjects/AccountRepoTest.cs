@@ -104,10 +104,18 @@ namespace Banking.Tests.DataObjects
         public async Task<Account> OpenAccount(Account account)
         {
             var accounts = _accounts.FirstOrDefault(e => e.Id == account.Id);
-            _accounts.Add(account);
-            return accounts;
+            await Task.Delay(10);
+            if (accounts == null)
+            {
+                account.Id = _accounts.Max(a => a.Id) + 1;
+                _accounts.Add(account);
+                return account;
+            }
+            else
+            {
+                return null;
+            }
         }
-
 
         // used for testing Pay Loan method.
         public async Task<bool> PayLoan(int Id, decimal amount)
