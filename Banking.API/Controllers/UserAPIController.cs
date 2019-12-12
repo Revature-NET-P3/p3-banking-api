@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Banking.API.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class UserAPIController : ControllerBase
     {
 
@@ -25,12 +26,22 @@ namespace Banking.API.Controllers
         /// </summary>
         /// <param name="user"></param>
         /// <returns>New User</returns>
-        // POST: api/CreateUser
+        // POST: api/Createuser
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(User user)
         {
-            await _context.CreateUser(user);
-            return true;
+            var result =await _context.CreateUser(user);
+            //return result;
+            if (result == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
         }
         /// <summary>
         /// This method wil return the user by Id. 
@@ -50,30 +61,53 @@ namespace Banking.API.Controllers
 
             return user;
         }
+
         /// <summary>
         /// This method will work to update user.
         /// </summary>
         /// <param name="user"></param>
         /// <returns>Updated User</returns>
-        // POST: api/UpdateUser
-        [HttpPost]
+        // PUT: api/Updateuser/5
+        [HttpPut("Updateuser")]
         public async Task<ActionResult<bool>> UpdateUser(User user)
         {
-            await _context.UpdateUser(user);
-            return true;
+            var result = await _context.UpdateUser(user);
+           // return result;
+            if (result == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+
         }
-        /// <summary>
-        /// This method will work for verifying the login.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="passhash"></param>
-        /// <returns>Login Session</returns>
-        // POST: api/VerifyLogin
-        [HttpPost]
+      /// <summary>
+      /// 
+      /// </summary>
+      /// <param name="username"></param>
+      /// <param name="passhash"></param>
+      /// <returns></returns>
+        // GET: api/Verifylogin/5
+        [HttpGet("{id}")]
         public async Task<ActionResult<bool>> VerifyLogin(string username, string passhash)
         {
-            await _context.VerifyLogin(username, passhash);
-            return true;
+         
+           var result =  await _context.VerifyLogin(username, passhash);
+            if (result == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+           
+                   
+
         }
 
 
