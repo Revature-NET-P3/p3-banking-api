@@ -18,5 +18,7 @@ namespace Banking.API.Repositories.Interfaces
         public Task<IEnumerable<Account>> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId);
         public Task<Account> GetAccountDetailsByAccountID(int Id);
         public Task<IEnumerable<Transaction>> GetTransactionDetailsByAccountID(int Id);
+        public Task<bool> SaveChanges();
+        public Task<bool> Overdraft(int Id, decimal amount);
     }
 }
