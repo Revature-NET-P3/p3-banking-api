@@ -13,6 +13,7 @@ namespace Banking.Tests.DataObjects
     {
 
         public List<Account> _accounts;
+        public List<Transaction> _transactions;
 
         //create a mock data for test purposes.
         public AccountRepoTest(bool doFillData = true)
@@ -25,6 +26,16 @@ namespace Banking.Tests.DataObjects
                     new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
                     new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
                     new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 600, CreateDate = DateTime.Now }
+                };
+
+                _transactions = new List<Transaction>()
+                {
+                    new Transaction() { Id = 1, AccountId =2, Ammount = 300, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
+                    new Transaction() { Id = 2, AccountId =1, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
+                    new Transaction() { Id = 3, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
+                    new Transaction() { Id = 3, AccountId =3, Ammount = 100, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=2},
+                    new Transaction() { Id = 4, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=2},
+                    new Transaction() { Id = 5, AccountId =4, Ammount = 600, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
                 };
             }
         }
@@ -77,12 +88,7 @@ namespace Banking.Tests.DataObjects
         // used for testing Get All Transactions by Account ID method.
         public async Task<IEnumerable<Transaction>> GetTransactionDetailsByAccountID(int Id)
         {
-            //need to create a mock transaction.
-            //var transactionDetails = await _accounts.Transactions.Where(e => e.Id == Id).ToListAsync();
-            //if (transactionDetails != null)
-            //{
-            //    return true;
-            //}
+            var transactionDetails = _transactions.Where(e => e.AccountId == Id).ToList();
             await Task.Delay(10);
             return null;
         }
