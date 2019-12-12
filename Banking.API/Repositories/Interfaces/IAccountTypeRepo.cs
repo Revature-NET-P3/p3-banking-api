@@ -8,9 +8,9 @@ namespace Banking.API.Repositories.Interfaces
 {
     interface IAccountTypeRepo
     {
-        public Task<IEnumerable<AccountType>> GetAccountTypes();
-        public Task<AccountType> GetAccountTypeById(int id);
-        public Task<AccountType> GetAccountTypeByName(string name);
-        public Task<bool> AddAccountType(AccountType accType);
+        Task<IEnumerable<AccountType>> GetAccountTypes();
+        Task<AccountType> GetAccountTypeById(int id);
+        Task<AccountType> GetAccountTypeByName(string name);
+        Task<bool> AddAccountType(AccountType accType);
     }
 }
