@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace Banking.API.Models
         public int UserId { get; set; }
         [Required]
         public int AccountTypeId { get; set; }
-        [Required]
+        [Required, Column(TypeName = "decimal(20,2)")]
         public decimal Balance { get; set; }
         [Required]
         public DateTime CreateDate { get; set; }
