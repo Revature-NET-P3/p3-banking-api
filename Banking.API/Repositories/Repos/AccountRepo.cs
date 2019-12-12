@@ -119,14 +119,10 @@ namespace Banking.API.Repositories.Repos
         }
 
         // return the list of transactions for a particluar account ID.
-        public async Task<bool> GetTransactionDetailsByAccountID(int Id)
+        public async Task<IEnumerable<Transaction>> GetTransactionDetailsByAccountID(int Id)
         {
             var transactionDetails = await _context.Transactions.Where(e => e.Id == Id).ToListAsync();
-            if (transactionDetails != null)
-            {
-                return true;
-            }
-            return false;
+            return transactionDetails;
         }
     }
 }

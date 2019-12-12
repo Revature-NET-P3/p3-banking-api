@@ -72,7 +72,7 @@ namespace Banking.Tests.DataObjects
 
 
         // used for testing Get All Transactions by Account ID method.
-        public async Task<bool> GetTransactionDetailsByAccountID(int Id)
+        public async Task<IEnumerable<Transaction>> GetTransactionDetailsByAccountID(int Id)
         {
             //need to create a mock transaction.
             //var transactionDetails = await _accounts.Transactions.Where(e => e.Id == Id).ToListAsync();
@@ -80,7 +80,8 @@ namespace Banking.Tests.DataObjects
             //{
             //    return true;
             //}
-            return false;
+            await Task.Delay(10);
+            return null;
         }
 
         // used for testing Open Account method.

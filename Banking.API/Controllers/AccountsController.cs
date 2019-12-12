@@ -140,8 +140,7 @@ namespace Banking.API.Controllers
             {
                 IEnumerable<Transaction> result = null;
                 _logger?.LogInformation(string.Format("Start GetTransactionDetailsByAccountID: {0}", id.ToString()));
-                // TODO: Update following functionality:
-                // result = await _repo?.GetTransactionDetailsByAccountID(id) ?? null;
+                result = await _repo?.GetTransactionDetailsByAccountID(id) ?? null;
 
                 // Check if return object was null.
                 if (result == null || result?.Count() < 1)
