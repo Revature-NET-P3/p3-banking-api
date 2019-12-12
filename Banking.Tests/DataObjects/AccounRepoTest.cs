@@ -35,6 +35,7 @@ namespace Banking.Tests.DataObjects
             {
                 _accounts.Remove(accToClose);
             }
+            await Task.Delay(1);
             return false;
         }
 
@@ -43,6 +44,8 @@ namespace Banking.Tests.DataObjects
         {
             var depositAccount = _accounts.FirstOrDefault(e => e.Id == Id);
             depositAccount.Balance += amount;
+
+            await Task.Delay(1);
             return true;
         }
 
@@ -54,6 +57,8 @@ namespace Banking.Tests.DataObjects
             {
                 return true;
             }
+
+            await Task.Delay(1);
             return false;
         }
 
@@ -65,6 +70,8 @@ namespace Banking.Tests.DataObjects
             {
                 return true;
             }
+
+            await Task.Delay(1);
             return false;
         }
 
@@ -76,6 +83,8 @@ namespace Banking.Tests.DataObjects
             {
                 return true;
             }
+
+            await Task.Delay(1);
             return false;
         }
 
@@ -89,6 +98,8 @@ namespace Banking.Tests.DataObjects
             //{
             //    return true;
             //}
+
+            await Task.Delay(1);
             return false;
         }
 
