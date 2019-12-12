@@ -136,9 +136,21 @@ namespace Banking.Tests.DataObjects
         {
             var transferAccount = _accounts.FirstOrDefault(e => e.Id == Id);
             var accountTo = _accounts.FirstOrDefault(m => m.Id == toAccId);
-            transferAccount.Balance -= fromAmount;
-            accountTo.Balance += toAmount;
-            return true;
+            await Task.Delay(10);
+            if (transferAccount != null && accountTo != null)
+            {
+                if (transferAccount.AccountTypeId == 2)
+                {
+                    transferAccount.Balance -= fromAmount;
+                }
+                else
+                {
+                    transferAccount.Balance = transferAccount.Balance <= fromAmount ? 0 : transferAccount.Balance - fromAmount;
+                }
+                accountTo.Balance += toAmount;
+                return true;
+            }
+            return false;
         }
 
 
