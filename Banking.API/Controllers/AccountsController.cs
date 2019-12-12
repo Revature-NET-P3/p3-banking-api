@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 
 using Banking.API.Models;
 using Banking.API.Repositories.Repos;
+using Banking.API.Repositories.Interfaces;
 
 namespace Banking.API.Controllers
 {
@@ -17,9 +18,9 @@ namespace Banking.API.Controllers
     {
         // TODO: Add injection for repository when ready.
         readonly ILogger<AccountsController> _logger;
-        readonly AccountRepo _repo;
+        readonly IAccountRepo _repo;
 
-        public AccountsController(AccountRepo newRepo, ILogger<AccountsController> newLogger)
+        public AccountsController(IAccountRepo newRepo, ILogger<AccountsController> newLogger)
         {
             _logger = newLogger;
             _repo = newRepo;
@@ -38,7 +39,7 @@ namespace Banking.API.Controllers
                 IEnumerable<Account> result = null;
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}", id.ToString()));
                 // TODO: Update following functionality:
-                // result = _repo?.GetAllAccountsByUserId(id) ?? null;
+                // result = await _repo?.GetAllAccountsByUserId(id) ?? null;
 
                 // Check if returned list has any elements.
                 if (result == null || result?.Count() < 1)
@@ -73,7 +74,7 @@ namespace Banking.API.Controllers
                 IEnumerable<Account> result = null;
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}, Filtered by TypeID: {1}", id.ToString(), typeid.ToString()));
                 // TODO: Update following functionality:
-                // result = _repo?.GetAllAccountsByUserIdAndAccountType(id,AccountTypeId) ?? null;
+                // result = await _repo?.GetAllAccountsByUserIdAndAccountType(id, typeid) ?? null;
 
                 if (result == null || result?.Count() < 1)
                 {
@@ -106,7 +107,7 @@ namespace Banking.API.Controllers
             {
                 Account result = null;
                 _logger?.LogInformation(string.Format("Start GetAccountDetailsByAccountID: {0}", id.ToString()));
-                result = _repo?.GetAccountDetailsByAccountID(id) ?? null;
+                // result = await _repo?.GetAccountDetailsByAccountID(id) ?? null;
                 
                 // Check if return object was null.
                 if (result == null)
@@ -142,7 +143,7 @@ namespace Banking.API.Controllers
                 IEnumerable<Transaction> result = null;
                 _logger?.LogInformation(string.Format("Start GetTransactionDetailsByAccountID: {0}", id.ToString()));
                 // TODO: Update following functionality:
-                // result = _repo?.GetTransactionDetailsByAccountID(id) ?? null;
+                // result = await _repo?.GetTransactionDetailsByAccountID(id) ?? null;
 
                 // Check if return object was null.
                 if (result == null || result?.Count() < 1)
@@ -160,39 +161,6 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
-                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
-            }
-        }
-
-        // GET: api/Accounts/transactionTypes/
-        [HttpGet("transactiontypes")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<TransactionType>>> GetAllTransactionTypes()
-        {
-            try
-            {
-                IEnumerable<TransactionType> result = null;
-                _logger?.LogInformation("Start GetAllTransactionTypes.");
-                // TODO: get list of transaction types from repository _repo.
-                
-                // Check for empty return set.
-                if (result == null || result?.Count() < 1)
-                {
-                    // Return NotFound 404 response if no transaction types were found.
-                    _logger?.LogWarning("No Transaction Types found!");
-                    return NotFound();
-                }
-
-                // Return list of transaction types.
-                _logger?.LogInformation("GetAllTransactionTypes Succeeded.");
-                return Ok(result.ToList());
-            }
-            catch (Exception WTF)
-            {
-                // Return Internal Server Error 500 on general exception.
-                _logger?.LogError(WTF, "Unexpected Error in GetAllTransactionTypes!");
                 return StatusCode(StatusCodes.Status500InternalServerError, WTF);
             }
         }
