@@ -9,21 +9,35 @@ using System.Threading.Tasks;
 
 namespace Banking.Tests.DataObjects
 {
-    class AccounRepoTest : IAccountRepo
+    class AccountRepoTest : IAccountRepo
     {
 
         public List<Account> _accounts;
+        public List<Transaction> _transactions;
 
         //create a mock data for test purposes.
-        public AccounRepoTest()
+        public AccountRepoTest(bool doFillData = true)
         {
-            _accounts = new List<Account>()
+            if (doFillData)
             {
-                new Account() { Id = 1, UserId = 10, AccountTypeId = 3, Balance = 200, CreateDate = DateTime.Now },
-                new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
-                new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
-                new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 500, CreateDate = DateTime.Now }
-            };
+                _accounts = new List<Account>()
+                {
+                    new Account() { Id = 1, UserId = 10, AccountTypeId = 3, Balance = 200, CreateDate = DateTime.Now },
+                    new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
+                    new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
+                    new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 600, CreateDate = DateTime.Now }
+                };
+
+                _transactions = new List<Transaction>()
+                {
+                    new Transaction() { Id = 1, AccountId =2, Ammount = 300, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
+                    new Transaction() { Id = 2, AccountId =1, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
+                    new Transaction() { Id = 3, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
+                    new Transaction() { Id = 3, AccountId =3, Ammount = 100, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=2},
+                    new Transaction() { Id = 4, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=2},
+                    new Transaction() { Id = 5, AccountId =4, Ammount = 600, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
+                };
+            }
         }
 
 
@@ -47,49 +61,36 @@ namespace Banking.Tests.DataObjects
         }
 
         // used for testing Account Details method.
-        public async Task<bool> GetAccountDetailsByAccountID(int Id)
+        public async Task<Account> GetAccountDetailsByAccountID(int Id)
         {
-            var accDetails = _accounts.Where(e => e.Id == Id).Single();
-            if (accDetails != null)
-            {
-                return true;
-            }
-            return false;
+            var accDetails = _accounts.Where(e => e.Id == Id).SingleOrDefault();
+            await Task.Delay(10);
+            return accDetails;
         }
 
         // used for testing Get All Account method.
-        public async Task<bool> GetAllAccountsByUserId(int UserId)
+        public async Task<IEnumerable<Account>> GetAllAccountsByUserId(int UserId)
         {
             var account = _accounts.Where(e => e.UserId == UserId).ToList();
-            if (account != null)
-            {
-                return true;
-            }
-            return false;
+            await Task.Delay(10);
+            return account;
         }
 
         // used for testing Get All Account by User ID and Account Type method.
-        public async Task<bool> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
+        public async Task<IEnumerable<Account>> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
         {
             var accByType = _accounts.Where(e => e.UserId == UserId && e.AccountTypeId == AccountTypeId).ToList();
-            if (accByType != null)
-            {
-                return true;
-            }
-            return false;
+            await Task.Delay(10);
+            return accByType;
         }
 
 
         // used for testing Get All Transactions by Account ID method.
-        public async Task<bool> GetTransactionDetailsByAccountID(int Id)
+        public async Task<IEnumerable<Transaction>> GetTransactionDetailsByAccountID(int Id)
         {
-            //need to create a mock transaction.
-            //var transactionDetails = await _accounts.Transactions.Where(e => e.Id == Id).ToListAsync();
-            //if (transactionDetails != null)
-            //{
-            //    return true;
-            //}
-            return false;
+            var transactionDetails = _transactions.Where(e => e.AccountId == Id).ToList();
+            await Task.Delay(10);
+            return transactionDetails;
         }
 
         // used for testing Open Account method.
