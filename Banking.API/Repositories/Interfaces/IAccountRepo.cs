@@ -14,9 +14,9 @@ namespace Banking.API.Repositories.Interfaces
         public Task<bool> TransferBetweenAccounts(int Id, decimal fromAmount, int toAccId, decimal toAmount);
         public Task<bool> PayLoan(int Id, decimal amount);
         public Task<bool> CloseAccount(int Id);
-        public Task<bool> GetAllAccountsByUserId(int UserId);
-        public Task<bool> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId);
-        public Task<bool> GetAccountDetailsByAccountID(int Id);
-        public Task<bool> GetTransactionDetailsByAccountID(int Id);
+        public Task<IEnumerable<Account>> GetAllAccountsByUserId(int UserId);
+        public Task<IEnumerable<Account>> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId);
+        public Task<Account> GetAccountDetailsByAccountID(int Id);
+        public Task<IEnumerable<Transaction>> GetTransactionDetailsByAccountID(int Id);
     }
 }

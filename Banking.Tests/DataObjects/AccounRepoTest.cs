@@ -47,41 +47,32 @@ namespace Banking.Tests.DataObjects
         }
 
         // used for testing Account Details method.
-        public async Task<bool> GetAccountDetailsByAccountID(int Id)
+        public async Task<Account> GetAccountDetailsByAccountID(int Id)
         {
             var accDetails = _accounts.Where(e => e.Id == Id).Single();
-            if (accDetails != null)
-            {
-                return true;
-            }
-            return false;
+            await Task.Delay(10);
+            return accDetails;
         }
 
         // used for testing Get All Account method.
-        public async Task<bool> GetAllAccountsByUserId(int UserId)
+        public async Task<IEnumerable<Account>> GetAllAccountsByUserId(int UserId)
         {
             var account = _accounts.Where(e => e.UserId == UserId).ToList();
-            if (account != null)
-            {
-                return true;
-            }
-            return false;
+            await Task.Delay(10);
+            return account;
         }
 
         // used for testing Get All Account by User ID and Account Type method.
-        public async Task<bool> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
+        public async Task<IEnumerable<Account>> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
         {
             var accByType = _accounts.Where(e => e.UserId == UserId && e.AccountTypeId == AccountTypeId).ToList();
-            if (accByType != null)
-            {
-                return true;
-            }
-            return false;
+            await Task.Delay(10);
+            return accByType;
         }
 
 
         // used for testing Get All Transactions by Account ID method.
-        public async Task<bool> GetTransactionDetailsByAccountID(int Id)
+        public async Task<IEnumerable<Transaction>> GetTransactionDetailsByAccountID(int Id)
         {
             //need to create a mock transaction.
             //var transactionDetails = await _accounts.Transactions.Where(e => e.Id == Id).ToListAsync();
@@ -89,7 +80,8 @@ namespace Banking.Tests.DataObjects
             //{
             //    return true;
             //}
-            return false;
+            await Task.Delay(10);
+            return null;
         }
 
         // used for testing Open Account method.
