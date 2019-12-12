@@ -9,21 +9,24 @@ using System.Threading.Tasks;
 
 namespace Banking.Tests.DataObjects
 {
-    class AccounRepoTest : IAccountRepo
+    class AccountRepoTest : IAccountRepo
     {
 
         public List<Account> _accounts;
 
         //create a mock data for test purposes.
-        public AccounRepoTest()
+        public AccountRepoTest(bool doFillData = true)
         {
-            _accounts = new List<Account>()
+            if (doFillData)
             {
-                new Account() { Id = 1, UserId = 10, AccountTypeId = 3, Balance = 200, CreateDate = DateTime.Now },
-                new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
-                new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
-                new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 500, CreateDate = DateTime.Now }
-            };
+                _accounts = new List<Account>()
+                {
+                    new Account() { Id = 1, UserId = 10, AccountTypeId = 3, Balance = 200, CreateDate = DateTime.Now },
+                    new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
+                    new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
+                    new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 500, CreateDate = DateTime.Now }
+                };
+            }
         }
 
 
