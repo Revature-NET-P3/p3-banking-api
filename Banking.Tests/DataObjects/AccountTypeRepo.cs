@@ -14,30 +14,34 @@ namespace Banking.Tests.DataObjects
 
         public AccountTypeRepo()
         {
-            List<AccountType> accountTypes = new List<AccountType>()
+            accountTypes = new List<AccountType>()
             {
-                new AccountType {}
+                new AccountType{ Id = 1 , Name = "Checking" , InterestRate = .008M },
+                new AccountType{ Id = 2 , Name = "Business" , InterestRate = .02M },
+                new AccountType{ Id = 3 , Name = "Loan" , InterestRate = .01M },
+                new AccountType{ Id = 4 , Name = "Term Deposit" , InterestRate = .01M }
             };
         }
 
         public async Task<List<AccountType>> GetAccountTypes()
         {
-            return await _context.AccountTypes.ToListAsync();
+            await Task.Delay(10);
+            return accountTypes;
         }
         public async Task<AccountType> GetAccountTypeById(int id)
         {
-            AccountType accType = await _context.AccountTypes.FirstOrDefaultAsync(o => o.Id == id);
-            return accType;
+            await Task.Delay(10);
+            return accountTypes.FirstOrDefault(o => o.Id == id);           
         }
         public async Task<AccountType> GetAccountTypeByName(string name)
         {
-            AccountType accType = await _context.AccountTypes.FirstOrDefaultAsync(x => x.Name == name);
-            return accType;
+            await Task.Delay(10);
+            return accountTypes.FirstOrDefault(x => x.Name == name);
         }
         public async Task<bool> AddAccountType(AccountType accType)
         {
-            _context.Add(accType);
-            await _context.SaveChangesAsync();
+            await Task.Delay(10);
+            accountTypes.Add(accType);
             return true;
         }
 
