@@ -45,9 +45,11 @@ namespace Banking.Tests.DataObjects
         public async Task<bool> CloseAccount(int Id)
         {
             var accToClose = _accounts.FirstOrDefault(e => e.Id == Id);
+            await Task.Delay(10);
             if (accToClose != null)
             {
                 _accounts.Remove(accToClose);
+                return true;
             }
             return false;
         }
@@ -56,8 +58,13 @@ namespace Banking.Tests.DataObjects
         public async Task<bool> Deposit(int Id, decimal amount)
         {
             var depositAccount = _accounts.FirstOrDefault(e => e.Id == Id);
-            depositAccount.Balance += amount;
-            return true;
+            await Task.Delay(10);
+            if (depositAccount != null)
+            {
+                depositAccount.Balance += amount;
+                return true;
+            }
+            return false;
         }
 
         // used for testing Account Details method.
@@ -97,17 +104,30 @@ namespace Banking.Tests.DataObjects
         public async Task<Account> OpenAccount(Account account)
         {
             var accounts = _accounts.FirstOrDefault(e => e.Id == account.Id);
-            _accounts.Add(account);
-            return accounts;
+            await Task.Delay(10);
+            if (accounts == null)
+            {
+                account.Id = _accounts.Max(a => a.Id) + 1;
+                _accounts.Add(account);
+                return account;
+            }
+            else
+            {
+                return null;
+            }
         }
-
 
         // used for testing Pay Loan method.
         public async Task<bool> PayLoan(int Id, decimal amount)
         {
             var loanAccount = _accounts.FirstOrDefault(e => e.Id == Id);
-            loanAccount.Balance -= amount;
-            return true;
+            await Task.Delay(10);
+            if (loanAccount != null)
+            {
+                loanAccount.Balance = loanAccount.Balance <= amount ? 0 : loanAccount.Balance - amount;
+                return true;
+            }
+            return false;
         }
 
 
@@ -116,9 +136,21 @@ namespace Banking.Tests.DataObjects
         {
             var transferAccount = _accounts.FirstOrDefault(e => e.Id == Id);
             var accountTo = _accounts.FirstOrDefault(m => m.Id == toAccId);
-            transferAccount.Balance -= fromAmount;
-            accountTo.Balance += toAmount;
-            return true;
+            await Task.Delay(10);
+            if (transferAccount != null && accountTo != null)
+            {
+                if (transferAccount.AccountTypeId == 2)
+                {
+                    transferAccount.Balance -= fromAmount;
+                }
+                else
+                {
+                    transferAccount.Balance = transferAccount.Balance <= fromAmount ? 0 : transferAccount.Balance - fromAmount;
+                }
+                accountTo.Balance += toAmount;
+                return true;
+            }
+            return false;
         }
 
 
@@ -126,8 +158,20 @@ namespace Banking.Tests.DataObjects
         public async Task<bool> Withdraw(int Id, decimal amount)
         {
             var withdrawAccount = _accounts.FirstOrDefault(e => e.Id == Id);
-            withdrawAccount.Balance -= amount;
-            return true;
+            await Task.Delay(10);
+            if (withdrawAccount != null)
+            {
+                if (withdrawAccount.AccountTypeId == 2)
+                {
+                    withdrawAccount.Balance -= amount;
+                }
+                else
+                {
+                    withdrawAccount.Balance = withdrawAccount.Balance <= amount ? 0 : withdrawAccount.Balance - amount;
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

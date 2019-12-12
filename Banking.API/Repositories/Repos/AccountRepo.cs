@@ -11,7 +11,7 @@ namespace Banking.API.Repositories.Repos
     public class AccountRepo : IAccountRepo
     {
         // use the DbContext 
-        private AppDbContext _context;
+        private readonly AppDbContext _context;
 
         public AccountRepo(AppDbContext ctx)
         {
