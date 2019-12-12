@@ -45,9 +45,11 @@ namespace Banking.Tests.DataObjects
         public async Task<bool> CloseAccount(int Id)
         {
             var accToClose = _accounts.FirstOrDefault(e => e.Id == Id);
+            await Task.Delay(10);
             if (accToClose != null)
             {
                 _accounts.Remove(accToClose);
+                return true;
             }
             return false;
         }
