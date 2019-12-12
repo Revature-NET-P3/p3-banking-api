@@ -97,14 +97,10 @@ namespace Banking.API.Repositories.Repos
         }
 
         // if user id exists, and not null, return all user accounts. Else return false.
-        public async Task<bool> GetAllAccountsByUserId(int UserId)
+        public async Task<IEnumerable<Account>> GetAllAccountsByUserId(int UserId)
         {
             var account = await _context.Accounts.Where(e => e.UserId == UserId).ToListAsync();
-            if (account != null)
-            {
-                return true;
-            }
-            return false;
+            return account;
         }
 
         // check if user id and account type id are not null and compare if account exits.

@@ -58,14 +58,11 @@ namespace Banking.Tests.DataObjects
         }
 
         // used for testing Get All Account method.
-        public async Task<bool> GetAllAccountsByUserId(int UserId)
+        public async Task<IEnumerable<Account>> GetAllAccountsByUserId(int UserId)
         {
             var account = _accounts.Where(e => e.UserId == UserId).ToList();
-            if (account != null)
-            {
-                return true;
-            }
-            return false;
+            await Task.Delay(10);
+            return account;
         }
 
         // used for testing Get All Account by User ID and Account Type method.

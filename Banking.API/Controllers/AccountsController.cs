@@ -38,8 +38,7 @@ namespace Banking.API.Controllers
             {
                 IEnumerable<Account> result = null;
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}", id.ToString()));
-                // TODO: Update following functionality:
-                // result = await _repo?.GetAllAccountsByUserId(id) ?? null;
+                result = await _repo?.GetAllAccountsByUserId(id) ?? null;
 
                 // Check if returned list has any elements.
                 if (result == null || result?.Count() < 1)
