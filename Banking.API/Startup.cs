@@ -13,6 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Banking.API.Repositories.Interfaces;
+using Banking.API.Repositories.Repos;
+using Banking.API.Repositories;
 
 namespace Banking.API
 {
@@ -46,6 +49,10 @@ namespace Banking.API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
                 };
         });
+
+            //services.AddTransient<IAccountTypeRepo, AccountTypeRepo>();
+            //services.AddTransient<IAccountRepo, AccountRepo>();
+
             services.AddControllers();
         }
 

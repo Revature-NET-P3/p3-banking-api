@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Banking.API.Models;
-//TODO: Add import for repo
 using Banking.API.Repositories.Interfaces;
 using Banking.API.Repositories.Repos;
 
@@ -16,12 +15,13 @@ namespace Banking.API.Controllers
     [ApiController]
     public class TransferablesController : ControllerBase
     {
-        //private readonly IAccountRepo _repo; //access to account
+        //private readonly IAccountRepo _repoAccount; //access to account
+       //private readonly IAccountTypeRepo _repoAccountType;
         private readonly ILogger<TransferablesController> _logger;
 
         public TransferablesController(ILogger<TransferablesController> logger) //TODO: add dependency injection of repo
         {
-            //_repo = repo;
+            //_repoAccountType = repoType;
             _logger = logger;
         }
 
@@ -193,8 +193,8 @@ namespace Banking.API.Controllers
         /// <summary>
         /// Retrieves account that matches id passed and withdraw from the account by decreasing the balance
         /// </summary>
-        /// <param name="idFrom">The id of account from where we will transfer from</param>
-        /// <param name="idTo">The id of destination account we want to transfer into</param>
+        /// <param name="idFrom">The id of account from where user will transfer from</param>
+        /// <param name="idTo">The id of destination account where user wants to transfer into</param>
         /// <param name="amount">the amount to withdraw from account to transfer from</param>
         [HttpPut("transfer/{idFrom}/{idTo}/{amount}")]
         public async Task<ActionResult> Transfer(int idFrom, int idTo, decimal amount)
@@ -263,6 +263,55 @@ namespace Banking.API.Controllers
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected Error in deposit of account with ID: {0}", idFrom.ToString());
+                return StatusCode(500, e);
+            }
+        }
+
+        // DELETE: api/Transferables
+        /// <summary>
+        /// Close the account with a specific id, changes flag is IsOpen to false
+        /// </summary>
+        /// <param name="id">The id of the account you wish to delete</param>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult> Close(int id)
+        {
+            _logger?.LogInformation(string.Format("Attempting to Close account with id: {0}", id.ToString()));
+
+            try
+            {
+                //TODO: Add Logic to find account and update its balance
+                Account acctFound = null;
+
+                foreach (var acct in accountList) //for testing
+                {
+                    if (acct.Id == id)
+                    {
+                        acctFound = acct;
+                    }
+                }
+
+                if (acctFound == null) //check if account exist
+                {
+                    _logger?.LogWarning(string.Format("DELETE request failed, No Account found with ID: {0}", id.ToString()));
+                    return NotFound(id);
+                }
+                if (acctFound.Balance != 0) //make sure account has no funds and also has no overdraft
+                {
+                    _logger?.LogWarning(string.Format("DELETE request failed, Balance is not 0. Account with ID: {0}", id.ToString()));
+                    return StatusCode(400);
+                }
+
+                //TODO: call deposit repo to change flag to is closed
+                accountList.Remove(acctFound);
+
+                _logger?.LogInformation("DELETE Success Closed account with ID: {0}", id.ToString());
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger?.LogError(e, "Unexpected Error in Delete account with ID: {0}", id.ToString());
                 return StatusCode(500, e);
             }
         }
