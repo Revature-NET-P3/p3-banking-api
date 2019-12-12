@@ -112,14 +112,10 @@ namespace Banking.API.Repositories.Repos
         }
 
         // retruns a single account based on the account ID.
-        public async Task<bool> GetAccountDetailsByAccountID(int Id)
+        public async Task<Account> GetAccountDetailsByAccountID(int Id)
         {
             var accDetails = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
-            if (accDetails != null)
-            {
-                return true;
-            }
-            return false;
+            return accDetails;
         }
 
         // return the list of transactions for a particluar account ID.

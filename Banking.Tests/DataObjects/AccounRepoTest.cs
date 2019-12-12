@@ -47,14 +47,11 @@ namespace Banking.Tests.DataObjects
         }
 
         // used for testing Account Details method.
-        public async Task<bool> GetAccountDetailsByAccountID(int Id)
+        public async Task<Account> GetAccountDetailsByAccountID(int Id)
         {
             var accDetails = _accounts.Where(e => e.Id == Id).Single();
-            if (accDetails != null)
-            {
-                return true;
-            }
-            return false;
+            await Task.Delay(10);
+            return accDetails;
         }
 
         // used for testing Get All Account method.

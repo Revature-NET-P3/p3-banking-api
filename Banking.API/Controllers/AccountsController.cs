@@ -105,7 +105,7 @@ namespace Banking.API.Controllers
             {
                 Account result = null;
                 _logger?.LogInformation(string.Format("Start GetAccountDetailsByAccountID: {0}", id.ToString()));
-                // result = await _repo?.GetAccountDetailsByAccountID(id) ?? null;
+                result = await _repo?.GetAccountDetailsByAccountID(id) ?? null;
                 
                 // Check if return object was null.
                 if (result == null)
