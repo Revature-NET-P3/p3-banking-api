@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Banking.API.Models;
 //TODO: Add import for repo
+using Banking.API.Repositories.Interfaces;
+using Banking.API.Repositories.Repos;
 
 namespace Banking.API.Controllers
 {
@@ -14,7 +16,7 @@ namespace Banking.API.Controllers
     [ApiController]
     public class TransferablesController : ControllerBase
     {
-        // private readonly IAccount _repo; //access to account
+        //private readonly IAccountRepo _repo; //access to account
         private readonly ILogger<TransferablesController> _logger;
 
         public TransferablesController(ILogger<TransferablesController> logger) //TODO: add dependency injection of repo
@@ -58,14 +60,6 @@ namespace Banking.API.Controllers
             return accountList;
         }
 
-        // GET: api/Transferables/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-
         // POST: api/Transferables
         /// <summary>
         /// method creates/opens a new bank account. Stores it in the accounts table. 
@@ -76,6 +70,8 @@ namespace Banking.API.Controllers
         {
             //TODO: add logic to create/store account using repo
             accountList.Add(newAccount);
+            //await _repo.OpenAccount(newAccount);
+
             return Ok();
         }
 
@@ -116,7 +112,7 @@ namespace Banking.API.Controllers
                     return NotFound(id);
                 }
 
-                acctFound.Balance += amount;
+                acctFound.Balance += amount; //TODO: call deposit repo
                 _logger?.LogInformation("PUT Success deposited into account with ID: {0}", id.ToString());
                 return NoContent();
             }
@@ -172,26 +168,16 @@ namespace Banking.API.Controllers
                     }
                     else//if business account do penalty calculation
                     {
-                        decimal overdraftAmount;
-                        if (acctFound.Balance <= 0) //true means the business account already been overdrafted or no funds
-                        {
-                            //penalty on the whole withdraw amount
-                            overdraftAmount = amount * .25M; //TODO: Hard Coded interest rate of, replace with AccountType interest rate
-                            acctFound.Balance -= overdraftAmount + amount; //subtract overdraftamount plus the amount so total is still negative
-                        }
-                        else //first time account overdrafts
-                        {
-                            //user has funds in account, penalty only on the amount that user overdrafted on
-                            overdraftAmount = (acctFound.Balance - amount) * .25M; //TODO: Hard Coded interest rate of, replace with AccountType interest rate
-                            acctFound.Balance = (acctFound.Balance - amount) + overdraftAmount; //total should reflect negative balance
-                        }
-                        _logger?.LogInformation("PUT Success withdrew from account but with overdraft, account ID: {0}", id.ToString());
+                        decimal totalAmount = CalculatePenalty(acctFound.Balance, amount, .25M);
+
+                        acctFound.Balance -= totalAmount;
+                        _logger?.LogInformation("PUT Success withdrew from account but with overdraft, account ID: {0} totalAmount: {1}", id.ToString(), totalAmount.ToString());
                         return NoContent();
                     }
                 }
 
                 //no overdraft
-                acctFound.Balance -= amount;
+                acctFound.Balance -= amount; //TODO: call withdraw repo
                 _logger?.LogInformation("PUT Success withdrew from account with ID: {0}", id.ToString());
                 return NoContent();
             }
@@ -202,7 +188,6 @@ namespace Banking.API.Controllers
             }
 
         }
-
 
         // PUT: api/Transferables/transfer/5/9/10.50
         /// <summary>
@@ -218,7 +203,7 @@ namespace Banking.API.Controllers
 
             try
             {
-                //TODO: Add Logic to find account and update its balance
+                //TODO: Add logic to get account with specific id
                 Account acctFoundFrom = null;
                 Account acctFoundTo = null;
                 if (amount < 0) //make sure transfer amount is positive
@@ -245,9 +230,34 @@ namespace Banking.API.Controllers
                     return NotFound(idFrom);
                 }
 
-                acctFoundFrom.Balance -= amount;
+          
+
+                //check if withdraw from origin account will cause in an overdraft
+                if ((acctFoundFrom.Balance - amount) < 0)
+                {
+                    //check if it is checking account return an error
+                    if (acctFoundFrom.AccountTypeId == 1) //TODO: 1 hard coded to represent checking account replace with actual AccountType check
+                    {
+                        _logger?.LogWarning(string.Format("PUT request failed, transfer would cause overdraft from Checking Account with ID: {0}", idFrom.ToString()));
+                        return StatusCode(400);
+                    }
+                    else//if account is business account do penalty calculation
+                    {
+                        decimal totalAmount = CalculatePenalty(acctFoundFrom.Balance, amount, .25M);
+
+
+                        acctFoundFrom.Balance -= totalAmount; //TODO: add transfer repo
+                        acctFoundTo.Balance += amount;
+
+                        _logger?.LogInformation("PUT Success, transfer FromAccount ID: {0} ToAccount ID: {1} Amount: {2} TotalAmount {3}", idFrom.ToString(), idTo.ToString(), amount.ToString(), totalAmount.ToString());
+                        return NoContent();
+                    }
+                }
+
+                acctFoundFrom.Balance -= amount; //TODO: add transfer repo
                 acctFoundTo.Balance += amount;
-                _logger?.LogInformation("PUT Success deposited into account with ID: {0}", idTo.ToString());
+
+                _logger?.LogInformation("PUT Success, transfer FromAccount ID: {0} ToAccount ID: {1} Amount: {2}", idFrom.ToString(),idTo.ToString(), amount.ToString());
                 return NoContent();
             }
             catch (Exception e)
@@ -255,6 +265,27 @@ namespace Banking.API.Controllers
                 _logger?.LogError(e, "Unexpected Error in deposit of account with ID: {0}", idFrom.ToString());
                 return StatusCode(500, e);
             }
+        }
+
+        private decimal CalculatePenalty(decimal balance, decimal amount, decimal interestRate)
+        {
+            decimal totalPenalty;
+
+            decimal overdraftAmount;
+            if (balance <= 0) //true means the business account already been overdrafted or no funds
+            {
+                //penalty on the whole withdraw amount
+                overdraftAmount = amount * interestRate; //TODO: Hard Coded interest rate of, replace with AccountType interest rate
+                totalPenalty = overdraftAmount + amount;
+            }
+            else //first time account overdrafts
+            {
+                //user has funds in account, penalty only on the amount that user overdrafted on
+                overdraftAmount = (amount - balance) * interestRate; //TODO: Hard Coded interest rate of, replace with AccountType interest rate
+                totalPenalty = (amount - balance) + overdraftAmount + balance; //total should reflect negative balance
+            }
+
+            return totalPenalty;
         }
     }
 }
