@@ -20,14 +20,23 @@ namespace Banking.API.Controllers
         {
             _context = context;
         }
-
+        /// <summary>
+        /// This method will be work to create user.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>New User</returns>
+        // POST: api/CreateUser
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(User user)
         {
             await _context.CreateUser(user);
             return true;
         }
-
+        /// <summary>
+        /// This method wil return the user by Id. 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Return User</returns>
         // GET: api/User/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
@@ -41,14 +50,25 @@ namespace Banking.API.Controllers
 
             return user;
         }
-
+        /// <summary>
+        /// This method will work to update user.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>Updated User</returns>
+        // POST: api/UpdateUser
         [HttpPost]
         public async Task<ActionResult<bool>> UpdateUser(User user)
         {
             await _context.UpdateUser(user);
             return true;
         }
-
+        /// <summary>
+        /// This method will work for verifying the login.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="passhash"></param>
+        /// <returns>Login Session</returns>
+        // POST: api/VerifyLogin
         [HttpPost]
         public async Task<ActionResult<bool>> VerifyLogin(string username, string passhash)
         {
