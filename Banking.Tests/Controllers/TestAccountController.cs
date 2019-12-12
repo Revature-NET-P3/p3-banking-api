@@ -22,7 +22,7 @@ namespace Banking.Tests.Controllers
             testLogger = new Mock<ILogger<AccountsController>>();
 
             // Generate testAccountRepo.
-            testAccountRepo = new object();
+            testAccountRepo = new AccounRepoTest();
 
             // Generate controller
             // TODO: Update following injection when functionality completed:
