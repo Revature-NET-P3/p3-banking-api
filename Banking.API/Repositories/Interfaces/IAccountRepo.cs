@@ -8,17 +8,15 @@ namespace Banking.API.Repositories.Interfaces
 {
     public interface IAccountRepo
     {
-        Account OpenAccount(Account account);
-        Account Deposit(int Id, decimal amount);
-        Account Withdraw(int Id, decimal amount);
-        Account TransferBetweenAccounts(int Id, decimal amount, int toAccId);
-        Account PayLoan(int Id, decimal amount);
-        Account CloseAccount(int Id);
-        Account GetAllAccountsByUserId(int UserId);
-        Account GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId);
-        Account GetAccountDetailsByAccountID(int Id);
-        Account GetTransactionDetailsByAccountID(int Id);
-        //IEnumerable<Account> GetAllAccount();
-        //Account UpdateAccount(Account accountChanges);
+        public Task<Account> OpenAccount(Account account);
+        public Task<bool> Deposit(int Id, decimal amount);
+        public Task<bool> Withdraw(int Id, decimal amount);
+        public Task<bool> TransferBetweenAccounts(int Id, decimal fromAmount, int toAccId, decimal toAmount);
+        public Task<bool> PayLoan(int Id, decimal amount);
+        public Task<bool> CloseAccount(int Id);
+        public Task<IEnumerable<Account>> GetAllAccountsByUserId(int UserId);
+        public Task<IEnumerable<Account>> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId);
+        public Task<Account> GetAccountDetailsByAccountID(int Id);
+        public Task<IEnumerable<Transaction>> GetTransactionDetailsByAccountID(int Id);
     }
 }

@@ -9,22 +9,8 @@ using System.Threading.Tasks;
 
 namespace Banking.API.Repositories.Repos
 {
-    public class AccountRepo //: IAccountRepo
+    public class AccountRepo : IAccountRepo
     {
-        //private List<Account> _accounts;
-
-        // create a mock data for test purposes.
-        //public AccountRepo()
-        //{
-        //    _accounts = new List<Account>()
-        //    {
-        //        new Account() { Id = 1, UserId = 10, AccountTypeId = 3, Balance = 200, CreateDate = DateTime.Now },
-        //        new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
-        //        new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
-        //        new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 500, CreateDate = DateTime.Now }
-        //    };
-        //}
-
         // use the DbContext 
         private AppDbContext _context;
 
@@ -38,7 +24,6 @@ namespace Banking.API.Repositories.Repos
         {
             var account = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             return account;
-            // return _accounts.FirstOrDefault(e => e.Id == Id); for mock data
         }
 
         //get list of accounts belonging to a user.
@@ -51,9 +36,9 @@ namespace Banking.API.Repositories.Repos
 
 
         //add a new account
-        public Account OpenAccount(Account account)
+        public async Task<Account> OpenAccount(Account account)
         {
-            var accounts = _context.Accounts.FirstOrDefault(e => e.Id == account.Id);
+            var accounts = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == account.Id);
             _context.Add(account);
             _context.SaveChanges();
             return accounts;
@@ -77,12 +62,12 @@ namespace Banking.API.Repositories.Repos
         }
 
         // method to transfer between accounts
-        public async Task<bool> TransferBetweenAccounts(int Id, decimal amount, int toAccId)
+        public async Task<bool> TransferBetweenAccounts(int Id, decimal fromAmount, int toAccId, decimal toAmount)
         {
             var transferAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             var accountTo = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == toAccId);
-            transferAccount.Balance -= amount;
-            accountTo.Balance += amount;
+            transferAccount.Balance -= fromAmount;
+            accountTo.Balance += toAmount;
             _context.Update(transferAccount);
             _context.Update(accountTo);
             await _context.SaveChangesAsync();
@@ -105,54 +90,40 @@ namespace Banking.API.Repositories.Repos
             var accToClose = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
             if (accToClose != null)
             {
-                _context.Remove(accToClose);
+                accToClose.IsClosed = true;
+                _context.Update(accToClose);
+                await _context.SaveChangesAsync();
             }
-            return true;
+            return false;
         }
 
         // if user id exists, and not null, return all user accounts. Else return false.
-        public async Task<bool> GetAllAccountsByUserId(int UserId)
+        public async Task<IEnumerable<Account>> GetAllAccountsByUserId(int UserId)
         {
             var account = await _context.Accounts.Where(e => e.UserId == UserId).ToListAsync();
-            if (account != null)
-            {
-                return true;
-            }
-            return false;
+            return account;
         }
 
         // check if user id and account type id are not null and compare if account exits.
         // if parameters are empty, return false.
-        public async Task<bool> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
+        public async Task<IEnumerable<Account>> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
         {
             var accByType = await _context.Accounts.Where(e => e.UserId == UserId && e.AccountTypeId == AccountTypeId).ToListAsync();
-            if (accByType != null)
-            {
-                return true;
-            }
-            return false;
+            return accByType;
         }
 
         // retruns a single account based on the account ID.
-        public async Task<bool> GetAccountDetailsByAccountID(int Id)
+        public async Task<Account> GetAccountDetailsByAccountID(int Id)
         {
             var accDetails = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
-            if (accDetails != null)
-            {
-                return true;
-            }
-            return false;
+            return accDetails;
         }
 
         // return the list of transactions for a particluar account ID.
-        public async Task<bool> GetTransactionDetailsByAccountID(int Id)
+        public async Task<IEnumerable<Transaction>> GetTransactionDetailsByAccountID(int Id)
         {
             var transactionDetails = await _context.Transactions.Where(e => e.Id == Id).ToListAsync();
-            if (transactionDetails != null)
-            {
-                return true;
-            }
-            return false;
+            return transactionDetails;
         }
     }
 }
