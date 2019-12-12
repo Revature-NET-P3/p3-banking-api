@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Banking.API.Repositories.Repos
 {
-    public class AccountRepo : IAccountRepo
+    public class AccountRepo //: IAccountRepo
     {
         //private List<Account> _accounts;
 
@@ -43,98 +43,115 @@ namespace Banking.API.Repositories.Repos
         //get list of accounts belonging to a user.
         public Task<List<Account>> GetUserAccounts(int UserId)
         {
-            var account = _context.Accounts.Where(e => e.UserId == UserId).ToList();
+            var account = _context.Accounts.Where(e => e.UserId == UserId).ToListAsync();
+            // return _accounts.FirstOrDefault(e => e.Id == Id); for mock data
             return account;
         }
 
+
         //add a new account
-        public async Task<bool> AddAccount(Account account)
+        public Account OpenAccount(Account account)
         {
-            var accounts = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == account.Id);
+            var accounts = _context.Accounts.FirstOrDefault(e => e.Id == account.Id);
             _context.Add(account);
             _context.SaveChanges();
             return accounts;
         }
 
-        Account IAccountRepo.GetUserAccounts(int UserId)
+        // deposit account method
+        public async Task<bool> Deposit(int Id, decimal amount)
         {
-            var account = _context.Accounts.Where(e => e.UserId == UserId).ToList();
-            return account;
+            var depositAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+            depositAccount.Balance += amount;
+            _context.Update(depositAccount);
+            return true;
         }
 
-        Account IAccountRepo.AddAccount(Account account)
+        // withdraw account method
+        public async Task<bool> Withdraw(int Id, decimal amount)
         {
-            throw new NotImplementedException();
+            var withdrawAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+            withdrawAccount.Balance -= amount;
+            return true;
         }
 
-        public Account OpenAccount(Account account)
+        // method to transfer between accounts
+        public async Task<bool> TransferBetweenAccounts(int Id, decimal amount, int toAccId)
         {
-            throw new NotImplementedException();
+            var transferAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+            var accountTo = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == toAccId);
+            transferAccount.Balance -= amount;
+            accountTo.Balance += amount;
+            _context.Update(transferAccount);
+            _context.Update(accountTo);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Account Deposit(int Id, decimal amount)
+        // method to pay loan
+        public async Task<bool> PayLoan(int Id, decimal amount)
         {
-            throw new NotImplementedException();
+            var loanAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+            loanAccount.Balance -= amount;
+            _context.Update(loanAccount);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Account Withdraw(int Id, decimal amount)
+        // if account id exists and not null, then close account
+        public async Task<bool> CloseAccount(int Id)
         {
-            throw new NotImplementedException();
+            var accToClose = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
+            if (accToClose != null)
+            {
+                _context.Remove(accToClose);
+            }
+            return true;
         }
 
-        public Account TransferBetweenAccounts(int Id, decimal amount, int toAccId)
+        // if user id exists, and not null, return all user accounts. Else return false.
+        public async Task<bool> GetAllAccountsByUserId(int UserId)
         {
-            throw new NotImplementedException();
+            var account = await _context.Accounts.Where(e => e.UserId == UserId).ToListAsync();
+            if (account != null)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public Account PayLoan(int Id, decimal amount)
+        // check if user id and account type id are not null and compare if account exits.
+        // if parameters are empty, return false.
+        public async Task<bool> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
         {
-            throw new NotImplementedException();
+            var accByType = await _context.Accounts.Where(e => e.UserId == UserId && e.AccountTypeId == AccountTypeId).ToListAsync();
+            if (accByType != null)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public Account CloseAccount(int Id)
+        // retruns a single account based on the account ID.
+        public async Task<bool> GetAccountDetailsByAccountID(int Id)
         {
-            throw new NotImplementedException();
+            var accDetails = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
+            if (accDetails != null)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public Account GetAllAccountsByUserId(int UserId)
+        // return the list of transactions for a particluar account ID.
+        public async Task<bool> GetTransactionDetailsByAccountID(int Id)
         {
-            throw new NotImplementedException();
+            var transactionDetails = await _context.Transactions.Where(e => e.Id == Id).ToListAsync();
+            if (transactionDetails != null)
+            {
+                return true;
+            }
+            return false;
         }
-
-        public Account GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Account GetAccountDetailsByAccountID(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Account GetTransactionDetailsByAccountID(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        //delete an account by id
-        //public async Account DeleteAccount(int Id)
-        //{
-        //    Account account = _accounts.FirstorDefaultAsync(e => e.Id == Id);
-        //    if (account != null)
-        //    {
-        //        _accounts.Remove(account);
-        //    }
-        //    return await account;
-        //}
-
-        //update account
-        // will determin if this is needed.
-        //public async Task<bool> UpdateAccount(Account accountChanges)
-        //{
-        //    account.Id = _accounts.FirstOrDefaultAsync(e => e.Id == accountChanges.Id);
-        //    _accounts.Update(account);
-        //    return await account;
-        //}
     }
 }
