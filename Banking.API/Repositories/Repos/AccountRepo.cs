@@ -61,12 +61,12 @@ namespace Banking.API.Repositories.Repos
         }
 
         // method to transfer between accounts
-        public async Task<bool> TransferBetweenAccounts(int Id, decimal amount, int toAccId)
+        public async Task<bool> TransferBetweenAccounts(int Id, decimal fromAmount, int toAccId, decimal toAmount)
         {
             var transferAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             var accountTo = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == toAccId);
-            transferAccount.Balance -= amount;
-            accountTo.Balance += amount;
+            transferAccount.Balance -= fromAmount;
+            accountTo.Balance += toAmount;
             _context.Update(transferAccount);
             _context.Update(accountTo);
             await _context.SaveChangesAsync();

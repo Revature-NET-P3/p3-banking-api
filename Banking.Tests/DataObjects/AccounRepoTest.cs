@@ -111,12 +111,12 @@ namespace Banking.Tests.DataObjects
 
 
         // used for testing Transfer method.
-        public async Task<bool> TransferBetweenAccounts(int Id, decimal amount, int toAccId)
+        public async Task<bool> TransferBetweenAccounts(int Id, decimal fromAmount, int toAccId, decimal toAmount)
         {
             var transferAccount = _accounts.FirstOrDefault(e => e.Id == Id);
             var accountTo = _accounts.FirstOrDefault(m => m.Id == toAccId);
-            transferAccount.Balance -= amount;
-            accountTo.Balance += amount;
+            transferAccount.Balance -= fromAmount;
+            accountTo.Balance += toAmount;
             return true;
         }
 
