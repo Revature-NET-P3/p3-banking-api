@@ -63,6 +63,19 @@ namespace Banking.API
 
             //Add Logging
             services.AddLogging();
+
+            // CORS Policy definition.
+            services.AddCors(options =>
+            {
+                options.AddPolicy("DefaultPolicy",
+                    builder =>
+                    builder.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://p3ng.azurewebsites.net", "https://p3ng.azurewebsites.net")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            }
+            );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +89,8 @@ namespace Banking.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("DefaultPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();

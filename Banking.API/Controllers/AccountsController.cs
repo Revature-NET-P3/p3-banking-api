@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Banking.API.Models;
 using Banking.API.Repositories.Repos;
 using Banking.API.Repositories.Interfaces;
+using Microsoft.AspNetCore.Cors;
 
 namespace Banking.API.Controllers
 {
