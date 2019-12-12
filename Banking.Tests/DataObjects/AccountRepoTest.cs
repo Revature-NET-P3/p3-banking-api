@@ -58,8 +58,13 @@ namespace Banking.Tests.DataObjects
         public async Task<bool> Deposit(int Id, decimal amount)
         {
             var depositAccount = _accounts.FirstOrDefault(e => e.Id == Id);
-            depositAccount.Balance += amount;
-            return true;
+            await Task.Delay(10);
+            if (depositAccount != null)
+            {
+                depositAccount.Balance += amount;
+                return true;
+            }
+            return false;
         }
 
         // used for testing Account Details method.
