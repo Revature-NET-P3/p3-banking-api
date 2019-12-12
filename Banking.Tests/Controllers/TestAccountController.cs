@@ -115,11 +115,15 @@ namespace Banking.Tests.Controllers
             // Arrange.
 
             // Act.
-            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(1, 1);
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(10, 3);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
+
+            Assert.AreEqual(responseValue[0].Id, 1);
         }
 
         [TestMethod]
@@ -130,51 +134,45 @@ namespace Banking.Tests.Controllers
             // Act.
             var response = testAccountController.GetAllAccountsByUserIDAndTypeID(-1, 1);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1);
         }
 
         [TestMethod]
         public void GetAllAccountsByUserIDAndAccountType_InvalidID()
         {
             // Arrange.
-            // TODO: set user credientals to different user.
 
             // Act.
-            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(3, 1);
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(30, 2);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
-        }
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-        [TestMethod]
-        public void GetAllAccountsByUserIDAndAccountType_ValidIDAndNoValidAccounts()
-        {
-            // Arrange.
-
-            // Act.
-            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(2, 4);
-            response.Wait(1);
-            var resultValue = response.Result.Value;
-
-            // Assert.
+            Assert.AreNotEqual(responseValue[0].Id, 1);
         }
 
         [TestMethod]
         public void GetAllAccountsByUserIDAndAccountType_ServerError()
         {
             // Arrange.
-            // TODO: redefine testAccountRepo to be empty.
-            // TODO: reinject testAccountController.
+            testAccountRepo = new AccountRepoTest(false);
+            testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserIDAndTypeID(1, 1);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult));
+            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500);
         }
 
         [TestMethod]
