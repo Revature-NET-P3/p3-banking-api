@@ -2,6 +2,7 @@
 using Banking.API.Models;
 using Banking.Tests.DataObjects;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Banking.Tests
     public class Test_AccountTypeController
 
     {
+        NullLogger<AccountTypesApiController> testLogger = new NullLogger<AccountTypesApiController>();
 
         List<AccountType> test_accountTypes = new List<AccountType>()
             {
@@ -32,7 +34,7 @@ namespace Banking.Tests
         {
             #region Assign
             AccountTypeRepo testRepo = new AccountTypeRepo();
-            AccountTypesApiController testController = new AccountTypesApiController(testRepo);
+            AccountTypesApiController testController = new AccountTypesApiController(testRepo, testLogger);
             #endregion
 
             #region Act
@@ -57,7 +59,7 @@ namespace Banking.Tests
         {
             #region Assign
             AccountTypeRepo testRepo = new AccountTypeRepo();
-            AccountTypesApiController testController = new AccountTypesApiController(testRepo);
+            AccountTypesApiController testController = new AccountTypesApiController(testRepo, testLogger);
             #endregion
 
             foreach (AccountType element in test_accountTypes)
@@ -80,7 +82,7 @@ namespace Banking.Tests
         {
             #region Assign
             AccountTypeRepo testRepo = new AccountTypeRepo();
-            AccountTypesApiController testController = new AccountTypesApiController(testRepo);
+            AccountTypesApiController testController = new AccountTypesApiController(testRepo, testLogger);
             #endregion
 
             foreach (AccountType element in test_accountTypes)
@@ -103,7 +105,7 @@ namespace Banking.Tests
         {
             #region Assign
             AccountTypeRepo testRepo = new AccountTypeRepo();
-            AccountTypesApiController testController = new AccountTypesApiController(testRepo);
+            AccountTypesApiController testController = new AccountTypesApiController(testRepo, testLogger);
             #endregion
 
             #region Act
