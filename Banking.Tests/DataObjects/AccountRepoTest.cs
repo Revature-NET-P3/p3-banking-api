@@ -90,7 +90,7 @@ namespace Banking.Tests.DataObjects
         {
             var transactionDetails = _transactions.Where(e => e.AccountId == Id).ToList();
             await Task.Delay(10);
-            return null;
+            return transactionDetails;
         }
 
         // used for testing Open Account method.
