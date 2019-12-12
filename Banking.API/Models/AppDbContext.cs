@@ -9,10 +9,7 @@ namespace Banking.API.Models
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         { }
-        protected override void OnConfiguring(DbContextOptionsBuilder options) =>
-                options.UseSqlServer(@"data source = .\SQLEXPRESS;initial catalog = Project3DB;integrated security =True;MultipleActiveResultSets=True;");
-         
-        
+                
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountType> AccountTypes { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
