@@ -8,22 +8,8 @@ using System.Threading.Tasks;
 
 namespace Banking.API.Repositories.Repos
 {
-    public class AccountRepo //: IAccountRepo
+    public class AccountRepo : IAccountRepo
     {
-        //private List<Account> _accounts;
-
-        // create a mock data for test purposes.
-        //public AccountRepo()
-        //{
-        //    _accounts = new List<Account>()
-        //    {
-        //        new Account() { Id = 1, UserId = 10, AccountTypeId = 3, Balance = 200, CreateDate = DateTime.Now },
-        //        new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
-        //        new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
-        //        new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 500, CreateDate = DateTime.Now }
-        //    };
-        //}
-
         // use the DbContext 
         private AppDbContext _context;
 
@@ -37,7 +23,6 @@ namespace Banking.API.Repositories.Repos
         {
             var account = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             return account;
-            // return _accounts.FirstOrDefault(e => e.Id == Id); for mock data
         }
 
         //get list of accounts belonging to a user.
@@ -50,9 +35,9 @@ namespace Banking.API.Repositories.Repos
 
 
         //add a new account
-        public Account OpenAccount(Account account)
+        public async Task<Account> OpenAccount(Account account)
         {
-            var accounts = _context.Accounts.FirstOrDefault(e => e.Id == account.Id);
+            var accounts = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == account.Id);
             _context.Add(account);
             _context.SaveChanges();
             return accounts;
