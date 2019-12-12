@@ -30,16 +30,9 @@ namespace Banking.API.Controllers
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(User user)
         {
-            var result =await _context.CreateUser(user);
-            //return result;
-            if (result == true)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            bool result = await _context.CreateUser(user);
+            return true;
+         
 
 
         }
@@ -71,19 +64,10 @@ namespace Banking.API.Controllers
         [HttpPut("Updateuser")]
         public async Task<ActionResult<bool>> UpdateUser(User user)
         {
-            var result = await _context.UpdateUser(user);
-           // return result;
-            if (result == true)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+             await _context.UpdateUser(user);
+            return true;
 
-
-
+            
         }
       /// <summary>
       /// 
@@ -97,15 +81,7 @@ namespace Banking.API.Controllers
         {
          
            var result =  await _context.VerifyLogin(username, passhash);
-            if (result == true)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-           
+            return result;
                    
 
         }
