@@ -183,9 +183,13 @@ namespace Banking.Tests.Controllers
             // Act.
             var response = testAccountController.GetAccountDetailsByAccountID(1);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            var responseValue = (responseResult as OkObjectResult).Value as Account;
+            Assert.AreEqual(responseValue.Balance, 200);
+
         }
 
         [TestMethod]
@@ -196,13 +200,15 @@ namespace Banking.Tests.Controllers
             // Act.
             var response = testAccountController.GetAccountDetailsByAccountID(-1);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1);
         }
 
         [TestMethod]
-        public void GetAccountDetailsByAccountID_InvalidUser()
+        public void GetAccountDetailsByAccountID_InvalidAccount()
         {
             // Arrange.
             // TODO: set user credientals to different user.
@@ -213,21 +219,29 @@ namespace Banking.Tests.Controllers
             var resultValue = response.Result.Value;
 
             // Assert.
+            var responseResult = response.Result.Result;
+
+            // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            var responseValue = (responseResult as OkObjectResult).Value as Account;
+            Assert.AreNotEqual(responseValue.Balance, 200);
         }
 
         [TestMethod]
         public void GetAccountDetailsByAccountID_ServerError()
         {
             // Arrange.
-            // TODO: redefine testAccountRepo to be empty.
-            // TODO: reinject testAccountController.
+            testAccountRepo = new AccountRepoTest(false);
+            testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
 
             // Act.
             var response = testAccountController.GetAccountDetailsByAccountID(1);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult));
+            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500);
         }
 
         [TestMethod]
