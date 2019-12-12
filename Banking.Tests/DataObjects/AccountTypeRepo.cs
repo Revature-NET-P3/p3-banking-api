@@ -10,11 +10,14 @@ namespace Banking.Tests.DataObjects
 {
     public class AccountTypeRepo : IAccountTypeRepo
     {
-        private AppDbContext _context;
+        List<AccountType> accountTypes;
 
-        public AccountTypeRepo(AppDbContext ctx)
+        public AccountTypeRepo()
         {
-            _context = ctx;
+            List<AccountType> accountTypes = new List<AccountType>()
+            {
+                new AccountType {}
+            };
         }
 
         public async Task<List<AccountType>> GetAccountTypes()

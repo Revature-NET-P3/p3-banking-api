@@ -9,7 +9,7 @@ namespace Banking.API.Models
     public class Account
     {
         [Required, Key]
-        public int Id {get; set;}
+        public int Id { get; set; }
         [Required]
         public int UserId { get; set; }
         [Required]
@@ -17,6 +17,8 @@ namespace Banking.API.Models
         [Required]
         public decimal Balance { get; set; }
         [Required]
-        public DateTime CreateDate {get; set;}
+        public DateTime CreateDate { get; set; }
+        [Required]
+        public bool IsClosed { get; set; }
     }
 }
