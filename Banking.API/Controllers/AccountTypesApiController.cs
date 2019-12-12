@@ -15,7 +15,6 @@ namespace Banking.API.Controllers
     [EnableCors("DefaultPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class AccountTypesApiController : ControllerBase
     {
         private readonly IAccountTypeRepo _context;
