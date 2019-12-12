@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 using Banking.API.Controllers;
+using Banking.Tests.DataObjects;
 
 namespace Banking.Tests.Controllers
 {
@@ -10,7 +11,7 @@ namespace Banking.Tests.Controllers
     public class TestAccountController
     {
         // TODO: Swap out object for Test AccountRepo, when implemented.
-        object testAccountRepo = null;
+        AccounRepoTest testAccountRepo = null;
         Mock<ILogger<AccountsController>> testLogger = null;
         AccountsController testAccountController = null;
 
@@ -212,7 +213,6 @@ namespace Banking.Tests.Controllers
             // Assert.
         }
 
-
         [TestMethod]
         public void GetAccountDetailsByAccountID_ServerError()
         {
@@ -277,48 +277,6 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(1);
-            response.Wait(1);
-            var resultValue = response.Result.Value;
-
-            // Assert.
-        }
-
-        [TestMethod]
-        public void GetAllTransactionTypes_ValidData()
-        {
-            // Arrange.
-
-            // Act.
-            var response = testAccountController.GetAllTransactionTypes();
-            response.Wait(1);
-            var resultValue = response.Result.Value;
-
-            // Assert.
-        }
-
-        [TestMethod]
-        public void GetAllTransactionTypes_EmptyDataSet()
-        {
-            // Arrange.
-            // TODO: Empty TransactionType list in repository testAccountRepo.
-
-            // Act.
-            var response = testAccountController.GetAllTransactionTypes();
-            response.Wait(1);
-            var resultValue = response.Result.Value;
-
-            // Assert.
-        }
-
-        [TestMethod]
-        public void GetAllTransactionTypes_ServerError()
-        {
-            // Arrange.
-            // TODO: redefine testAccountRepo to be empty.
-            // TODO: reinject testAccountController.
-
-            // Act.
-            var response = testAccountController.GetAllTransactionTypes();
             response.Wait(1);
             var resultValue = response.Result.Value;
 
