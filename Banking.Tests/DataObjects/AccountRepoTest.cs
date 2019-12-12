@@ -121,8 +121,13 @@ namespace Banking.Tests.DataObjects
         public async Task<bool> PayLoan(int Id, decimal amount)
         {
             var loanAccount = _accounts.FirstOrDefault(e => e.Id == Id);
-            loanAccount.Balance -= amount;
-            return true;
+            await Task.Delay(10);
+            if (loanAccount != null)
+            {
+                loanAccount.Balance = loanAccount.Balance <= amount ? 0 : loanAccount.Balance - amount;
+                return true;
+            }
+            return false;
         }
 
 
