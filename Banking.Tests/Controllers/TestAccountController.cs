@@ -26,7 +26,7 @@ namespace Banking.Tests.Controllers
 
             // Generate controller
             // TODO: Update following injection when functionality completed:
-            //testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
+            testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
         }
         
         [TestCleanup]
