@@ -117,6 +117,21 @@ namespace Banking.Tests.DataObjects
             }
         }
 
+        public async Task<bool> Overdraft(int Id, decimal amount)
+        {
+            _transactions.Add(
+            new Transaction()
+            {
+                Id = _transactions.Max(tr => tr.Id) + 1,
+                Ammount = amount,
+                AccountId = Id,
+                TimeStamp = DateTime.Now,
+            });
+            await Task.Delay(10);
+
+            return true;
+        }
+
         // used for testing Pay Loan method.
         public async Task<bool> PayLoan(int Id, decimal amount)
         {
@@ -128,6 +143,12 @@ namespace Banking.Tests.DataObjects
                 return true;
             }
             return false;
+        }
+
+        public async Task<bool> SaveChanges()
+        {
+            await Task.Delay(10);
+            return true;
         }
 
 
