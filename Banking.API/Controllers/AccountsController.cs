@@ -72,8 +72,7 @@ namespace Banking.API.Controllers
             {
                 IEnumerable<Account> result = null;
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}, Filtered by TypeID: {1}", id.ToString(), typeid.ToString()));
-                // TODO: Update following functionality:
-                // result = await _repo?.GetAllAccountsByUserIdAndAccountType(id, typeid) ?? null;
+                result = await _repo?.GetAllAccountsByUserIdAndAccountType(id, typeid) ?? null;
 
                 if (result == null || result?.Count() < 1)
                 {

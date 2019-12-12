@@ -105,14 +105,10 @@ namespace Banking.API.Repositories.Repos
 
         // check if user id and account type id are not null and compare if account exits.
         // if parameters are empty, return false.
-        public async Task<bool> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
+        public async Task<IEnumerable<Account>> GetAllAccountsByUserIdAndAccountType(int UserId, int AccountTypeId)
         {
             var accByType = await _context.Accounts.Where(e => e.UserId == UserId && e.AccountTypeId == AccountTypeId).ToListAsync();
-            if (accByType != null)
-            {
-                return true;
-            }
-            return false;
+            return accByType;
         }
 
         // retruns a single account based on the account ID.
