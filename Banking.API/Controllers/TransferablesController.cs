@@ -8,11 +8,13 @@ using Microsoft.Extensions.Logging;
 using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
 using Banking.API.Repositories.Repos;
+using Microsoft.AspNetCore.Cors;
 
 namespace Banking.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("DefaultPolicy")]
     public class TransferablesController : ControllerBase
     {
         private readonly IAccountRepo _repoAccount; //access to account
