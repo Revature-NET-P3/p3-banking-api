@@ -47,6 +47,9 @@ namespace Banking.API
                 };
         });
             services.AddControllers();
+
+            //Add Logging
+            services.AddLogging();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

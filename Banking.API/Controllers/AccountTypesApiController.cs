@@ -6,6 +6,7 @@ using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Banking.API.Controllers
 {
@@ -14,6 +15,7 @@ namespace Banking.API.Controllers
     public class AccountTypesApiController : ControllerBase
     {
         private readonly IAccountTypeRepo _context;
+        //private readonly ILogger<AccountTypesApiController> _logger;
 
         public AccountTypesApiController(IAccountTypeRepo ctx)
         {
@@ -27,7 +29,7 @@ namespace Banking.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AccountType>> GetAccountById(int id)
+        public async Task<ActionResult<AccountType>> GetAccountTypeById(int id)
         {
             AccountType accType = await _context.GetAccountTypeById(id);
             if(accType is null) { return NotFound(); }
@@ -35,7 +37,7 @@ namespace Banking.API.Controllers
         }
 
         [HttpGet("byName/{name}")]
-        public async Task<ActionResult<AccountType>> GetAccountByName(string name)
+        public async Task<ActionResult<AccountType>> GetAccountTypeByName(string name)
         {
             AccountType accType = await _context.GetAccountTypeByName(name);
             if (accType is null) { return NotFound(); }

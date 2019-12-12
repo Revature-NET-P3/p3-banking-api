@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Banking.API.Repositories.Interfaces;
 using Banking.API.Models;
 
-namespace Banking.API.Repositories
+namespace Banking.Tests.DataObjects
 {
     public class UserRepo : IUserRepo
     {
