@@ -252,9 +252,12 @@ namespace Banking.Tests.Controllers
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(1);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            var responseValue = (responseResult as OkObjectResult).Value as List<Transaction>;
+            Assert.AreEqual(responseValue[0].Ammount, 200);
         }
 
         [TestMethod]
@@ -265,9 +268,11 @@ namespace Banking.Tests.Controllers
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(-1);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1);
         }
 
         [TestMethod]
@@ -277,26 +282,31 @@ namespace Banking.Tests.Controllers
             // TODO: set user credientals to different user.
 
             // Act.
-            var response = testAccountController.GetTransactionDetailsByAccountID(3);
+            var response = testAccountController.GetTransactionDetailsByAccountID(2);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            var responseValue = (responseResult as OkObjectResult).Value as List<Transaction>;
+            Assert.AreNotEqual(responseValue[0].Ammount, 200);
         }
 
         [TestMethod]
         public void GetTransactionDetailsByAccountID_ServerError()
         {
             // Arrange.
-            // TODO: redefine testAccountRepo to be empty.
-            // TODO: reinject testAccountController.
+            testAccountRepo = new AccountRepoTest(false);
+            testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
 
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(1);
             response.Wait(1);
-            var resultValue = response.Result.Value;
+            var responseResult = response.Result.Result;
 
             // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult));
+            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500);
         }
     }
 }
