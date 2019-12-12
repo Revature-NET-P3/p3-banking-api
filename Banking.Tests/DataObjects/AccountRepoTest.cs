@@ -24,7 +24,7 @@ namespace Banking.Tests.DataObjects
                     new Account() { Id = 1, UserId = 10, AccountTypeId = 3, Balance = 200, CreateDate = DateTime.Now },
                     new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
                     new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
-                    new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 500, CreateDate = DateTime.Now }
+                    new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 600, CreateDate = DateTime.Now }
                 };
             }
         }
@@ -52,7 +52,7 @@ namespace Banking.Tests.DataObjects
         // used for testing Account Details method.
         public async Task<Account> GetAccountDetailsByAccountID(int Id)
         {
-            var accDetails = _accounts.Where(e => e.Id == Id).Single();
+            var accDetails = _accounts.Where(e => e.Id == Id).SingleOrDefault();
             await Task.Delay(10);
             return accDetails;
         }
