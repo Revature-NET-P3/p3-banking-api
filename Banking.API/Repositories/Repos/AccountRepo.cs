@@ -89,9 +89,11 @@ namespace Banking.API.Repositories.Repos
             var accToClose = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
             if (accToClose != null)
             {
-                _context.Remove(accToClose);
+                accToClose.IsClosed = true;
+                _context.Update(accToClose);
+                await _context.SaveChangesAsync();
             }
-            return true;
+            return false;
         }
 
         // if user id exists, and not null, return all user accounts. Else return false.
