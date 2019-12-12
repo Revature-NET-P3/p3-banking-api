@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Banking.API.Repositories.Interfaces;
 using Banking.API.Repositories.Repos;
 using Banking.API.Repositories;
+using Banking.API.Models;
 
 namespace Banking.API
 {
@@ -31,6 +33,10 @@ namespace Banking.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,13 +56,27 @@ namespace Banking.API
                 };
         });
 
-            //services.AddTransient<IAccountTypeRepo, AccountTypeRepo>();
-            //services.AddTransient<IAccountRepo, AccountRepo>();
+            services.AddTransient<IAccountTypeRepo, AccountTypeRepo>();
+            services.AddTransient<IAccountRepo, AccountRepo>();
+            services.AddTransient<IUserRepo, UserRepo>();
 
             services.AddControllers();
 
             //Add Logging
             services.AddLogging();
+
+            // CORS Policy definition.
+            services.AddCors(options =>
+            {
+                options.AddPolicy("DefaultPolicy",
+                    builder =>
+                    builder.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://p3ng.azurewebsites.net", "https://p3ng.azurewebsites.net")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            }
+            );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +90,8 @@ namespace Banking.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("DefaultPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
