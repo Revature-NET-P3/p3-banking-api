@@ -56,8 +56,9 @@ namespace Banking.API
                 };
         });
 
-            //services.AddTransient<IAccountTypeRepo, AccountTypeRepo>();
-            //services.AddTransient<IAccountRepo, AccountRepo>();
+            services.AddTransient<IAccountTypeRepo, AccountTypeRepo>();
+            services.AddTransient<IAccountRepo, AccountRepo>();
+            services.AddTransient<IUserRepo, UserRepo>();
 
             services.AddControllers();
 
