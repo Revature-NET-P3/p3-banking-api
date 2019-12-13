@@ -25,7 +25,8 @@ namespace Banking.Tests.DataObjects
                     new Account() { Id = 1, UserId = 10, AccountTypeId = 3, Balance = 200, CreateDate = DateTime.Now },
                     new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
                     new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
-                    new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 600, CreateDate = DateTime.Now }
+                    new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 600, CreateDate = DateTime.Now },
+                    new Account() { Id = 5, UserId = 30, AccountTypeId = 1, Balance = 0, CreateDate = DateTime.Now, IsClosed = false }
                 };
 
                 _transactions = new List<Transaction>()
@@ -48,7 +49,7 @@ namespace Banking.Tests.DataObjects
             await Task.Delay(10);
             if (accToClose != null)
             {
-                _accounts.Remove(accToClose);
+                accToClose.IsClosed = true;
                 return true;
             }
             return false;
