@@ -28,40 +28,6 @@ namespace Banking.API.Controllers
             _logger = logger;
         }
 
-        private static List<Account> accountList = new List<Account>() //JUST for testing
-            {
-                new Account
-                {
-                    Id = 10,
-                    AccountTypeId = 1,
-                    Balance = 15.50M,
-                    UserId = 60,
-                    CreateDate = DateTime.Today
-                },
-                new Account
-                {
-                    Id = 20,
-                    AccountTypeId = 1,
-                    Balance = 15.50M,
-                    UserId = 60,
-                    CreateDate = DateTime.Today
-                },
-                new Account
-                {
-                     Id = 30,
-                    AccountTypeId = 2,
-                    Balance = 15.50M,
-                    UserId = 60,
-                    CreateDate = DateTime.Today
-                }
-            };
-
-        // GET: api/Transferables
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Account>>> Get() //For Testing API
-        {
-            return accountList;
-        }
 
         // POST: api/Transferables
         /// <summary>
@@ -76,7 +42,7 @@ namespace Banking.API.Controllers
             //TODO: add logic to create/store account using repo
             try
             {
-                accountList.Add(newAccount);
+                //accountList.Add(newAccount);
                 await _repoAccount.OpenAccount(newAccount);
                 await _repoAccount.SaveChanges();
 
@@ -114,13 +80,6 @@ namespace Banking.API.Controllers
                     return StatusCode(400);
                 }
 
-                foreach (var acct in accountList) //for testing
-                {
-                    if (acct.Id == id)
-                    {
-                        acctFound = acct;
-                    }
-                }
 
                 acctFound = await _repoAccount.GetAccountDetailsByAccountID(id);
 
@@ -161,14 +120,6 @@ namespace Banking.API.Controllers
                 {
                     _logger?.LogWarning(string.Format("PUT request failed, Amount passed is less than 0.  Account with ID: {0}", id.ToString()));
                     return StatusCode(400);
-                }
-
-                foreach (var acct in accountList) //for testing
-                {
-                    if (acct.Id == id)
-                    {
-                        acctFound = acct;
-                    }
                 }
 
                 acctFound = await _repoAccount.GetAccountDetailsByAccountID(id);
@@ -246,18 +197,6 @@ namespace Banking.API.Controllers
                     return StatusCode(400);
                 }
 
-                foreach (var acct in accountList) //for testing
-                {
-                    if (acct.Id == idFrom)
-                    {
-                        acctFoundFrom = acct;
-                    }
-                    if (acct.Id == idTo)
-                    {
-                        acctFoundTo = acct;
-                    }
-                }
-
                 //check to see account with id exist
                 acctFoundFrom = await _repoAccount.GetAccountDetailsByAccountID(idFrom);
                 acctFoundTo = await _repoAccount.GetAccountDetailsByAccountID(idTo);
@@ -327,14 +266,6 @@ namespace Banking.API.Controllers
             {
                 //TODO: Add Logic to find account and update its balance
                 Account acctFound = null;
-
-                foreach (var acct in accountList) //for testing
-                {
-                    if (acct.Id == id)
-                    {
-                        acctFound = acct;
-                    }
-                }
 
                 acctFound = await _repoAccount.GetAccountDetailsByAccountID(id);
 
