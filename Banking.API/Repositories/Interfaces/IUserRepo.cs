@@ -8,9 +8,9 @@ namespace Banking.API.Repositories.Interfaces
 {
     public interface IUserRepo
     {
-        public Task<bool> CreateUser(User user);
-        public Task<User> ViewById(int id);
-        public Task<bool> UpdateUser(User user);
-        public Task<bool> VerifyLogin(string username, string passhash);
+        Task<bool> CreateUser(User user);
+        Task<User> ViewById(int id);
+        Task<bool> UpdateUser(User user);
+        Task<bool> VerifyLogin(string username, string passhash);
     }
 }
