@@ -45,14 +45,14 @@ namespace Banking.Tests.Controllers
 
             // Act. 
             var response = testAccountController.GetAllAccountsByUserID(10);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-            Assert.AreEqual(responseValue.Count, 1);
+            Assert.AreEqual(responseValue.Count, 1, string.Format("Return List count NOT equal to {0}", 1.ToString()));
         }
 
         [TestMethod]
@@ -62,13 +62,12 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserID(-1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult));
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1);
-
+            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
         }
 
         [TestMethod]
@@ -78,14 +77,14 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserID(30);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-            Assert.AreNotEqual(responseValue.Count, 1);
+            Assert.AreNotEqual(responseValue.Count, 1, string.Format("Return List count is equal to {0}", 1.ToString()));
         }
 
         [TestMethod]
@@ -97,12 +96,12 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserID(10);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult));
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500);
+            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
 
         [TestMethod]
@@ -112,7 +111,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserIDAndTypeID(10, 3);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
@@ -129,7 +128,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserIDAndTypeID(-1, 1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
@@ -144,7 +143,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserIDAndTypeID(30, 2);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
@@ -163,7 +162,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserIDAndTypeID(1, 1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
@@ -178,7 +177,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAccountDetailsByAccountID(1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
@@ -195,7 +194,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAccountDetailsByAccountID(-1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
@@ -210,7 +209,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAccountDetailsByAccountID(3);
-            response.Wait(1);
+            response.Wait(500);
             var resultValue = response.Result.Value;
 
             // Assert.
@@ -231,7 +230,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAccountDetailsByAccountID(1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
@@ -246,7 +245,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
@@ -262,7 +261,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(-1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
@@ -277,7 +276,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(2);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
@@ -295,7 +294,7 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
