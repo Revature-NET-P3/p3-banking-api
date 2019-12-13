@@ -13,7 +13,6 @@ namespace Banking.Tests.Controllers
     [TestClass]
     public class TestAccountController
     {
-        // TODO: Swap out object for Test AccountRepo, when implemented.
         AccountRepoTest testAccountRepo = null;
         Mock<ILogger<AccountsController>> testLogger = null;
         AccountsController testAccountController = null;
@@ -28,10 +27,9 @@ namespace Banking.Tests.Controllers
             testAccountRepo = new AccountRepoTest();
 
             // Generate controller
-            // TODO: Update following injection when functionality completed:
             testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
         }
-        
+
         [TestCleanup]
         public void AfterEachTest()
         {
@@ -41,20 +39,23 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetAllAccountsByUserID_ValidID()
+        [DataRow(10,1)]
+        [DataRow(20,1)]
+        [DataRow(30,2)]
+        public void GetAllAccountsByUserID_ValidID(int userID, int accountCount)
         {
             // Arrange.
 
             // Act. 
-            var response = testAccountController.GetAllAccountsByUserID(10);
-            response.Wait(1);
+            var response = testAccountController.GetAllAccountsByUserID(userID);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-            Assert.AreEqual(responseValue.Count, 1);
+            Assert.AreEqual(responseValue.Count, accountCount, string.Format("Return List count NOT equal to {0}", accountCount.ToString()));
         }
 
         [TestMethod]
@@ -64,30 +65,32 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserID(-1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult));
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1);
-
+            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
         }
 
         [TestMethod]
-        public void GetAllAccountsByUserID_InvalidID()
+        [DataRow(10, 2)]
+        [DataRow(20, 2)]
+        [DataRow(30, 1)]
+        public void GetAllAccountsByUserID_InvalidID(int userID, int accountCount)
         {
             // Arrange.
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserID(30);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-            Assert.AreNotEqual(responseValue.Count, 1);
+            Assert.AreNotEqual(responseValue.Count, userID, string.Format("Return List count is equal to {0}", accountCount.ToString()));
         }
 
         [TestMethod]
@@ -97,33 +100,34 @@ namespace Banking.Tests.Controllers
             testAccountRepo = new AccountRepoTest(false);
             testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
 
-            // TODO: reinject testAccountController.
-
             // Act.
             var response = testAccountController.GetAllAccountsByUserID(10);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult));
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500);
+            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
 
         [TestMethod]
-        public void GetAllAccountsByUserIDAndAccountType_ValidIDAndValidAccountType()
+        [DataRow(10,1,3)]
+        [DataRow(20,2,1)]
+        [DataRow(30,3,2)]
+        public void GetAllAccountsByUserIDAndAccountType_ValidIDAndValidAccountType(int userID, int accountID, int accountTypeID)
         {
             // Arrange.
 
             // Act.
-            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(10, 3);
-            response.Wait(1);
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(userID, accountTypeID);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-            Assert.AreEqual(responseValue[0].Id, 1);
+            Assert.AreEqual(responseValue[0].Id, accountID, string.Format("Account ID NOT equal to {0}", accountID.ToString()));
         }
 
         [TestMethod]
@@ -133,29 +137,32 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserIDAndTypeID(-1, 1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult));
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1);
+            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
         }
 
         [TestMethod]
-        public void GetAllAccountsByUserIDAndAccountType_InvalidID()
+        [DataRow(10, 2, 3)]
+        [DataRow(20, 3, 1)]
+        [DataRow(30, 1, 2)]
+        public void GetAllAccountsByUserIDAndAccountType_InvalidID(int userID, int accountID, int accountTypeID)
         {
             // Arrange.
 
             // Act.
-            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(30, 2);
-            response.Wait(1);
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(userID, accountTypeID);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-            Assert.AreNotEqual(responseValue[0].Id, 1);
+            Assert.AreNotEqual(responseValue[0].Id, accountID, string.Format("Return account ID equal to {0}", accountID.ToString()));
         }
 
         [TestMethod]
@@ -167,28 +174,32 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserIDAndTypeID(1, 1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult));
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500);
+            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
 
         [TestMethod]
-        public void GetAccountDetailsByAccountID_ValidID()
+        [DataRow(1,200.0f)]
+        [DataRow(2,300.0f)]
+        [DataRow(3,500.0f)]
+        [DataRow(4,600.0f)]
+        public void GetAccountDetailsByAccountID_ValidID(int accountID, float amount)
         {
             // Arrange.
 
             // Act.
-            var response = testAccountController.GetAccountDetailsByAccountID(1);
-            response.Wait(1);
+            var response = testAccountController.GetAccountDetailsByAccountID(accountID);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as Account;
-            Assert.AreEqual(responseValue.Balance, 200);
+            Assert.AreEqual(responseValue.Balance, (decimal)amount, string.Format("Return account amount NOT equal to {0}", amount.ToString()));
 
         }
 
@@ -199,32 +210,32 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAccountDetailsByAccountID(-1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult));
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1);
+            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
         }
 
         [TestMethod]
-        public void GetAccountDetailsByAccountID_InvalidAccount()
+        [DataRow(1, 400.0f)]
+        [DataRow(2, 200.0f)]
+        [DataRow(3, 300.0f)]
+        [DataRow(4, 500.0f)]
+        public void GetAccountDetailsByAccountID_InvalidAccount(int accountID, float amount)
         {
             // Arrange.
-            // TODO: set user credientals to different user.
 
             // Act.
-            var response = testAccountController.GetAccountDetailsByAccountID(3);
-            response.Wait(1);
-            var resultValue = response.Result.Value;
-
-            // Assert.
+            var response = testAccountController.GetAccountDetailsByAccountID(accountID);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as Account;
-            Assert.AreNotEqual(responseValue.Balance, 200);
+            Assert.AreNotEqual(responseValue.Balance, (decimal)amount, string.Format("Return account amount equal to {0}", amount.ToString()));
         }
 
         [TestMethod]
@@ -236,28 +247,32 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetAccountDetailsByAccountID(1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult));
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500);
+            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
 
         [TestMethod]
-        public void GetTransactionDetailsByAccountID_ValidID()
+        [DataRow(1, 200.0f)]
+        [DataRow(2, 300.0f)]
+        [DataRow(3, 200.0f)]
+        [DataRow(4, 600.0f)]
+        public void GetTransactionDetailsByAccountID_ValidID(int accountID, float amount)
         {
             // Arrange.
 
             // Act.
-            var response = testAccountController.GetTransactionDetailsByAccountID(1);
-            response.Wait(1);
+            var response = testAccountController.GetTransactionDetailsByAccountID(accountID);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Transaction>;
-            Assert.AreEqual(responseValue[0].Ammount, 200);
+            Assert.AreEqual(responseValue[0].Ammount, (decimal)amount, string.Format("Return transaction amount NOT equal to {0}", amount.ToString()));
         }
 
         [TestMethod]
@@ -267,29 +282,32 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(-1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult));
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1);
+            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
         }
 
         [TestMethod]
-        public void GetTransactionDetailsByAccountID_InvalidUser()
+        [DataRow(1, 600.0f)]
+        [DataRow(2, 200.0f)]
+        [DataRow(3, 300.0f)]
+        [DataRow(4, 200.0f)]
+        public void GetTransactionDetailsByAccountID_InvalidAccountID(int accountID, float amount)
         {
             // Arrange.
-            // TODO: set user credientals to different user.
 
             // Act.
-            var response = testAccountController.GetTransactionDetailsByAccountID(2);
-            response.Wait(1);
+            var response = testAccountController.GetTransactionDetailsByAccountID(accountID);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Transaction>;
-            Assert.AreNotEqual(responseValue[0].Ammount, 200);
+            Assert.AreNotEqual(responseValue[0].Ammount, (decimal)amount, string.Format("Return Transaction Amount equal to {0}", amount.ToString()));
         }
 
         [TestMethod]
@@ -301,12 +319,12 @@ namespace Banking.Tests.Controllers
 
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(1);
-            response.Wait(1);
+            response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult));
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500);
+            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
     }
 }
