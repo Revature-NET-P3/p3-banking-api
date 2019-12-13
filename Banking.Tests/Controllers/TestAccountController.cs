@@ -39,12 +39,15 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetAllAccountsByUserID_ValidID()
+        [DataRow(10,1)]
+        [DataRow(20,1)]
+        [DataRow(30,2)]
+        public void GetAllAccountsByUserID_ValidID(int userID, int accountCount)
         {
             // Arrange.
 
             // Act. 
-            var response = testAccountController.GetAllAccountsByUserID(10);
+            var response = testAccountController.GetAllAccountsByUserID(userID);
             response.Wait(500);
             var responseResult = response.Result.Result;
 
@@ -52,7 +55,7 @@ namespace Banking.Tests.Controllers
             Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-            Assert.AreEqual(responseValue.Count, 1, string.Format("Return List count NOT equal to {0}", 1.ToString()));
+            Assert.AreEqual(responseValue.Count, accountCount, string.Format("Return List count NOT equal to {0}", accountCount.ToString()));
         }
 
         [TestMethod]
