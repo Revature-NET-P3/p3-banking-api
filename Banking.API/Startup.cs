@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Banking.API.Repositories.Interfaces;
 using Banking.API.Repositories.Repos;
 using Banking.API.Repositories;
+using Banking.API.Models;
 
 namespace Banking.API
 {
@@ -31,32 +33,42 @@ namespace Banking.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
+                options.Authority = $"https://{Configuration["Auth0:Domain"]}/";
+                options.Audience = Configuration["Auth0:Audience"];
+            });
 
-                    ValidIssuer = "http://localhost:5000",
-                    ValidAudience = "http://localhost:5000",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
-                };
-        });
-
-            //services.AddTransient<IAccountTypeRepo, AccountTypeRepo>();
-            //services.AddTransient<IAccountRepo, AccountRepo>();
+            services.AddTransient<IAccountTypeRepo, AccountTypeRepo>();
+            services.AddTransient<IAccountRepo, AccountRepo>();
+            services.AddTransient<IUserRepo, UserRepo>();
 
             services.AddControllers();
 
             //Add Logging
             services.AddLogging();
+
+            // CORS Policy definition.
+            services.AddCors(options =>
+            {
+                options.AddPolicy("DefaultPolicy",
+                    builder =>
+                    builder.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://p3ng.azurewebsites.net", "https://p3ng.azurewebsites.net",
+                    "35.167.74.121", "35.166.202.113", "35.160.3.103", "54.183.64.135", "54.67.77.38", "54.67.15.170", "54.183.204.205", "35.171.156.124", "18.233.90.226", "3.211.189.167")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            }
+            );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +82,8 @@ namespace Banking.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("DefaultPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
