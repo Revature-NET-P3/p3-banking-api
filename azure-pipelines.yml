@@ -28,7 +28,7 @@ stages:
          containerRegistry: 'p3bankacr_connection'
          repository: 'api-release'
          command: 'build'
-         Dockerfile: 'Banking.API/Dockerfile'
+         Dockerfile: 'Dockerfile'
          tags: |
           $(tag)
           release
