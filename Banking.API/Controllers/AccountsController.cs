@@ -212,5 +212,53 @@ namespace Banking.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, WTF);
             }
         }
+
+        // GET: api/Accounts/transactions/4/
+        [HttpGet("transactions/{id}/{limit}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountIDDateRange(int id, int limit)
+        {
+            try
+            {
+                IEnumerable<Transaction> result = null;
+                _logger?.LogInformation(string.Format("Start GetTransactionDetailsByAccountID: {0}", id.ToString()));
+                result = await _repo?.GetTransactionDetailsByAccountID(id) ?? null;
+
+                // Check if return object was null.
+                if (result == null || result?.Count() < 1)
+                {
+                    // Return NotFound 404 response if no account detail was found for ID.
+                    _logger?.LogWarning(string.Format("Account #{0} transaction details not found!", id.ToString()));
+                    return NotFound(id);
+                }
+
+                // Get limit range.
+                var query = result.OrderBy(t => t.TimeStamp);
+                if (query.Count() > 0)
+                {
+                    // Reduce result list to new query.
+                    result = query.Skip(Math.Max(0, query.Count() - limit)).ToList();
+                }
+                else
+                {
+                    // Return NotFound 404 response if no account detail was found for ID.
+                    _logger?.LogWarning(string.Format("Account #{0} transaction details limit result empty!", id.ToString()));
+                    return NotFound(id);
+                }
+
+                // Return list of transactions found.
+                _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
+                return Ok(result.ToList());
+            }
+            catch (Exception WTF)
+            {
+                // Return Internal Server Error 500 on general exception.
+                _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
+                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+            }
+        }
     }
 }
