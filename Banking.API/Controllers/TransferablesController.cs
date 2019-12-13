@@ -14,52 +14,20 @@ namespace Banking.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("DefaultPolicy")]
     public class TransferablesController : ControllerBase
     {
-        //private readonly IAccountRepo _repoAccount; //access to account
-       //private readonly IAccountTypeRepo _repoAccountType;
+        private readonly IAccountRepo _repoAccount; //access to account
+        private readonly IAccountTypeRepo _repoAccountType;
         private readonly ILogger<TransferablesController> _logger;
 
-        public TransferablesController(ILogger<TransferablesController> logger) //TODO: add dependency injection of repo
+        public TransferablesController(IAccountRepo repoAccount, IAccountTypeRepo repoType, ILogger<TransferablesController> logger) //TODO: add dependency injection of repo
         {
-            //_repoAccountType = repoType;
+            _repoAccountType = repoType;
+            _repoAccount = repoAccount;
             _logger = logger;
         }
 
-        private static List<Account> accountList = new List<Account>() //JUST for testing
-            {
-                new Account
-                {
-                    Id = 10,
-                    AccountTypeId = 1,
-                    Balance = 15.50M,
-                    UserId = 60,
-                    CreateDate = DateTime.Today
-                },
-                new Account
-                {
-                    Id = 20,
-                    AccountTypeId = 1,
-                    Balance = 15.50M,
-                    UserId = 60,
-                    CreateDate = DateTime.Today
-                },
-                new Account
-                {
-                     Id = 30,
-                    AccountTypeId = 2,
-                    Balance = 15.50M,
-                    UserId = 60,
-                    CreateDate = DateTime.Today
-                }
-            };
-
-        // GET: api/Transferables
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Account>>> Get() //For Testing API
-        {
-            return accountList;
-        }
 
         // POST: api/Transferables
         /// <summary>
@@ -69,11 +37,24 @@ namespace Banking.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Account>> Post([FromBody] Account newAccount)
         {
-            //TODO: add logic to create/store account using repo
-            accountList.Add(newAccount);
-            //await _repo.OpenAccount(newAccount);
+            _logger?.LogInformation(string.Format("Attempting to Create a new into account with id"));
 
-            return Ok();
+            //TODO: add logic to create/store account using repo
+            try
+            {
+                //accountList.Add(newAccount);
+                await _repoAccount.OpenAccount(newAccount);
+                await _repoAccount.SaveChanges();
+
+                return CreatedAtAction("Post", new { id = newAccount.Id }, newAccount);
+
+               // return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger?.LogError(e, "Unexpected Error in Post new account");
+                return StatusCode(500, e);
+            }
         }
 
         // PUT: api/Transferables/deposit/5/10.50
@@ -99,22 +80,20 @@ namespace Banking.API.Controllers
                     return StatusCode(400);
                 }
 
-                foreach (var acct in accountList) //for testing
-                {
-                    if (acct.Id == id)
-                    {
-                        acctFound = acct;
-                    }
-                }
 
-                if(acctFound == null)
+                acctFound = await _repoAccount.GetAccountDetailsByAccountID(id);
+
+
+                if (acctFound == null)
                 {
                     _logger?.LogWarning(string.Format("PUT request failed, No Account found with ID: {0}", id.ToString()));
                     return NotFound(id);
                 }
 
-                acctFound.Balance += amount; //TODO: call deposit repo
-                _logger?.LogInformation("PUT Success deposited into account with ID: {0}", id.ToString());
+                await _repoAccount.Deposit(acctFound.Id, amount); //TODO: call deposit repo
+                _logger?.LogInformation("PUT Success deposited into account with ID: {0} Amount: {2}", id.ToString(), amount.ToString());
+                await _repoAccount.SaveChanges();
+
                 return NoContent();
             }
             catch (Exception e)
@@ -143,13 +122,7 @@ namespace Banking.API.Controllers
                     return StatusCode(400);
                 }
 
-                foreach (var acct in accountList) //for testing
-                {
-                    if (acct.Id == id)
-                    {
-                        acctFound = acct;
-                    }
-                }
+                acctFound = await _repoAccount.GetAccountDetailsByAccountID(id);
 
                 if (acctFound == null)
                 {
@@ -169,17 +142,27 @@ namespace Banking.API.Controllers
                     }
                     else//if business account do penalty calculation
                     {
-                        decimal totalAmount = CalculatePenalty(acctFound.Balance, amount, .25M);
+                        decimal overdraft = 0;
+                        AccountType acctType = await _repoAccountType.GetAccountTypeById(acctFound.AccountTypeId); //need account type for interset rate
 
-                        acctFound.Balance -= totalAmount;
+                        decimal totalAmount = CalculatePenalty(acctFound.Balance, amount, acctType.InterestRate, ref overdraft);
+
+                        // acctFound.Balance -= totalAmount;
+                        await _repoAccount.Withdraw(acctFound.Id, totalAmount); //TODO: possible problem pass in totalAmount = amount + overdraftPenalty
+                        await _repoAccount.Overdraft(id, overdraft);
                         _logger?.LogInformation("PUT Success withdrew from account but with overdraft, account ID: {0} totalAmount: {1}", id.ToString(), totalAmount.ToString());
+                        await _repoAccount.SaveChanges();
+
                         return NoContent();
                     }
                 }
 
                 //no overdraft
-                acctFound.Balance -= amount; //TODO: call withdraw repo
+                //acctFound.Balance -= amount;
+                await _repoAccount.Withdraw(acctFound.Id, amount); //TODO: call withdraw repo
                 _logger?.LogInformation("PUT Success withdrew from account with ID: {0}", id.ToString());
+                await _repoAccount.SaveChanges();
+
                 return NoContent();
             }
             catch (Exception e)
@@ -207,31 +190,22 @@ namespace Banking.API.Controllers
                 //TODO: Add logic to get account with specific id
                 Account acctFoundFrom = null;
                 Account acctFoundTo = null;
+                AccountType acctType = null;
                 if (amount < 0) //make sure transfer amount is positive
                 {
                     _logger?.LogWarning(string.Format("PUT request failed, Amount passed is less than 0.  From Account with ID: {0}", idFrom.ToString()));
                     return StatusCode(400);
                 }
 
-                foreach (var acct in accountList) //for testing
-                {
-                    if (acct.Id == idFrom)
-                    {
-                        acctFoundFrom = acct;
-                    }
-                    if (acct.Id == idTo)
-                    {
-                        acctFoundTo = acct;
-                    }
-                }
+                //check to see account with id exist
+                acctFoundFrom = await _repoAccount.GetAccountDetailsByAccountID(idFrom);
+                acctFoundTo = await _repoAccount.GetAccountDetailsByAccountID(idTo);
 
                 if (acctFoundFrom == null || acctFoundTo == null)
                 {
                     _logger?.LogWarning(string.Format("PUT request failed, No Account found with ID: {0} or To ID: {1}", idFrom.ToString(), idTo.ToString()));
                     return NotFound(idFrom);
                 }
-
-          
 
                 //check if withdraw from origin account will cause in an overdraft
                 if ((acctFoundFrom.Balance - amount) < 0)
@@ -244,21 +218,29 @@ namespace Banking.API.Controllers
                     }
                     else//if account is business account do penalty calculation
                     {
-                        decimal totalAmount = CalculatePenalty(acctFoundFrom.Balance, amount, .25M);
+                        acctType = await _repoAccountType.GetAccountTypeById(acctFoundFrom.AccountTypeId); //need account type for interset rate
+                        decimal overdraft = 0;
 
+                        decimal totalAmount = CalculatePenalty(acctFoundFrom.Balance, amount, acctType.InterestRate, ref overdraft);
 
-                        acctFoundFrom.Balance -= totalAmount; //TODO: add transfer repo
-                        acctFoundTo.Balance += amount;
+                        //acctFoundFrom.Balance -= totalAmount; 
+                        //acctFoundTo.Balance += amount;
+                        await _repoAccount.TransferBetweenAccounts(acctFoundFrom.Id, totalAmount, acctFoundTo.Id, amount); //TODO: add transfer repo
+                        await _repoAccount.Overdraft(idFrom, overdraft);
 
                         _logger?.LogInformation("PUT Success, transfer FromAccount ID: {0} ToAccount ID: {1} Amount: {2} TotalAmount {3}", idFrom.ToString(), idTo.ToString(), amount.ToString(), totalAmount.ToString());
+                        await _repoAccount.SaveChanges();
+
                         return NoContent();
                     }
                 }
 
-                acctFoundFrom.Balance -= amount; //TODO: add transfer repo
-                acctFoundTo.Balance += amount;
+                //acctFoundFrom.Balance -= amount; //TODO: add transfer repo
+                // acctFoundTo.Balance += amount;
+                await _repoAccount.TransferBetweenAccounts(acctFoundFrom.Id, amount, acctFoundTo.Id, amount); //TODO: add transfer repo
 
                 _logger?.LogInformation("PUT Success, transfer FromAccount ID: {0} ToAccount ID: {1} Amount: {2}", idFrom.ToString(),idTo.ToString(), amount.ToString());
+                await _repoAccount.SaveChanges();
                 return NoContent();
             }
             catch (Exception e)
@@ -270,7 +252,7 @@ namespace Banking.API.Controllers
 
         // DELETE: api/Transferables
         /// <summary>
-        /// Close the account with a specific id, changes flag is IsOpen to false
+        /// Close the account with a specific id, changes flag is IsClose to false
         /// </summary>
         /// <param name="id">The id of the account you wish to delete</param>
         [HttpDelete("{id}")]
@@ -285,13 +267,7 @@ namespace Banking.API.Controllers
                 //TODO: Add Logic to find account and update its balance
                 Account acctFound = null;
 
-                foreach (var acct in accountList) //for testing
-                {
-                    if (acct.Id == id)
-                    {
-                        acctFound = acct;
-                    }
-                }
+                acctFound = await _repoAccount.GetAccountDetailsByAccountID(id);
 
                 if (acctFound == null) //check if account exist
                 {
@@ -305,9 +281,11 @@ namespace Banking.API.Controllers
                 }
 
                 //TODO: call deposit repo to change flag to is closed
-                accountList.Remove(acctFound);
-
+                //accountList.Remove(acctFound);
+                await _repoAccount.CloseAccount(acctFound.Id);
                 _logger?.LogInformation("DELETE Success Closed account with ID: {0}", id.ToString());
+                await _repoAccount.SaveChanges();
+
                 return Ok();
             }
             catch (Exception e)
@@ -317,11 +295,10 @@ namespace Banking.API.Controllers
             }
         }
 
-        private decimal CalculatePenalty(decimal balance, decimal amount, decimal interestRate)
+        private decimal CalculatePenalty(decimal balance, decimal amount, decimal interestRate, ref decimal overdraftAmount)
         {
             decimal totalPenalty;
 
-            decimal overdraftAmount;
             if (balance <= 0) //true means the business account already been overdrafted or no funds
             {
                 //penalty on the whole withdraw amount

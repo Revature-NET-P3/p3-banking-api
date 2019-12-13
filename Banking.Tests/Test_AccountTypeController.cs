@@ -109,19 +109,9 @@ namespace Banking.Tests
             #endregion
 
             #region Act
-            var wait = false;
-            wait = testRepo.AddAccountType(new AccountType { Id = 5, Name = "DankMemes", InterestRate = 69M }).Result;
-            DateTime start = DateTime.Now;
-            while(wait == false)
-            {
-                //wait
-                //TimeOut
-                var timeOutSec = 30;
-                if(DateTime.Now.Subtract(start).TotalSeconds > timeOutSec)
-                {
-                    break;
-                }
-            }
+            var task = testRepo.AddAccountType(new AccountType { Id = 5, Name = "DankMemes", InterestRate = 69M });
+            task.Wait();
+
             AccountType newAccount = testRepo.GetAccountTypeById(5).Result;
             #endregion
 
