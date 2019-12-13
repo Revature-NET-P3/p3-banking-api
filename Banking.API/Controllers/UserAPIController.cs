@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Banking.API.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class UserAPIController : ControllerBase
     {
 
@@ -21,14 +22,26 @@ namespace Banking.API.Controllers
         {
             _context = context;
         }
-
+        /// <summary>
+        /// This method will be work to create user.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>New User</returns>
+        // POST: api/Createuser
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(User user)
         {
-            await _context.CreateUser(user);
+            bool result = await _context.CreateUser(user);
             return true;
-        }
+         
 
+
+        }
+        /// <summary>
+        /// This method wil return the user by Id. 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Return User</returns>
         // GET: api/User/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
@@ -43,18 +56,35 @@ namespace Banking.API.Controllers
             return user;
         }
 
-        [HttpPost]
+        /// <summary>
+        /// This method will work to update user.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>Updated User</returns>
+        // PUT: api/Updateuser/5
+        [HttpPut("Updateuser")]
         public async Task<ActionResult<bool>> UpdateUser(User user)
         {
-            await _context.UpdateUser(user);
+             await _context.UpdateUser(user);
             return true;
-        }
 
-        [HttpPost]
+            
+        }
+      /// <summary>
+      /// 
+      /// </summary>
+      /// <param name="username"></param>
+      /// <param name="passhash"></param>
+      /// <returns></returns>
+        // GET: api/Verifylogin/5
+        [HttpGet("{id}")]
         public async Task<ActionResult<bool>> VerifyLogin(string username, string passhash)
         {
-            await _context.VerifyLogin(username, passhash);
-            return true;
+         
+           var result =  await _context.VerifyLogin(username, passhash);
+            return result;
+                   
+
         }
 
 
