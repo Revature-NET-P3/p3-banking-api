@@ -439,5 +439,26 @@ namespace Banking.Tests.Controllers
             Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
             Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
+
+        [TestMethod]
+        [DataRow(1, 2, "1-1-2000", "1-1-2002", 1, 200.0f)]
+        [DataRow(2, 2, "1-1-2000", "1-1-2001", 1, 300.0f)]
+        [DataRow(3, 2, "1-1-1990", "12-1-1990", 2, 200.0f)]
+        [DataRow(4, 2, "4-4-2002", "6-6-2002", 1, 600.0f)]
+        public void GetTransactionDetailsByAccountIDWithLimitAndDateRange_ValidResponse(int accountID, int limit, string start, string end, int listCount, float amount)
+        {
+            // Arrange.
+
+            // Act.
+            var response = testAccountController.GetTransactionDetailsByAccountIDWithLimitAndDateRange(accountID, limit, start, end);
+            response.Wait(500);
+            var responseResult = response.Result.Result;
+
+            // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
+            var responseValue = (responseResult as OkObjectResult).Value as List<Transaction>;
+            Assert.AreEqual(responseValue.Count, listCount, string.Format("Return list size NOT equal to {0}", listCount.ToString()));
+            Assert.AreEqual(responseValue[0].Ammount, (decimal)amount, string.Format("Return Transaction Amount NOT equal to {0}", amount.ToString()));
+        }
     }
 }
