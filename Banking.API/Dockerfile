@@ -1,15 +1,17 @@
-# Use the standard Microsoft .NET Core container
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
+WORKDIR /app
 
-FROM microsoft/dotnet
+# Copy csproj and restore as distinct layers
+COPY *.csproj ./
+RUN dotnet restore
 
-WORKDIR /bankingapi
-COPY /bankingapi /bankingapi
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
 
-# Expose port 5000 for the Web API traffic
-EXPOSE 5000
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENTRYPOINT ["dotnet", "aspnetapp.dll"]
 
-# Restore the necessary packages
-
-# Build and run the dotnet application from within the container
-
-ENTRYPOINT dotnet banking.api.dll
