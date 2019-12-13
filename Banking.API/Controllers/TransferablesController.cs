@@ -78,6 +78,8 @@ namespace Banking.API.Controllers
             {
                 accountList.Add(newAccount);
                 await _repoAccount.OpenAccount(newAccount);
+                await _repoAccount.SaveChanges();
+
                 return CreatedAtAction("Post", new { id = newAccount.Id }, newAccount);
 
                // return Ok();
@@ -130,7 +132,9 @@ namespace Banking.API.Controllers
                 }
 
                 await _repoAccount.Deposit(acctFound.Id, amount); //TODO: call deposit repo
-                _logger?.LogInformation("PUT Success deposited into account with ID: {0}", id.ToString());
+                _logger?.LogInformation("PUT Success deposited into account with ID: {0} Amount: {2}", id.ToString(), amount.ToString());
+                await _repoAccount.SaveChanges();
+
                 return NoContent();
             }
             catch (Exception e)
@@ -187,12 +191,17 @@ namespace Banking.API.Controllers
                     }
                     else//if business account do penalty calculation
                     {
-                        decimal totalAmount = CalculatePenalty(acctFound.Balance, amount, .25M);
+                        decimal overdraft = 0;
+                        AccountType acctType = await _repoAccountType.GetAccountTypeById(acctFound.AccountTypeId); //need account type for interset rate
+
+                        decimal totalAmount = CalculatePenalty(acctFound.Balance, amount, acctType.InterestRate, ref overdraft);
 
                         // acctFound.Balance -= totalAmount;
-                        await _repoAccount.Withdraw(acctFound.Id, totalAmount); //TODO: call deposit repo
-
+                        await _repoAccount.Withdraw(acctFound.Id, totalAmount); //TODO: possible problem pass in totalAmount = amount + overdraftPenalty
+                        await _repoAccount.Overdraft(id, overdraft);
                         _logger?.LogInformation("PUT Success withdrew from account but with overdraft, account ID: {0} totalAmount: {1}", id.ToString(), totalAmount.ToString());
+                        await _repoAccount.SaveChanges();
+
                         return NoContent();
                     }
                 }
@@ -201,6 +210,8 @@ namespace Banking.API.Controllers
                 //acctFound.Balance -= amount;
                 await _repoAccount.Withdraw(acctFound.Id, amount); //TODO: call withdraw repo
                 _logger?.LogInformation("PUT Success withdrew from account with ID: {0}", id.ToString());
+                await _repoAccount.SaveChanges();
+
                 return NoContent();
             }
             catch (Exception e)
@@ -269,24 +280,28 @@ namespace Banking.API.Controllers
                     else//if account is business account do penalty calculation
                     {
                         acctType = await _repoAccountType.GetAccountTypeById(acctFoundFrom.AccountTypeId); //need account type for interset rate
+                        decimal overdraft = 0;
 
-                        decimal totalAmount = CalculatePenalty(acctFoundFrom.Balance, amount, acctType.InterestRate);
-
+                        decimal totalAmount = CalculatePenalty(acctFoundFrom.Balance, amount, acctType.InterestRate, ref overdraft);
 
                         //acctFoundFrom.Balance -= totalAmount; 
                         //acctFoundTo.Balance += amount;
                         await _repoAccount.TransferBetweenAccounts(acctFoundFrom.Id, totalAmount, acctFoundTo.Id, amount); //TODO: add transfer repo
+                        await _repoAccount.Overdraft(idFrom, overdraft);
+
                         _logger?.LogInformation("PUT Success, transfer FromAccount ID: {0} ToAccount ID: {1} Amount: {2} TotalAmount {3}", idFrom.ToString(), idTo.ToString(), amount.ToString(), totalAmount.ToString());
+                        await _repoAccount.SaveChanges();
+
                         return NoContent();
                     }
                 }
 
-               //acctFoundFrom.Balance -= amount; //TODO: add transfer repo
-               // acctFoundTo.Balance += amount;
-
+                //acctFoundFrom.Balance -= amount; //TODO: add transfer repo
+                // acctFoundTo.Balance += amount;
                 await _repoAccount.TransferBetweenAccounts(acctFoundFrom.Id, amount, acctFoundTo.Id, amount); //TODO: add transfer repo
 
                 _logger?.LogInformation("PUT Success, transfer FromAccount ID: {0} ToAccount ID: {1} Amount: {2}", idFrom.ToString(),idTo.ToString(), amount.ToString());
+                await _repoAccount.SaveChanges();
                 return NoContent();
             }
             catch (Exception e)
@@ -338,6 +353,8 @@ namespace Banking.API.Controllers
                 //accountList.Remove(acctFound);
                 await _repoAccount.CloseAccount(acctFound.Id);
                 _logger?.LogInformation("DELETE Success Closed account with ID: {0}", id.ToString());
+                await _repoAccount.SaveChanges();
+
                 return Ok();
             }
             catch (Exception e)
@@ -347,11 +364,10 @@ namespace Banking.API.Controllers
             }
         }
 
-        private decimal CalculatePenalty(decimal balance, decimal amount, decimal interestRate)
+        private decimal CalculatePenalty(decimal balance, decimal amount, decimal interestRate, ref decimal overdraftAmount)
         {
             decimal totalPenalty;
 
-            decimal overdraftAmount;
             if (balance <= 0) //true means the business account already been overdrafted or no funds
             {
                 //penalty on the whole withdraw amount
