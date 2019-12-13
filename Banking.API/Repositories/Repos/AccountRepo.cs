@@ -14,9 +14,6 @@ namespace Banking.API.Repositories.Repos
         // use the DbContext 
         private readonly AppDbContext _context;
 
-        //create a list to display transactions
-        public static List<Transaction> Transactions = new List<Transaction>();
-
         public AccountRepo(AppDbContext ctx)
         {
             _context = ctx;
@@ -43,7 +40,6 @@ namespace Banking.API.Repositories.Repos
             // return _accounts.FirstOrDefault(e => e.Id == Id); for mock data
             return account;
         }
-
 
         //add a new account
         public async Task<Account> OpenAccount(Account account)
@@ -118,7 +114,6 @@ namespace Banking.API.Repositories.Repos
             return true;
         }
 
-
         // method to transfer between accounts
         public async Task<bool> TransferBetweenAccounts(int Id, decimal fromAmount, int toAccId, decimal toAmount)
         {
@@ -152,7 +147,6 @@ namespace Banking.API.Repositories.Repos
             _context.Update(accountTo);
             return true;
         }
-
 
         // method to pay loan
         public async Task<bool> PayLoan(int Id, decimal amount)
