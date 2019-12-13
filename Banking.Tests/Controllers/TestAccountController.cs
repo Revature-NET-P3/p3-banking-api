@@ -146,12 +146,15 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetAllAccountsByUserIDAndAccountType_InvalidID()
+        [DataRow(10, 2, 3)]
+        [DataRow(20, 3, 1)]
+        [DataRow(30, 1, 2)]
+        public void GetAllAccountsByUserIDAndAccountType_InvalidID(int userID, int accountID, int accountTypeID)
         {
             // Arrange.
 
             // Act.
-            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(30, 2);
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(userID, accountTypeID);
             response.Wait(500);
             var responseResult = response.Result.Result;
 
@@ -159,7 +162,7 @@ namespace Banking.Tests.Controllers
             Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-            Assert.AreNotEqual(responseValue[0].Id, 1, string.Format("Return account ID equal to {0}", (1).ToString()));
+            Assert.AreNotEqual(responseValue[0].Id, accountID, string.Format("Return account ID equal to {0}", accountID.ToString()));
         }
 
         [TestMethod]
@@ -180,19 +183,23 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetAccountDetailsByAccountID_ValidID()
+        [DataRow(1,200.0f)]
+        [DataRow(2,300.0f)]
+        [DataRow(3,500.0f)]
+        [DataRow(4,600.0f)]
+        public void GetAccountDetailsByAccountID_ValidID(int accountID, float amount)
         {
             // Arrange.
 
             // Act.
-            var response = testAccountController.GetAccountDetailsByAccountID(1);
+            var response = testAccountController.GetAccountDetailsByAccountID(accountID);
             response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
             Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as Account;
-            Assert.AreEqual(responseValue.Balance, 200, string.Format("Return account amount NOT equal to {0}", 200.ToString()));
+            Assert.AreEqual(responseValue.Balance, (decimal)amount, string.Format("Return account amount NOT equal to {0}", amount.ToString()));
 
         }
 
@@ -212,22 +219,23 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetAccountDetailsByAccountID_InvalidAccount()
+        [DataRow(1, 400.0f)]
+        [DataRow(2, 200.0f)]
+        [DataRow(3, 300.0f)]
+        [DataRow(4, 500.0f)]
+        public void GetAccountDetailsByAccountID_InvalidAccount(int accountID, float amount)
         {
             // Arrange.
 
             // Act.
-            var response = testAccountController.GetAccountDetailsByAccountID(3);
+            var response = testAccountController.GetAccountDetailsByAccountID(accountID);
             response.Wait(500);
-            var resultValue = response.Result.Value;
-
-            // Assert.
             var responseResult = response.Result.Result;
 
             // Assert.
             Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as Account;
-            Assert.AreNotEqual(responseValue.Balance, 200);
+            Assert.AreNotEqual(responseValue.Balance, (decimal)amount, string.Format("Return account amount equal to {0}", amount.ToString()));
         }
 
         [TestMethod]
