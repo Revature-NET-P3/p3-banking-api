@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Banking.API.Repositories.Interfaces
 {
+    // Account Repo Interface
     public interface IAccountRepo
     {
         public Task<Account> OpenAccount(Account account);
