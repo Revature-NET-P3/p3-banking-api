@@ -34,6 +34,18 @@ namespace Banking.API.Controllers
             }
         }
 
+        public void Transfer(Account input, Account otherInput, decimal ammountToTransfer)
+        {
+            DateTime compareDate = input.CreateDate;
+            compareDate.AddYears(1);
+
+            if (input.AccountTypeId == termDepositId && input.Balance >= ammountToTransfer && compareDate.CompareTo(DateTime.Now) < 0)
+            {
+                input.Balance -= ammountToTransfer;
+                otherInput.Balance += ammountToTransfer;
+            }
+        }
+
         public async Task<IActionResult> AddTermCD(Account addMe)
         {
             if (addMe.AccountTypeId == termDepositId)
