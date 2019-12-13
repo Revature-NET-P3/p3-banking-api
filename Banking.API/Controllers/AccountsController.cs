@@ -237,12 +237,10 @@ namespace Banking.API.Controllers
 
                 // Get limit range.
                 var query = result.OrderBy(t => t.TimeStamp);
-                if (query.Count() > 0)
-                {
-                    // Reduce result list to new query.
-                    result = query.Skip(Math.Max(0, query.Count() - limit)).ToList();
-                }
-                else
+                // Reduce result list to new query.
+                result = query.Skip(Math.Max(0, query.Count() - limit)).ToList();
+                // Check for empty limit list.
+                if (result.Count() < 1)
                 {
                     // Return NotFound 404 response if no account detail was found for ID.
                     _logger?.LogWarning(string.Format("Account #{0} transaction details limit result empty!", id.ToString()));
@@ -287,10 +285,18 @@ namespace Banking.API.Controllers
                 DateTime startDate = Convert.ToDateTime(startdate);
                 DateTime endDate = Convert.ToDateTime(enddate);
                 var query = result.Where(t => DateTime.Compare(startDate, t.TimeStamp) <= 0 && DateTime.Compare(endDate, t.TimeStamp) >= 0).OrderBy(t => t.TimeStamp);
+                // Check query result for empty list.
                 if (query.Count() > 0)
                 {
                     // Reduce result list to new query.
                     result = query.Skip(Math.Max(0, query.Count() - limit)).ToList();
+                    // Check for empty limit list.
+                    if (result.Count() < 1)
+                    {
+                        // Return NotFound 404 response if no account detail was found for ID.
+                        _logger?.LogWarning(string.Format("Account #{0} transaction details limit list, after date range, empty!", id.ToString()));
+                        return NotFound(id);
+                    }
                 }
                 else
                 {
