@@ -291,19 +291,23 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetTransactionDetailsByAccountID_InvalidUser()
+        [DataRow(1, 600.0f)]
+        [DataRow(2, 200.0f)]
+        [DataRow(3, 300.0f)]
+        [DataRow(4, 200.0f)]
+        public void GetTransactionDetailsByAccountID_InvalidAccountID(int accountID, float amount)
         {
             // Arrange.
 
             // Act.
-            var response = testAccountController.GetTransactionDetailsByAccountID(2);
+            var response = testAccountController.GetTransactionDetailsByAccountID(accountID);
             response.Wait(500);
             var responseResult = response.Result.Result;
 
             // Assert.
             Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Transaction>;
-            Assert.AreNotEqual(responseValue[0].Ammount, 200, string.Format("Return Transaction Amount equal to {0}", 200.ToString()));
+            Assert.AreNotEqual(responseValue[0].Ammount, (decimal)amount, string.Format("Return Transaction Amount equal to {0}", amount.ToString()));
         }
 
         [TestMethod]
