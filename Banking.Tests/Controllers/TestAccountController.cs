@@ -403,5 +403,24 @@ namespace Banking.Tests.Controllers
             Assert.AreEqual(responseValue.Count, 1, string.Format("Transaction limit list for Account {0} NOT equal to {1}", accountID.ToString(), limit));
             Assert.AreEqual(responseValue[0].Ammount, (decimal)amount, string.Format("Return Transaction Amount NOT equal to {0}", amount.ToString()));
         }
+
+        [TestMethod]
+        [DataRow(1, 0)]
+        [DataRow(2, 0)]
+        [DataRow(3, 0)]
+        [DataRow(4, 0)]
+        public void GetTransactionDetailsByAccountIDWithLimit_NoResultDateRange(int accountID, int limit)
+        {
+            // Arrange.
+
+            // Act.
+            var response = testAccountController.GetTransactionDetailsByAccountIDWithLimit(accountID, limit);
+            response.Wait(500);
+            var responseResult = response.Result.Result;
+
+            // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 200 OK!");
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, accountID, string.Format("Return value is NOT equal to {0}", accountID.ToString()));
+        }
     }
 }
