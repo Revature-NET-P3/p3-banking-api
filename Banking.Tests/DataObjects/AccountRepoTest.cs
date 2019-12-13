@@ -30,12 +30,12 @@ namespace Banking.Tests.DataObjects
 
                 _transactions = new List<Transaction>()
                 {
-                    new Transaction() { Id = 1, AccountId =2, Ammount = 300, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
-                    new Transaction() { Id = 2, AccountId =1, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
-                    new Transaction() { Id = 3, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
-                    new Transaction() { Id = 3, AccountId =3, Ammount = 100, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=2},
-                    new Transaction() { Id = 4, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=2},
-                    new Transaction() { Id = 5, AccountId =4, Ammount = 600, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
+                    new Transaction() { Id = 1, AccountId =2, Ammount = 300, AssociatedAccountId=-1, TimeStamp=new DateTime(2000,2,14), TransactionTypeId=1},
+                    new Transaction() { Id = 2, AccountId =1, Ammount = 200, AssociatedAccountId=-1, TimeStamp=new DateTime(2001,3,2), TransactionTypeId=1},
+                    new Transaction() { Id = 3, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=new DateTime(1990,10,26), TransactionTypeId=1},
+                    new Transaction() { Id = 3, AccountId =3, Ammount = 100, AssociatedAccountId=-1, TimeStamp=new DateTime(1990,11,15), TransactionTypeId=2},
+                    new Transaction() { Id = 4, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=new DateTime(1990,12,20), TransactionTypeId=2},
+                    new Transaction() { Id = 5, AccountId =4, Ammount = 600, AssociatedAccountId=-1, TimeStamp=new DateTime(2002,5,5), TransactionTypeId=1},
                 };
             }
         }
