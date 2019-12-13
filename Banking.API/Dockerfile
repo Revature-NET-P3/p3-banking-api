@@ -12,4 +12,4 @@ EXPOSE 5000
 
 # Build and run the dotnet application from within the container
 
-ENTRYPOINT dotnet banking.dll
+ENTRYPOINT dotnet banking.api.dll
