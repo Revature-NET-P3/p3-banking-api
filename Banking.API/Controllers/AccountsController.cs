@@ -169,7 +169,7 @@ namespace Banking.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountIDDateRange(int id, string startdate, string enddate)
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountIDWithDateRange(int id, string startdate, string enddate)
         {
             try
             {
@@ -219,7 +219,7 @@ namespace Banking.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountIDDateRange(int id, int limit)
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountIDWithLimit(int id, int limit)
         {
             try
             {
@@ -267,7 +267,7 @@ namespace Banking.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountIDDateRange(int id, int limit, string startdate, string enddate)
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountIDWithLimitAndDateRange(int id, int limit, string startdate, string enddate)
         {
             try
             {
