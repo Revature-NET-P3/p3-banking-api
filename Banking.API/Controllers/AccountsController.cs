@@ -153,7 +153,7 @@ namespace Banking.API.Controllers
 
                 // Return list of transactions found.
                 _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
-                return Ok(result.ToList());
+                return Ok(result.OrderBy(t=>t.TimeStamp).ToList());
             }
             catch (Exception WTF)
             {
