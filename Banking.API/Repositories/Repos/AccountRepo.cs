@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -205,4 +205,3 @@ namespace Banking.API.Repositories.Repos
         }
     }
 }
-*/
