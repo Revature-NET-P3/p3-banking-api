@@ -36,7 +36,6 @@ stages:
         
      - task: Docker@2
        displayName: Push Release
-       condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
        inputs:
         containerRegistry: 'p3bankacr_connection'
         command: 'push'
