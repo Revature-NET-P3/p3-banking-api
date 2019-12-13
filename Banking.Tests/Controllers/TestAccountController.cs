@@ -365,5 +365,22 @@ namespace Banking.Tests.Controllers
             Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 200 OK!");
             Assert.AreEqual((responseResult as NotFoundObjectResult).Value, accountID, string.Format("Return value is NOT equal to {0}", accountID.ToString()));
         }
+
+        [TestMethod]
+        public void GetTransactionDetailsByAccountIDWithDateRange_ServerError()
+        {
+            // Arrange.
+            testAccountRepo = new AccountRepoTest(false);
+            testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
+
+            // Act.
+            var response = testAccountController.GetTransactionDetailsByAccountIDWithDateRange(1, "1-1-2000", "12-1-2000");
+            response.Wait(500);
+            var responseResult = response.Result.Result;
+
+            // Assert.
+            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+        }
     }
 }
