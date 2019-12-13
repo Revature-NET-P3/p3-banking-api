@@ -18,7 +18,6 @@ namespace Banking.API.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        // TODO: Add injection for repository when ready.
         readonly ILogger<AccountsController> _logger;
         readonly IAccountRepo _repo;
 

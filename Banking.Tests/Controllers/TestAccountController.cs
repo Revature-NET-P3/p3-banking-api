@@ -13,7 +13,6 @@ namespace Banking.Tests.Controllers
     [TestClass]
     public class TestAccountController
     {
-        // TODO: Swap out object for Test AccountRepo, when implemented.
         AccountRepoTest testAccountRepo = null;
         Mock<ILogger<AccountsController>> testLogger = null;
         AccountsController testAccountController = null;
@@ -28,7 +27,6 @@ namespace Banking.Tests.Controllers
             testAccountRepo = new AccountRepoTest();
 
             // Generate controller
-            // TODO: Update following injection when functionality completed:
             testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
         }
         
@@ -96,8 +94,6 @@ namespace Banking.Tests.Controllers
             // Arrange.
             testAccountRepo = new AccountRepoTest(false);
             testAccountController = new AccountsController(testAccountRepo, testLogger.Object);
-
-            // TODO: reinject testAccountController.
 
             // Act.
             var response = testAccountController.GetAllAccountsByUserID(10);
@@ -211,7 +207,6 @@ namespace Banking.Tests.Controllers
         public void GetAccountDetailsByAccountID_InvalidAccount()
         {
             // Arrange.
-            // TODO: set user credientals to different user.
 
             // Act.
             var response = testAccountController.GetAccountDetailsByAccountID(3);
@@ -279,7 +274,6 @@ namespace Banking.Tests.Controllers
         public void GetTransactionDetailsByAccountID_InvalidUser()
         {
             // Arrange.
-            // TODO: set user credientals to different user.
 
             // Act.
             var response = testAccountController.GetTransactionDetailsByAccountID(2);
