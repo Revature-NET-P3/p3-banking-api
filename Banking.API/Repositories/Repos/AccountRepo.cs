@@ -193,7 +193,7 @@ namespace Banking.API.Repositories.Repos
         // retruns a single account based on the account ID.
         public async Task<Account> GetAccountDetailsByAccountID(int Id)
         {
-            var accDetails = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
+            var accDetails = await _context.Accounts.Where(e => e.Id == Id).SingleOrDefaultAsync();
             return accDetails;
         }
 
