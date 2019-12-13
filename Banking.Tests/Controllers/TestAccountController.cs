@@ -74,7 +74,10 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetAllAccountsByUserID_InvalidID()
+        [DataRow(10, 2)]
+        [DataRow(20, 2)]
+        [DataRow(30, 1)]
+        public void GetAllAccountsByUserID_InvalidID(int userID, int accountCount)
         {
             // Arrange.
 
@@ -87,7 +90,7 @@ namespace Banking.Tests.Controllers
             Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-            Assert.AreNotEqual(responseValue.Count, 1, string.Format("Return List count is equal to {0}", 1.ToString()));
+            Assert.AreNotEqual(responseValue.Count, userID, string.Format("Return List count is equal to {0}", accountCount.ToString()));
         }
 
         [TestMethod]
@@ -108,12 +111,15 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetAllAccountsByUserIDAndAccountType_ValidIDAndValidAccountType()
+        [DataRow(10,1,3)]
+        [DataRow(20,2,1)]
+        [DataRow(30,3,2)]
+        public void GetAllAccountsByUserIDAndAccountType_ValidIDAndValidAccountType(int userID, int accountID, int accountTypeID)
         {
             // Arrange.
 
             // Act.
-            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(10, 3);
+            var response = testAccountController.GetAllAccountsByUserIDAndTypeID(userID, accountTypeID);
             response.Wait(500);
             var responseResult = response.Result.Result;
 
@@ -121,7 +127,7 @@ namespace Banking.Tests.Controllers
             Assert.IsInstanceOfType(responseResult, typeof(OkObjectResult), "HTTP Response NOT 200 OK!");
             var responseValue = (responseResult as OkObjectResult).Value as List<Account>;
 
-            Assert.AreEqual(responseValue[0].Id, 1, string.Format("Account ID NOT equal to {0}", 1.ToString()));
+            Assert.AreEqual(responseValue[0].Id, accountID, string.Format("Account ID NOT equal to {0}", accountID.ToString()));
         }
 
         [TestMethod]
