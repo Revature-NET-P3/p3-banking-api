@@ -49,7 +49,7 @@ namespace Banking.API.Controllers
         // TODO: Update routing to accept both {input} and {ammountToTransfer}.
         // TODO: Update specified account through IAccountRepo object.
         [HttpPut("transfer/{ammountToTransfer}")]
-        public async Task<IActionResult> Transfer([FromBody]Account input, [FromBody]Account otherInput, decimal ammountToTransfer)
+        public async Task<IActionResult> Transfer([FromBody]Account input, /* Commented out for run issues.[FromBody]Account otherInput,*/ decimal ammountToTransfer)
         {
             DateTime compareDate = input.CreateDate;
             compareDate.AddYears(1);
@@ -57,7 +57,7 @@ namespace Banking.API.Controllers
             if (input.AccountTypeId == termDepositId && input.Balance >= ammountToTransfer && compareDate.CompareTo(DateTime.Now) < 0)
             {
                 input.Balance -= ammountToTransfer;
-                otherInput.Balance += ammountToTransfer;
+                //otherInput.Balance += ammountToTransfer;
                 return NoContent();
             }
             return BadRequest();
@@ -68,7 +68,7 @@ namespace Banking.API.Controllers
         {
             if (addMe.AccountTypeId == termDepositId)
             {
-               await _Context.OpenAccount(addMe);
+                await _Context.OpenAccount(addMe);
                 return Ok();
             }
             else
