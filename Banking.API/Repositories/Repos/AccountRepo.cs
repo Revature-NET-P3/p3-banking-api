@@ -166,7 +166,7 @@ namespace Banking.API.Repositories.Repos
         // if account id exists and not null, then close account
         public async Task<bool> CloseAccount(int Id)
         {
-            var accToClose = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
+            var accToClose = await _context.Accounts.Where(e => e.Id == Id).SingleOrDefaultAsync();
             if (accToClose != null)
             {
                 accToClose.IsClosed = true;
