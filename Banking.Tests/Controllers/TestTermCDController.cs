@@ -40,6 +40,72 @@ namespace Banking.Tests.Controllers
         }
 
         [TestMethod]
+        public void TestValidWithdraw()
+        {
+            Account termTest = new Account();
+            termTest.AccountTypeId = 4;
+            termTest.Balance = 1000;
+            termTest.CreateDate = new System.DateTime(3/10/2015);
+            decimal withdrawAmmount = 500.50m;
+            decimal expectedBalance = 499.50m;
+
+
+            testTermCDController.Withdraw(termTest, withdrawAmmount);
+            Assert.AreEqual(termTest.Balance, expectedBalance);
+        }
+
+        [TestMethod]
+        public void TestInvalidWithdraw()
+        {
+            Account termTest = new Account();
+            termTest.AccountTypeId = 4;
+            termTest.Balance = 1000;
+            termTest.CreateDate = new System.DateTime(3/10/2015);
+            decimal withdrawAmmount = 9999.99m;
+            decimal expectedBalance = 1000m;
+
+
+            testTermCDController.Withdraw(termTest, withdrawAmmount);
+            Assert.AreEqual(termTest.Balance, expectedBalance);
+        }
+
+        [TestMethod]
+        public void TestValidTransfer()
+        {
+            Account termTest = new Account();
+            termTest.AccountTypeId = 4;
+            termTest.Balance = 1000;
+            termTest.CreateDate = new System.DateTime(3 / 10 / 2015);
+            Account otherTest = new Account();
+            otherTest.Balance = 1500;
+            decimal transferAmmount = 250m;
+            decimal expectedBalance = 750m;
+            decimal otherExpectedBalance = 1750;
+
+            testTermCDController.Transfer(termTest, otherTest, transferAmmount);
+            Assert.AreEqual(termTest.Balance, expectedBalance);
+            Assert.AreEqual(otherTest.Balance, otherExpectedBalance);
+        }
+
+        [TestMethod]
+        public void TestInvalidTransfer()
+        {
+            Account termTest = new Account();
+            termTest.AccountTypeId = 4;
+            termTest.Balance = 1000;
+            termTest.CreateDate = new System.DateTime(3 / 10 / 2015);
+            Account otherTest = new Account();
+            otherTest.Balance = 1500;
+            decimal transferAmmount = 9999m;
+            decimal expectedBalance = 1000m;
+            decimal otherExpectedBalance = 1500;
+
+            testTermCDController.Transfer(termTest, otherTest, transferAmmount);
+            Assert.AreEqual(termTest.Balance, expectedBalance);
+            Assert.AreEqual(otherTest.Balance, otherExpectedBalance);
+        }
+
+        [TestMethod]
         public  void TestAddAccount_ValidTermCDId()
         {
             Account addThis = new Account();
