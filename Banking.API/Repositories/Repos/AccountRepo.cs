@@ -1,4 +1,5 @@
-﻿using Banking.API.Models;
+﻿
+using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,9 +13,6 @@ namespace Banking.API.Repositories.Repos
     {
         // use the DbContext 
         private readonly AppDbContext _context;
-
-        //create a list to display transactions
-        public static List<Transaction> Transactions = new List<Transaction>();
 
         public AccountRepo(AppDbContext ctx)
         {
@@ -42,7 +40,6 @@ namespace Banking.API.Repositories.Repos
             // return _accounts.FirstOrDefault(e => e.Id == Id); for mock data
             return account;
         }
-
 
         //add a new account
         public async Task<Account> OpenAccount(Account account)
@@ -117,7 +114,6 @@ namespace Banking.API.Repositories.Repos
             return true;
         }
 
-
         // method to transfer between accounts
         public async Task<bool> TransferBetweenAccounts(int Id, decimal fromAmount, int toAccId, decimal toAmount)
         {
@@ -152,7 +148,6 @@ namespace Banking.API.Repositories.Repos
             return true;
         }
 
-
         // method to pay loan
         public async Task<bool> PayLoan(int Id, decimal amount)
         {
@@ -165,7 +160,7 @@ namespace Banking.API.Repositories.Repos
         // if account id exists and not null, then close account
         public async Task<bool> CloseAccount(int Id)
         {
-            var accToClose = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
+            var accToClose = await _context.Accounts.Where(e => e.Id == Id).SingleOrDefaultAsync();
             if (accToClose != null)
             {
                 accToClose.IsClosed = true;

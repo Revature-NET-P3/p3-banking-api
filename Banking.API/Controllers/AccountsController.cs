@@ -153,6 +153,160 @@ namespace Banking.API.Controllers
 
                 // Return list of transactions found.
                 _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
+                return Ok(result.OrderBy(t=>t.TimeStamp).ToList());
+            }
+            catch (Exception WTF)
+            {
+                // Return Internal Server Error 500 on general exception.
+                _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
+                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+            }
+        }
+
+        // GET: api/Accounts/transactions/4/01-01-1990/12-31-3999
+        [HttpGet("transactions/{id}/{startdate}/{enddate}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountIDWithDateRange(int id, string startdate, string enddate)
+        {
+            try
+            {
+                IEnumerable<Transaction> result = null;
+                _logger?.LogInformation(string.Format("Start GetTransactionDetailsByAccountID: {0}", id.ToString()));
+                result = await _repo?.GetTransactionDetailsByAccountID(id) ?? null;
+
+                // Check if return object was null.
+                if (result == null || result?.Count() < 1)
+                {
+                    // Return NotFound 404 response if no account detail was found for ID.
+                    _logger?.LogWarning(string.Format("Account #{0} transaction details not found!", id.ToString()));
+                    return NotFound(id);
+                }
+
+                // Check date range.
+                DateTime startDate = Convert.ToDateTime(startdate);
+                DateTime endDate = Convert.ToDateTime(enddate);
+                var query = result.Where(t => DateTime.Compare(startDate, t.TimeStamp) <= 0 && DateTime.Compare(endDate, t.TimeStamp) >= 0).OrderBy(t=>t.TimeStamp);
+                if (query.Count() > 0)
+                {
+                    // Reduce result list to new query.
+                    result = query.ToList();
+                }
+                else
+                {
+                    // Return NotFound 404 response if no account detail was found for ID.
+                    _logger?.LogWarning(string.Format("Account #{0} transaction details not found in date range! {1} to {2}", id.ToString(), startDate.ToString(), endDate.ToString()));
+                    return NotFound(id);
+                }
+
+                // Return list of transactions found.
+                _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
+                return Ok(result.ToList());
+            }
+            catch (Exception WTF)
+            {
+                // Return Internal Server Error 500 on general exception.
+                _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
+                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+            }
+        }
+
+        // GET: api/Accounts/transactions/4/2
+        [HttpGet("transactions/{id}/{limit}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountIDWithLimit(int id, int limit)
+        {
+            try
+            {
+                IEnumerable<Transaction> result = null;
+                _logger?.LogInformation(string.Format("Start GetTransactionDetailsByAccountID: {0}", id.ToString()));
+                result = await _repo?.GetTransactionDetailsByAccountID(id) ?? null;
+
+                // Check if return object was null.
+                if (result == null || result?.Count() < 1)
+                {
+                    // Return NotFound 404 response if no account detail was found for ID.
+                    _logger?.LogWarning(string.Format("Account #{0} transaction details not found!", id.ToString()));
+                    return NotFound(id);
+                }
+
+                // Get limit range.
+                var query = result.OrderBy(t => t.TimeStamp);
+                // Reduce result list to new query.
+                result = query.Skip(Math.Max(0, query.Count() - limit)).ToList();
+                // Check for empty limit list.
+                if (result.Count() < 1)
+                {
+                    // Return NotFound 404 response if no account detail was found for ID.
+                    _logger?.LogWarning(string.Format("Account #{0} transaction details limit result empty!", id.ToString()));
+                    return NotFound(id);
+                }
+
+                // Return list of transactions found.
+                _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
+                return Ok(result.ToList());
+            }
+            catch (Exception WTF)
+            {
+                // Return Internal Server Error 500 on general exception.
+                _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
+                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+            }
+        }
+
+        // GET: api/Accounts/transactions/4/2//01-01-1990/12-31-3999
+        [HttpGet("transactions/{id}/{limit}/{startdate}/{enddate}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionDetailsByAccountIDWithLimitAndDateRange(int id, int limit, string startdate, string enddate)
+        {
+            try
+            {
+                IEnumerable<Transaction> result = null;
+                _logger?.LogInformation(string.Format("Start GetTransactionDetailsByAccountID: {0}", id.ToString()));
+                result = await _repo?.GetTransactionDetailsByAccountID(id) ?? null;
+
+                // Check if return object was null.
+                if (result == null || result?.Count() < 1)
+                {
+                    // Return NotFound 404 response if no account detail was found for ID.
+                    _logger?.LogWarning(string.Format("Account #{0} transaction details not found!", id.ToString()));
+                    return NotFound(id);
+                }
+
+                // Check date range.
+                DateTime startDate = Convert.ToDateTime(startdate);
+                DateTime endDate = Convert.ToDateTime(enddate);
+                var query = result.Where(t => DateTime.Compare(startDate, t.TimeStamp) <= 0 && DateTime.Compare(endDate, t.TimeStamp) >= 0).OrderBy(t => t.TimeStamp);
+                // Check query result for empty list.
+                if (query.Count() > 0)
+                {
+                    // Reduce result list to new query.
+                    result = query.Skip(Math.Max(0, query.Count() - limit)).ToList();
+                    // Check for empty limit list.
+                    if (result.Count() < 1)
+                    {
+                        // Return NotFound 404 response if no account detail was found for ID.
+                        _logger?.LogWarning(string.Format("Account #{0} transaction details limit list, after date range, empty!", id.ToString()));
+                        return NotFound(id);
+                    }
+                }
+                else
+                {
+                    // Return NotFound 404 response if no account detail was found for ID.
+                    _logger?.LogWarning(string.Format("Account #{0} transaction details not found in date range! {1} to {2}", id.ToString(), startDate.ToString(), endDate.ToString()));
+                    return NotFound(id);
+                }
+
+                // Return list of transactions found.
+                _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
                 return Ok(result.ToList());
             }
             catch (Exception WTF)

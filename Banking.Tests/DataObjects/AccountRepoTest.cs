@@ -25,17 +25,18 @@ namespace Banking.Tests.DataObjects
                     new Account() { Id = 1, UserId = 10, AccountTypeId = 3, Balance = 200, CreateDate = DateTime.Now },
                     new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
                     new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
-                    new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 600, CreateDate = DateTime.Now }
+                    new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 600, CreateDate = DateTime.Now },
+                    new Account() { Id = 5, UserId = 30, AccountTypeId = 1, Balance = 0, CreateDate = DateTime.Now, IsClosed = false }
                 };
 
                 _transactions = new List<Transaction>()
                 {
-                    new Transaction() { Id = 1, AccountId =2, Ammount = 300, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
-                    new Transaction() { Id = 2, AccountId =1, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
-                    new Transaction() { Id = 3, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
-                    new Transaction() { Id = 3, AccountId =3, Ammount = 100, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=2},
-                    new Transaction() { Id = 4, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=2},
-                    new Transaction() { Id = 5, AccountId =4, Ammount = 600, AssociatedAccountId=-1, TimeStamp=DateTime.Now, TransactionTypeId=1},
+                    new Transaction() { Id = 1, AccountId =2, Ammount = 300, AssociatedAccountId=-1, TimeStamp=new DateTime(2000,2,14), TransactionTypeId=1},
+                    new Transaction() { Id = 2, AccountId =1, Ammount = 200, AssociatedAccountId=-1, TimeStamp=new DateTime(2001,3,2), TransactionTypeId=1},
+                    new Transaction() { Id = 3, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=new DateTime(1990,10,26), TransactionTypeId=1},
+                    new Transaction() { Id = 3, AccountId =3, Ammount = 100, AssociatedAccountId=-1, TimeStamp=new DateTime(1990,11,15), TransactionTypeId=2},
+                    new Transaction() { Id = 4, AccountId =3, Ammount = 200, AssociatedAccountId=-1, TimeStamp=new DateTime(1990,12,20), TransactionTypeId=2},
+                    new Transaction() { Id = 5, AccountId =4, Ammount = 600, AssociatedAccountId=-1, TimeStamp=new DateTime(2002,5,5), TransactionTypeId=1},
                 };
             }
         }
@@ -48,7 +49,7 @@ namespace Banking.Tests.DataObjects
             await Task.Delay(10);
             if (accToClose != null)
             {
-                _accounts.Remove(accToClose);
+                accToClose.IsClosed = true;
                 return true;
             }
             return false;
