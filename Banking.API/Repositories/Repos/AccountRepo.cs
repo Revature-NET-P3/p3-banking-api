@@ -1,4 +1,5 @@
-﻿using Banking.API.Models;
+﻿
+using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,11 +12,18 @@ namespace Banking.API.Repositories.Repos
     public class AccountRepo : IAccountRepo
     {
         // use the DbContext 
-        private AppDbContext _context;
+        private readonly AppDbContext _context;
 
         public AccountRepo(AppDbContext ctx)
         {
             _context = ctx;
+        }
+
+        //save changes method (must be called by every function calling the repo)
+        public async Task<bool> SaveChanges()
+        {
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         //get a single account
@@ -33,21 +41,40 @@ namespace Banking.API.Repositories.Repos
             return account;
         }
 
-
         //add a new account
         public async Task<Account> OpenAccount(Account account)
         {
             var accounts = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == account.Id);
+
+            // record the transaction and save it the db.
+            Transaction newTrans = new Transaction()
+            {
+                AccountId = account.Id,
+                TimeStamp = DateTime.Now,
+                TransactionTypeId = 7
+            };
+            _context.Transactions.Add(newTrans);
             _context.Add(account);
-            _context.SaveChanges();
             return accounts;
         }
 
         // deposit account method
         public async Task<bool> Deposit(int Id, decimal amount)
         {
+            // update account
             var depositAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             depositAccount.Balance += amount;
+
+            // record the transaction and save it the db.
+            Transaction newTrans = new Transaction() 
+            {
+                AccountId = Id,
+                Ammount = amount,
+                TimeStamp = DateTime.Now,
+                TransactionTypeId = 2,
+                AssociatedAccountId = 0
+            };
+            _context.Transactions.Add(newTrans);
             _context.Update(depositAccount);
             return true;
         }
@@ -57,6 +84,33 @@ namespace Banking.API.Repositories.Repos
         {
             var withdrawAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             withdrawAccount.Balance -= amount;
+            // record the transaction and save it the db.
+            Transaction newTrans = new Transaction()
+            {
+                AccountId = Id,
+                Ammount = amount,
+                TimeStamp = DateTime.Now,
+                TransactionTypeId = 1,
+                AssociatedAccountId = 0
+            };
+            _context.Transactions.Add(newTrans);
+            _context.Update(withdrawAccount);
+            return true;
+        }
+
+        // withdraw account method
+        public async Task<bool> Overdraft(int Id, decimal amount)
+        {
+            var withdrawAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+            // record the transaction and save it the db.
+            Transaction newTrans = new Transaction()
+            {
+                AccountId = Id,
+                Ammount = amount,
+                TimeStamp = DateTime.Now,
+                TransactionTypeId = 5,
+            };
+            _context.Transactions.Add(newTrans);
             return true;
         }
 
@@ -67,9 +121,30 @@ namespace Banking.API.Repositories.Repos
             var accountTo = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == toAccId);
             transferAccount.Balance -= fromAmount;
             accountTo.Balance += toAmount;
+
+            // record the transaction from account.
+            Transaction newTrans = new Transaction()
+            {
+                AccountId = Id,
+                Ammount = fromAmount,
+                TimeStamp = DateTime.Now,
+                TransactionTypeId = 3,
+                AssociatedAccountId = toAccId
+            };
+
+            // record the transaction to account.
+            Transaction newTrans1 = new Transaction()
+            {
+                AccountId = toAccId,
+                Ammount = toAmount,
+                TimeStamp = DateTime.Now,
+                TransactionTypeId = 4,
+                AssociatedAccountId = Id
+            };
+            _context.Transactions.Add(newTrans);
+            _context.Transactions.Add(newTrans1);
             _context.Update(transferAccount);
             _context.Update(accountTo);
-            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -79,19 +154,17 @@ namespace Banking.API.Repositories.Repos
             var loanAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             loanAccount.Balance -= amount;
             _context.Update(loanAccount);
-            await _context.SaveChangesAsync();
             return true;
         }
 
         // if account id exists and not null, then close account
         public async Task<bool> CloseAccount(int Id)
         {
-            var accToClose = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
+            var accToClose = await _context.Accounts.Where(e => e.Id == Id).SingleOrDefaultAsync();
             if (accToClose != null)
             {
                 accToClose.IsClosed = true;
                 _context.Update(accToClose);
-                await _context.SaveChangesAsync();
             }
             return false;
         }
@@ -114,14 +187,14 @@ namespace Banking.API.Repositories.Repos
         // retruns a single account based on the account ID.
         public async Task<Account> GetAccountDetailsByAccountID(int Id)
         {
-            var accDetails = await _context.Accounts.Where(e => e.Id == Id).SingleAsync();
+            var accDetails = await _context.Accounts.Where(e => e.Id == Id).SingleOrDefaultAsync();
             return accDetails;
         }
 
         // return the list of transactions for a particluar account ID.
         public async Task<IEnumerable<Transaction>> GetTransactionDetailsByAccountID(int Id)
         {
-            var transactionDetails = await _context.Transactions.Where(e => e.Id == Id).ToListAsync();
+            var transactionDetails = await _context.Transactions.Where(e => e.AccountId == Id).ToListAsync();
             return transactionDetails;
         }
     }

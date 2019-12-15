@@ -4,12 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Banking.API.Controllers
 {
+    [EnableCors("DefaultPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountTypesApiController : ControllerBase
