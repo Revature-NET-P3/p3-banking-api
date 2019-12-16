@@ -106,8 +106,8 @@ namespace Banking.Tests.Controllers
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
 
         [TestMethod]
@@ -178,8 +178,8 @@ namespace Banking.Tests.Controllers
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
 
         [TestMethod]
@@ -251,8 +251,8 @@ namespace Banking.Tests.Controllers
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
 
         [TestMethod]
@@ -323,8 +323,8 @@ namespace Banking.Tests.Controllers
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
 
         [TestMethod]
@@ -379,8 +379,8 @@ namespace Banking.Tests.Controllers
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
 
         [TestMethod]
@@ -436,8 +436,8 @@ namespace Banking.Tests.Controllers
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
 
         [TestMethod]
@@ -512,8 +512,8 @@ namespace Banking.Tests.Controllers
             var responseResult = response.Result.Result;
 
             // Assert.
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
         }
     }
 }

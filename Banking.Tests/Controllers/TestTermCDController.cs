@@ -14,21 +14,20 @@ namespace Banking.Tests.Controllers
     public class TestTermCDController
     {
         AccountRepoTest testAccountRepo = null;
-        Mock<ILogger<AccountsController>> testLogger = null;
+        Mock<ILogger<TermCDController>> testLogger = null;
         TermCDController testTermCDController = null;
 
         [TestInitialize]
         public void BeforeEachTest()
         {
             // Generate mock Logger.
-            testLogger = new Mock<ILogger<AccountsController>>();
+            testLogger = new Mock<ILogger<TermCDController>>();
 
             // Generate testAccountRepo.
             testAccountRepo = new AccountRepoTest();
 
             // Generate controller
-            // TODO: Update following injection when functionality completed:
-            testTermCDController = new TermCDController(testAccountRepo);
+            testTermCDController = new TermCDController(testAccountRepo, testLogger.Object);
         }
 
         [TestCleanup]
@@ -43,14 +42,16 @@ namespace Banking.Tests.Controllers
         public void TestValidWithdraw()
         {
             Account termTest = new Account();
+            termTest.Id = 40;
             termTest.AccountTypeId = 4;
             termTest.Balance = 1000;
             termTest.CreateDate = new System.DateTime(3/10/2015);
+            testAccountRepo._accounts.Add(termTest);
             decimal withdrawAmmount = 500.50m;
             decimal expectedBalance = 499.50m;
 
 
-            testTermCDController.Withdraw(termTest, withdrawAmmount);
+            testTermCDController.Withdraw(termTest.Id, withdrawAmmount).Wait(500);
             Assert.AreEqual(termTest.Balance, expectedBalance);
         }
 
@@ -58,14 +59,16 @@ namespace Banking.Tests.Controllers
         public void TestInvalidWithdraw()
         {
             Account termTest = new Account();
+            termTest.Id = 40;
             termTest.AccountTypeId = 4;
             termTest.Balance = 1000;
             termTest.CreateDate = new System.DateTime(3/10/2015);
+            testAccountRepo._accounts.Add(termTest);
             decimal withdrawAmmount = 9999.99m;
             decimal expectedBalance = 1000m;
 
 
-            testTermCDController.Withdraw(termTest, withdrawAmmount);
+            testTermCDController.Withdraw(termTest.Id, withdrawAmmount).Wait(500);
             Assert.AreEqual(termTest.Balance, expectedBalance);
         }
 
@@ -73,38 +76,44 @@ namespace Banking.Tests.Controllers
         public void TestValidTransfer()
         {
             Account termTest = new Account();
+            termTest.Id = 40;
             termTest.AccountTypeId = 4;
             termTest.Balance = 1000;
             termTest.CreateDate = new System.DateTime(3 / 10 / 2015);
             Account otherTest = new Account();
+            otherTest.Id = 45;
             otherTest.Balance = 1500;
+            testAccountRepo._accounts.Add(termTest);
+            testAccountRepo._accounts.Add(otherTest);
             decimal transferAmmount = 250m;
             decimal expectedBalance = 750m;
             decimal otherExpectedBalance = 1750;
 
-            // TODO: Uncomment code block when Transfer has been updated to use repo context.
-            //testTermCDController.Transfer(termTest, otherTest, transferAmmount);
-            //Assert.AreEqual(termTest.Balance, expectedBalance);
-            //Assert.AreEqual(otherTest.Balance, otherExpectedBalance);
+            testTermCDController.Transfer(termTest.Id, otherTest.Id, transferAmmount).Wait(500);
+            Assert.AreEqual(termTest.Balance, expectedBalance);
+            Assert.AreEqual(otherTest.Balance, otherExpectedBalance);
         }
 
         [TestMethod]
         public void TestInvalidTransfer()
         {
             Account termTest = new Account();
+            termTest.Id = 40;
             termTest.AccountTypeId = 4;
             termTest.Balance = 1000;
             termTest.CreateDate = new System.DateTime(3 / 10 / 2015);
             Account otherTest = new Account();
+            otherTest.Id = 45;
             otherTest.Balance = 1500;
+            testAccountRepo._accounts.Add(termTest);
+            testAccountRepo._accounts.Add(otherTest);
             decimal transferAmmount = 9999m;
             decimal expectedBalance = 1000m;
             decimal otherExpectedBalance = 1500;
 
-            // TODO: Uncomment code block when Transfer has been updated to use repo context.
-            //testTermCDController.Transfer(termTest, otherTest, transferAmmount);
-            //Assert.AreEqual(termTest.Balance, expectedBalance);
-            //Assert.AreEqual(otherTest.Balance, otherExpectedBalance);
+            testTermCDController.Transfer(termTest.Id, otherTest.Id, transferAmmount).Wait(500);
+            Assert.AreEqual(termTest.Balance, expectedBalance);
+            Assert.AreEqual(otherTest.Balance, otherExpectedBalance);
         }
 
         [TestMethod]
@@ -117,7 +126,7 @@ namespace Banking.Tests.Controllers
             response.Wait(1);
             var responseResult = response.Result;
 
-            Assert.IsInstanceOfType(responseResult, typeof(OkResult));
+            Assert.IsInstanceOfType(responseResult, typeof(CreatedAtActionResult));
 
         }
 
