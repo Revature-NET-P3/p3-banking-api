@@ -23,9 +23,6 @@ namespace Banking.Tests.DataObjects
         {
             #region Assign
              UserRepo testData = new UserRepo();
-
-            
-
             UserAPIController testController = new UserAPIController(testData);
 
 
@@ -40,7 +37,7 @@ namespace Banking.Tests.DataObjects
 
             #region Assert
             Assert.AreEqual(result.Username, "Swag0");
-            Assert.AreEqual(result.Email, "email@email.com");
+            Assert.AreEqual(result.Email, "null");
 
 
             #endregion
@@ -67,7 +64,7 @@ namespace Banking.Tests.DataObjects
             #endregion
 
             #region Assert
-            Assert.AreNotEqual(result.Username, "Swag0");
+            Assert.AreNotEqual(result.Username, "Swag1");
 
 
             #endregion
