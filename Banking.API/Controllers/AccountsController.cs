@@ -40,13 +40,14 @@ namespace Banking.API.Controllers
                 IEnumerable<Account> result = null;
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}", id.ToString()));
                 result = await _repo?.GetAllAccountsByUserId(id) ?? null;
+                result = result?.Where(a => !a.IsClosed).ToList() ?? null;
 
                 // Check if returned list has any elements.
                 if (result == null || result?.Count() < 1)
                 {
                     // Return NotFound 404 response on empty list.
                     _logger?.LogWarning(string.Format("No Accounts found for UserID: {0}", id.ToString()));
-                    return NotFound(id);
+                    return NotFound(null);
                 }
 
                 // Return list of accounts on successful find.
@@ -74,12 +75,13 @@ namespace Banking.API.Controllers
                 IEnumerable<Account> result = null;
                 _logger?.LogInformation(string.Format("Start GetAllAccountsByUserID: {0}, Filtered by TypeID: {1}", id.ToString(), typeid.ToString()));
                 result = await _repo?.GetAllAccountsByUserIdAndAccountType(id, typeid) ?? null;
+                result = result?.Where(a => !a.IsClosed).ToList() ?? null;
 
                 if (result == null || result?.Count() < 1)
                 {
                     // Return NotFound 404 response on empty list.
                     _logger?.LogWarning(string.Format("No Accounts found for UserID: {0}, with Filter by TypeID: {1}", id.ToString(), typeid.ToString()));
-                    return NotFound(id);
+                    return NotFound(null);
                 }
 
                 // Return list of accounts on successful find.
@@ -107,13 +109,13 @@ namespace Banking.API.Controllers
                 Account result = null;
                 _logger?.LogInformation(string.Format("Start GetAccountDetailsByAccountID: {0}", id.ToString()));
                 result = await _repo?.GetAccountDetailsByAccountID(id) ?? null;
-                
+
                 // Check if return object was null.
                 if (result == null)
                 {
                     // Return NotFound 404 response if no account detail was found for ID.
                     _logger?.LogWarning(string.Format("Account #{0} details not found!", id.ToString()));
-                    return NotFound(id);
+                    return NotFound(null);
                 }
 
                 // Return account object found.
@@ -148,7 +150,7 @@ namespace Banking.API.Controllers
                 {
                     // Return NotFound 404 response if no account detail was found for ID.
                     _logger?.LogWarning(string.Format("Account #{0} transaction details not found!", id.ToString()));
-                    return NotFound(id);
+                    return NotFound(null);
                 }
 
                 // Return list of transactions found.
@@ -182,7 +184,7 @@ namespace Banking.API.Controllers
                 {
                     // Return NotFound 404 response if no account detail was found for ID.
                     _logger?.LogWarning(string.Format("Account #{0} transaction details not found!", id.ToString()));
-                    return NotFound(id);
+                    return NotFound(null);
                 }
 
                 // Check date range.
@@ -232,7 +234,7 @@ namespace Banking.API.Controllers
                 {
                     // Return NotFound 404 response if no account detail was found for ID.
                     _logger?.LogWarning(string.Format("Account #{0} transaction details not found!", id.ToString()));
-                    return NotFound(id);
+                    return NotFound(null);
                 }
 
                 // Get limit range.
@@ -278,7 +280,7 @@ namespace Banking.API.Controllers
                 {
                     // Return NotFound 404 response if no account detail was found for ID.
                     _logger?.LogWarning(string.Format("Account #{0} transaction details not found!", id.ToString()));
-                    return NotFound(id);
+                    return NotFound(null);
                 }
 
                 // Check date range.
