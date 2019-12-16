@@ -41,7 +41,7 @@ namespace Banking.Tests.Controllers
         [TestMethod]
         [DataRow(10,1)]
         [DataRow(20,1)]
-        [DataRow(30,4)]
+        [DataRow(30,3)]
         public void GetAllAccountsByUserID_ValidID(int userID, int accountCount)
         {
             // Arrange.
