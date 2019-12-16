@@ -25,7 +25,7 @@ namespace Banking.API.Controllers
 
         //Post  api/LoanAccount
         [HttpPost("open/{acct}")]
-        public async Task<ActionResult> OpenLoan(Account acct)
+        public async Task<ActionResult> OpenLoan([FromBody]Account acct)
         {
             if (acct.AccountTypeId != 3) //Warn: this breaks if database changes type ids
             {
@@ -75,7 +75,7 @@ namespace Banking.API.Controllers
 
             if (acct == null)
             {
-                _logger?.LogWarning(string.Format("PUT request failed, Account not found.  Account with ID: {0}", id));
+                _logger?.LogWarning(string.Format("Delete request failed, Account not found.  Account with ID: {0}", id));
                 return NotFound(id);
             }
             else
