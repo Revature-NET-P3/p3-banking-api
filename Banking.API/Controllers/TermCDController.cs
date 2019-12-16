@@ -50,6 +50,12 @@ namespace Banking.API.Controllers
                 // Check if one year has passed.
                 if (input.CreateDate.Subtract(DateTime.Now).TotalDays < -365)
                 {
+                    if (ammountToWithdraw < 0 || ammountToWithdraw > input.Balance)
+                    {
+                        _Logger.LogWarning("Withdraw amount specified invalid TermCDController Withdraw Action!");
+                        return StatusCode(400);
+                    }
+                    
                     _Logger.LogInformation($"Withdrawing from Term CD {id}.");
                     await _Context.Withdraw(id, ammountToWithdraw);
                     return NoContent();
@@ -72,15 +78,40 @@ namespace Banking.API.Controllers
         // TODO: Change otherInput account to reference account ID#(int).
         // TODO: Update routing to accept both {input} and {ammountToTransfer}.
         // TODO: Update specified account through IAccountRepo object.
-        [HttpPut("transfer/{ammountToTransfer}")]
-        public async Task<IActionResult> Transfer([FromBody]Account input, /* Commented out for run issues.[FromBody]Account otherInput,*/ decimal ammountToTransfer)
+        [HttpPut("transfer/{fromID}/{toID}/{ammountToTransfer}")]
+        public async Task<IActionResult> Transfer(int fromID, int toID, decimal ammountToTransfer)
         {
-            DateTime compareDate = input.CreateDate;
+            _Logger.LogInformation($"Getting Term CD Account{fromID} for withdrawal.");
+            // Get reference account.
+            Account fromAccount = await _Context.GetAccountDetailsByAccountID(fromID);
+            if (fromAccount == null)
+            {
+                _Logger.LogWarning($"Term CD {fromID} not found.");
+                return NotFound(null);
+            }
+
+            // Check if one year has passed.
+            if (fromAccount.CreateDate.Subtract(DateTime.Now).TotalDays < -365)
+            {
+
+
+
+                _Logger.LogInformation($"Withdrawing from Term CD {fromID}.");
+                await _Context.Withdraw(id, ammountToWithdraw);
+                return NoContent();
+            }
+            else
+            {
+                _Logger.LogWarning($"Term CD {fromID} NOT matured.");
+            }
+
+
+            DateTime compareDate = fromAccount.CreateDate;
             compareDate.AddYears(1);
 
-            if (input.AccountTypeId == termDepositId && input.Balance >= ammountToTransfer && compareDate.CompareTo(DateTime.Now) < 0)
+            if (fromAccount.AccountTypeId == termDepositId && fromAccount.Balance >= ammountToTransfer && compareDate.CompareTo(DateTime.Now) < 0)
             {
-                input.Balance -= ammountToTransfer;
+                fromAccount.Balance -= ammountToTransfer;
                 //otherInput.Balance += ammountToTransfer;
                 return NoContent();
             }
