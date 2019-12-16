@@ -37,6 +37,7 @@ namespace Banking.API.Controllers
                 else
                 {
                     await _repo.OpenAccount(acct);
+                    await _repo.SaveChanges();
                     return NoContent();
                 }
             }
@@ -60,7 +61,7 @@ namespace Banking.API.Controllers
                     return StatusCode(400);
                 }
 
-                var acct = await _repo.GetTransactionDetailsByAccountID(id);
+                var acct = await _repo.GetAccountDetailsByAccountID(id);
 
                 if (acct == null)
                 {
@@ -70,6 +71,7 @@ namespace Banking.API.Controllers
                 else
                 {
                     await _repo.PayLoan(id, amount);
+                    await _repo.SaveChanges();
                     return NoContent();
                 }
             }
@@ -97,6 +99,7 @@ namespace Banking.API.Controllers
                 else
                 {
                     await _repo.CloseAccount(id);
+                    await _repo.SaveChanges();
                     return NoContent();
                 }
             }
