@@ -53,7 +53,7 @@ namespace Banking.API.Controllers
                     if (ammountToWithdraw < 0 || ammountToWithdraw > input.Balance)
                     {
                         _Logger.LogWarning("Withdraw amount specified invalid TermCDController Withdraw Action!");
-                        return StatusCode(400);
+                        return BadRequest();
                     }
                     
                     _Logger.LogInformation($"Withdrawing from Term CD {id}.");
@@ -81,41 +81,51 @@ namespace Banking.API.Controllers
         [HttpPut("transfer/{fromID}/{toID}/{ammountToTransfer}")]
         public async Task<IActionResult> Transfer(int fromID, int toID, decimal ammountToTransfer)
         {
-            _Logger.LogInformation($"Getting Term CD Account{fromID} for withdrawal.");
-            // Get reference account.
-            Account fromAccount = await _Context.GetAccountDetailsByAccountID(fromID);
-            if (fromAccount == null)
+            try
             {
-                _Logger.LogWarning($"Term CD {fromID} not found.");
-                return NotFound(null);
-            }
+                // Get reference account.
+                _Logger.LogInformation($"Getting Term CD Account{fromID} for withdrawal transfer.");
+                Account fromAccount = await _Context.GetAccountDetailsByAccountID(fromID);
+                _Logger.LogInformation($"Getting Account{toID} for deposit transfer.");
+                Account toAccount = await _Context.GetAccountDetailsByAccountID(toID);
 
-            // Check if one year has passed.
-            if (fromAccount.CreateDate.Subtract(DateTime.Now).TotalDays < -365)
+                // Check account validity.
+                if (fromAccount == null)
+                {
+                    _Logger.LogWarning($"Term CD {fromID} not found.");
+                    return NotFound(null);
+                }
+                if (toAccount == null)
+                {
+                    _Logger.LogWarning($"Transfer deposit Account {toID} not found.");
+                    return NotFound(null);
+                }
+
+                // Check if one year has passed.
+                if (fromAccount.CreateDate.Subtract(DateTime.Now).TotalDays < -365)
+                {
+                    if (ammountToTransfer < 0 || ammountToTransfer > fromAccount.Balance)
+                    {
+                        _Logger.LogWarning("Withdraw amount specified invalid TermCDController Withdraw Action!");
+                        return BadRequest();
+                    }
+
+                    _Logger.LogInformation($"Transfering from Term CD {fromID} to deposit Account {toID}.");
+                    await _Context.TransferBetweenAccounts(fromID, ammountToTransfer, toID, ammountToTransfer);
+                    return NoContent();
+                }
+                else
+                {
+                    _Logger.LogWarning($"Term CD {fromID} NOT matured.");
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
             {
-
-
-
-                _Logger.LogInformation($"Withdrawing from Term CD {fromID}.");
-                await _Context.Withdraw(id, ammountToWithdraw);
-                return NoContent();
+                _Logger.LogError(e, "Unexpected Error in TermCDController Withdraw Action!");
+                return StatusCode(500, e);
             }
-            else
-            {
-                _Logger.LogWarning($"Term CD {fromID} NOT matured.");
-            }
-
-
-            DateTime compareDate = fromAccount.CreateDate;
-            compareDate.AddYears(1);
-
-            if (fromAccount.AccountTypeId == termDepositId && fromAccount.Balance >= ammountToTransfer && compareDate.CompareTo(DateTime.Now) < 0)
-            {
-                fromAccount.Balance -= ammountToTransfer;
-                //otherInput.Balance += ammountToTransfer;
-                return NoContent();
-            }
-            return BadRequest();
         }
 
         [HttpPost("open")]
