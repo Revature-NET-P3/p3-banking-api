@@ -153,7 +153,7 @@ namespace Banking.API.Controllers
 
                 // Return list of transactions found.
                 _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
-                return Ok(result.OrderBy(t=>t.TimeStamp).ToList());
+                return Ok(result.OrderByDescending(tr => tr.TimeStamp).ToList());
             }
             catch (Exception WTF)
             {
@@ -203,7 +203,7 @@ namespace Banking.API.Controllers
 
                 // Return list of transactions found.
                 _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
-                return Ok(result.ToList());
+                return Ok(result.OrderByDescending(tr => tr.TimeStamp).ToList());
             }
             catch (Exception WTF)
             {
@@ -249,7 +249,7 @@ namespace Banking.API.Controllers
 
                 // Return list of transactions found.
                 _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
-                return Ok(result.ToList());
+                return Ok(result.OrderByDescending(tr => tr.TimeStamp).ToList());
             }
             catch (Exception WTF)
             {
@@ -307,7 +307,7 @@ namespace Banking.API.Controllers
 
                 // Return list of transactions found.
                 _logger?.LogInformation(string.Format("GetTransactionDetailsByAccountID: {0} Succeeded.", id.ToString()));
-                return Ok(result.ToList());
+                return Ok(result.OrderByDescending(tr=>tr.TimeStamp).ToList());
             }
             catch (Exception WTF)
             {
