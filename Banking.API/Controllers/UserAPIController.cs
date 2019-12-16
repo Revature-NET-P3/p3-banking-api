@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Banking.API.Models;
 using Banking.API.Repositories;
+using Banking.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +17,9 @@ namespace Banking.API.Controllers
     public class UserAPIController : ControllerBase
     {
 
-        private readonly UserRepo _context;
+        private readonly IUserRepo _context;
 
-        public UserAPIController(UserRepo context)
+        public UserAPIController(IUserRepo context)
         {
             _context = context;
         }
@@ -76,8 +77,8 @@ namespace Banking.API.Controllers
       /// <param name="username"></param>
       /// <param name="passhash"></param>
       /// <returns></returns>
-        // GET: api/Verifylogin/5
-        [HttpGet("{id}")]
+        // GET: api/Verifylogin/
+        [HttpGet("{username}/{passhash}")]
         public async Task<ActionResult<bool>> VerifyLogin(string username, string passhash)
         {
          
