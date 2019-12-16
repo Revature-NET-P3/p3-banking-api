@@ -123,6 +123,37 @@ namespace Banking.Tests.Controllers
             Assert.AreEqual(id, acct.Id);
         }
 
+
+        [TestMethod]
+        public void DepositAccount_Closed() //deposit should fail account is closed
+        {
+            //Arrange
+            var balanceAfter = 0M; //Balance of account with id 6 is 0 after deposit
+            var amount = 100;
+            var id = 6;
+            var transferableLogger = new Mock<ILogger<TransferablesController>>();
+            var accountLogger = new Mock<ILogger<AccountsController>>();
+
+            var accountMock = new AccountRepoTest();
+            var accountTypeMock = new AccountTypeRepo();
+            // Generate controller
+            var testAccountController = new AccountsController(accountMock, accountLogger.Object);
+            var testTransferablesController = new TransferablesController(accountMock, accountTypeMock, transferableLogger.Object);
+            //Act
+            var acctResponse = testTransferablesController.Deposit(id, amount);
+            acctResponse.Wait(500);
+            var response = testAccountController.GetAccountDetailsByAccountID(id);
+            response.Wait(500);
+            var responseResult = response.Result.Result;
+            var acct = (responseResult as OkObjectResult).Value as Account;
+            //Assert
+            Assert.IsInstanceOfType(acctResponse.Result, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
+            Assert.AreEqual((acctResponse.Result as NotFoundObjectResult).Value, 6, string.Format("Return value not {0}", (-1).ToString()));
+
+            Assert.AreEqual(balanceAfter, acct.Balance);
+            Assert.AreEqual(id, acct.Id);
+        }
+
         [TestMethod]
         public void DepositAccount_InvalidID()
         {
