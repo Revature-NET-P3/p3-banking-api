@@ -30,17 +30,23 @@ namespace Banking.API.Controllers
         // TODO: Change input account to reference account ID#(int).
         // TODO: Update routing to accept both {input} and {ammounttowithdraw}.
         // TODO: Update specified account through IAccountRepo object.
-        [HttpPut("withdraw/{ammountToWithdraw}")]
-        public async Task<IActionResult> Withdraw([FromBody]Account input, decimal ammountToWithdraw)
+        [HttpPut("withdraw/{id}/{ammountToWithdraw}")]
+        public async Task<IActionResult> Withdraw(int id, decimal ammountToWithdraw)
         {
-            DateTime compareDate = input.CreateDate;
-            compareDate.AddYears(1);
-
-            if (input.AccountTypeId == termDepositId && input.Balance >= ammountToWithdraw && compareDate.CompareTo(DateTime.Now) < 0)
+            // Get reference account.
+            Account input = await _Context.GetAccountDetailsByAccountID(id);
+            if (input == null)
             {
-                input.Balance -= ammountToWithdraw;
+                return NotFound(null);
+            }
+
+            // Check if one year has passed.
+            if(input.CreateDate.Subtract(DateTime.Now).TotalDays < -365)
+            {
+                await _Context.Withdraw(id, ammountToWithdraw);
                 return NoContent();
             }
+            
             return BadRequest();
         }
 
