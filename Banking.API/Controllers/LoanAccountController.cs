@@ -24,7 +24,7 @@ namespace Banking.API.Controllers
         }
 
         //Post  api/LoanAccount
-        [HttpPost("open/{acct}")]
+        [HttpPost("open")]
         public async Task<ActionResult> OpenLoan([FromBody]Account acct)
         {
             try
