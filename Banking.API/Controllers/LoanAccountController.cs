@@ -24,7 +24,7 @@ namespace Banking.API.Controllers
         }
 
         //Post  api/LoanAccount
-        [HttpPost]
+        [HttpPost("open/{acct}")]
         public async Task<ActionResult> OpenLoan(Account acct)
         {
             if (acct.AccountTypeId != 3) //Warn: this breaks if database changes type ids
@@ -35,13 +35,14 @@ namespace Banking.API.Controllers
             else
             {
                 await _repo.OpenAccount(acct);
+                await _repo.SaveChanges();
                 return NoContent();
             }
             
         }
 
         //put
-        [HttpPut]
+        [HttpPut("payLoan/{id}/{amount}")]
         public async Task<ActionResult> ProcessLoanPayment(int id, int amount)
         {
             if (amount <= 0) //make sure payment amount is positive
@@ -60,13 +61,14 @@ namespace Banking.API.Controllers
             else
             {
                 await _repo.PayLoan(id, amount);
+                await _repo.SaveChanges();
                 return NoContent();
             }
             
         }
 
-        //put
-        [HttpPut]
+        //Delete
+        [HttpDelete("close/{id}")]
         public async Task<ActionResult> CloseLoan(int id)
         {
             var acct = await _repo.GetTransactionDetailsByAccountID(id);
@@ -79,6 +81,7 @@ namespace Banking.API.Controllers
             else
             {
                 await _repo.CloseAccount(id);
+                await _repo.SaveChanges();
                 return NoContent();
             }
                
