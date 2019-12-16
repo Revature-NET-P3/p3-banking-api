@@ -10,6 +10,10 @@
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Migrations\20191216141434_Nickname.cs" />
+    <Compile Remove="Migrations\20191216141434_Nickname.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
     <PackageReference Include="Microsoft.UnitTestFramework.Extensions" Version="2.0.0" />
