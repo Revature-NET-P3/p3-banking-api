@@ -57,7 +57,8 @@ namespace Banking.API.Controllers
                         return NotFound(id);
                     }
 
-                 
+                    await _Context.SaveChanges();
+
                     return NoContent();
                 }
                 else
