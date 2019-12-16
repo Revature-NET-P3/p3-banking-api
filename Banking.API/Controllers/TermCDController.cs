@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Banking.API.Repositories.Repos;
 using System.Net.Http;
 using Banking.API.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Banking.API.Controllers
 {
@@ -17,14 +18,16 @@ namespace Banking.API.Controllers
     {
         const int termDepositId = 4;
         private readonly IAccountRepo _Context;
+        private readonly ILogger<TermCDController> _Logger;
 
         // TODO: Inject ILogger<TermCDController> object into constructor.
         // TODO: Save injected ILogger object to a private readonly field inside the TermCDController class.
         // TODO: Log functional steps through out controller actions.
         // TODO: Add Exception handling to all action methods.
-        public TermCDController(IAccountRepo ctx)
+        public TermCDController(IAccountRepo ctx, ILogger<TermCDController> logger)
         {
             _Context = ctx;
+            _Logger = logger;
         }
 
         // TODO: Change input account to reference account ID#(int).
@@ -33,21 +36,36 @@ namespace Banking.API.Controllers
         [HttpPut("withdraw/{id}/{ammountToWithdraw}")]
         public async Task<IActionResult> Withdraw(int id, decimal ammountToWithdraw)
         {
-            // Get reference account.
-            Account input = await _Context.GetAccountDetailsByAccountID(id);
-            if (input == null)
+            try
             {
-                return NotFound(null);
-            }
+                _Logger.LogInformation($"Getting Term CD {id} for withdrawal.");
+                // Get reference account.
+                Account input = await _Context.GetAccountDetailsByAccountID(id);
+                if (input == null)
+                {
+                    _Logger.LogWarning($"Term CD {id} not found.");
+                    return NotFound(null);
+                }
 
-            // Check if one year has passed.
-            if(input.CreateDate.Subtract(DateTime.Now).TotalDays < -365)
-            {
-                await _Context.Withdraw(id, ammountToWithdraw);
-                return NoContent();
+                // Check if one year has passed.
+                if (input.CreateDate.Subtract(DateTime.Now).TotalDays < -365)
+                {
+                    _Logger.LogInformation($"Withdrawing from Term CD {id}.");
+                    await _Context.Withdraw(id, ammountToWithdraw);
+                    return NoContent();
+                }
+                else
+                {
+                    _Logger.LogWarning($"Term CD {id} NOT matured.");
+                }
+
+                return BadRequest();
             }
-            
-            return BadRequest();
+            catch (Exception e)
+            {
+                _Logger.LogError(e, "Unexpected Error in TermCDController Withdraw Action!");
+                return StatusCode(500, e);
+            }
         }
 
         // TODO: Change input account to reference account ID#(int).
