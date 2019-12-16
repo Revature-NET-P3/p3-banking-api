@@ -78,16 +78,17 @@ namespace Banking.API.Controllers
       /// <param name="passhash"></param>
       /// <returns></returns>
         // GET: api/Verifylogin/
-        [HttpGet("{username}/{passhash}")]
-        public async Task<ActionResult<bool>> VerifyLogin(string username, string passhash)
+        [HttpPost("verify")]
+        public async Task<ActionResult<bool>> VerifyLogin([FromBody]UserName newUser)
         {
-         
-           var result =  await _context.VerifyLogin(username, passhash);
+            var result = await _context.VerifyLogin(newUser.username, newUser.passhash);
             return result;
-                   
-
         }
 
-
+        public class UserName
+        {
+            public string username { get; set; }
+            public string passhash { get; set; }
+        }
     }
 }
