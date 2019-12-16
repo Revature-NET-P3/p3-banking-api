@@ -27,7 +27,6 @@ namespace Banking.Tests.Controllers
             testAccountRepo = new AccountRepoTest();
 
             // Generate controller
-            // TODO: Update following injection when functionality completed:
             testTermCDController = new TermCDController(testAccountRepo);
         }
 
