@@ -53,7 +53,7 @@ namespace Banking.API.Controllers
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected Error in Post new account");
-                return StatusCode(500, e);
+                return StatusCode(500);
             }
         }
 
@@ -99,7 +99,7 @@ namespace Banking.API.Controllers
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected Error in deposit of account with ID: {0}", id.ToString());
-                return StatusCode(500, e);
+                return StatusCode(500);
             }
         }
 
@@ -168,7 +168,7 @@ namespace Banking.API.Controllers
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected Error in withdraw of account with ID: {0}", id.ToString());
-                return StatusCode(500, e);
+                return StatusCode(500);
             }
 
         }
@@ -257,7 +257,7 @@ namespace Banking.API.Controllers
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected Error in deposit of account with ID: {0}", idFrom.ToString());
-                return StatusCode(500, e);
+                return StatusCode(500);
             }
         }
 
@@ -302,7 +302,7 @@ namespace Banking.API.Controllers
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected Error in Delete account with ID: {0}", id.ToString());
-                return StatusCode(500, e);
+                return StatusCode(500);
             }
         }
 

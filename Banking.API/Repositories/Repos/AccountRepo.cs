@@ -158,6 +158,16 @@ namespace Banking.API.Repositories.Repos
             var loanAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             loanAccount.Balance -= amount;
             _context.Update(loanAccount);
+            // record the transaction and save it the db.
+            Transaction newTrans = new Transaction()
+            {
+                AccountId = loanAccount.Id,
+                TimeStamp = DateTime.Now,
+                Ammount = amount,
+                TransactionTypeId = 6,
+            };
+            await _context.Transactions.AddAsync(newTrans);
+
             return true;
         }
 
