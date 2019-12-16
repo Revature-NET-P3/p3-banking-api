@@ -31,7 +31,7 @@ namespace Banking.API.Controllers
             {
                 if (acct.AccountTypeId != 3) //Warn: this breaks if database changes type ids
                 {
-                    _logger?.LogWarning(string.Format("PUT request failed, Account is not a loan. "));
+                    _logger?.LogWarning(string.Format("LoanAccountController POST request failed, Account is not a loan. "));
                     return StatusCode(400);
                 }
                 else
@@ -43,9 +43,8 @@ namespace Banking.API.Controllers
             }
             catch (Exception e)
             {
-                await _repo.OpenAccount(acct);
-                await _repo.SaveChanges();
-                return NoContent();
+                _logger.LogError(e, "Unexpected Error in LoanAccountController!");
+                return StatusCode(500);
             }
         }
 
@@ -57,7 +56,7 @@ namespace Banking.API.Controllers
             {
                 if (amount <= 0) //make sure payment amount is positive
                 {
-                    _logger?.LogWarning(string.Format("PUT request failed, Amount passed is less than or equal to 0.  Account with ID: {0}", id));
+                    _logger?.LogWarning(string.Format("LoanAccountController PUT request failed, Amount passed is less than or equal to 0.  Account with ID: {0}", id));
                     return StatusCode(400);
                 }
 
@@ -65,7 +64,7 @@ namespace Banking.API.Controllers
 
                 if (acct == null)
                 {
-                    _logger?.LogWarning(string.Format("PUT request failed, Account not found.  Account with ID: {0}", id));
+                    _logger?.LogWarning(string.Format("LoanAccountController PUT request failed, Account not found.  Account with ID: {0}", id));
                     return NotFound(id);
                 }
                 else
@@ -77,9 +76,8 @@ namespace Banking.API.Controllers
             }
             catch (Exception e)
             {
-                await _repo.PayLoan(id, amount);
-                await _repo.SaveChanges();
-                return NoContent();
+                _logger.LogError(e, "Unexpected Error in LoanAccountController!");
+                return StatusCode(500);
             }
         }
 
@@ -93,7 +91,7 @@ namespace Banking.API.Controllers
 
                 if (acct == null)
                 {
-                    _logger?.LogWarning(string.Format("Delete request failed, Account not found.  Account with ID: {0}", id));
+                    _logger?.LogWarning(string.Format("LoanAccountController DELETE request failed, Account not found.  Account with ID: {0}", id));
                     return NotFound(id);
                 }
                 else
@@ -105,9 +103,8 @@ namespace Banking.API.Controllers
             }
             catch (Exception e)
             {
-                await _repo.CloseAccount(id);
-                await _repo.SaveChanges();
-                return NoContent();
+                _logger.LogError(e, "Unexpected Error in LoanAccountController!");
+                return StatusCode(500);
             }
         }
     }
