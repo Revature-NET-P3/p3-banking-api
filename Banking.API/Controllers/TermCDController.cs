@@ -15,7 +15,7 @@ namespace Banking.API.Controllers
     [ApiController]
     public class TermCDController : ControllerBase
     {
-        int termDepositId = 4;
+        const int termDepositId = 4;
         private readonly IAccountRepo _Context;
 
         // TODO: Inject ILogger<TermCDController> object into constructor.
