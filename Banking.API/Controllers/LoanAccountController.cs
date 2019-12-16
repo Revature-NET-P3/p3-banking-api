@@ -24,68 +24,88 @@ namespace Banking.API.Controllers
         }
 
         //Post  api/LoanAccount
-        [HttpPost("open/{acct}")]
-        public async Task<ActionResult> OpenLoan(Account acct)
+        [HttpPost("open")]
+        public async Task<ActionResult> OpenLoan([FromBody]Account acct)
         {
-            if (acct.AccountTypeId != 3) //Warn: this breaks if database changes type ids
+            try
             {
-                _logger?.LogWarning(string.Format("PUT request failed, Account is not a loan. "));
-                return StatusCode(400);
+                if (acct.AccountTypeId != 3) //Warn: this breaks if database changes type ids
+                {
+                    _logger?.LogWarning(string.Format("LoanAccountController POST request failed, Account is not a loan. "));
+                    return StatusCode(400);
+                }
+                else
+                {
+                    await _repo.OpenAccount(acct);
+                    await _repo.SaveChanges();
+                    return NoContent();
+                }
             }
-            else
+            catch (Exception e)
             {
-                await _repo.OpenAccount(acct);
-                await _repo.SaveChanges();
-                return NoContent();
+                _logger.LogError(e, "Unexpected Error in LoanAccountController!");
+                return StatusCode(500);
             }
-            
         }
 
         //put
         [HttpPut("payLoan/{id}/{amount}")]
         public async Task<ActionResult> ProcessLoanPayment(int id, int amount)
         {
-            if (amount <= 0) //make sure payment amount is positive
+            try
             {
-                _logger?.LogWarning(string.Format("PUT request failed, Amount passed is less than or equal to 0.  Account with ID: {0}", id));
-                return StatusCode(400);
-            }
+                if (amount <= 0) //make sure payment amount is positive
+                {
+                    _logger?.LogWarning(string.Format("LoanAccountController PUT request failed, Amount passed is less than or equal to 0.  Account with ID: {0}", id));
+                    return StatusCode(400);
+                }
 
-            var acct = await _repo.GetTransactionDetailsByAccountID(id);
+                var acct = await _repo.GetAccountDetailsByAccountID(id);
 
-            if(acct == null)
-            {
-                _logger?.LogWarning(string.Format("PUT request failed, Account not found.  Account with ID: {0}", id));
-                return NotFound(id);
+                if (acct == null)
+                {
+                    _logger?.LogWarning(string.Format("LoanAccountController PUT request failed, Account not found.  Account with ID: {0}", id));
+                    return NotFound(id);
+                }
+                else
+                {
+                    await _repo.PayLoan(id, amount);
+                    await _repo.SaveChanges();
+                    return NoContent();
+                }
             }
-            else
+            catch (Exception e)
             {
-                await _repo.PayLoan(id, amount);
-                await _repo.SaveChanges();
-                return NoContent();
+                _logger.LogError(e, "Unexpected Error in LoanAccountController!");
+                return StatusCode(500);
             }
-            
         }
 
         //Delete
         [HttpDelete("close/{id}")]
         public async Task<ActionResult> CloseLoan(int id)
         {
-            var acct = await _repo.GetTransactionDetailsByAccountID(id);
+            try
+            {
+                var acct = await _repo.GetTransactionDetailsByAccountID(id);
 
-            if (acct == null)
-            {
-                _logger?.LogWarning(string.Format("PUT request failed, Account not found.  Account with ID: {0}", id));
-                return NotFound(id);
+                if (acct == null)
+                {
+                    _logger?.LogWarning(string.Format("LoanAccountController DELETE request failed, Account not found.  Account with ID: {0}", id));
+                    return NotFound(id);
+                }
+                else
+                {
+                    await _repo.CloseAccount(id);
+                    await _repo.SaveChanges();
+                    return NoContent();
+                }
             }
-            else
+            catch (Exception e)
             {
-                await _repo.CloseAccount(id);
-                await _repo.SaveChanges();
-                return NoContent();
+                _logger.LogError(e, "Unexpected Error in LoanAccountController!");
+                return StatusCode(500);
             }
-               
         }
-
     }
 }

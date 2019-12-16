@@ -57,7 +57,7 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetAllAccountsByUserID!");
-                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetAllAccountsByUserIDAndTypeID!");
-                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -125,7 +125,7 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetAccountDetailsByAccountID!");
-                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -159,7 +159,7 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
-                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -209,7 +209,7 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
-                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -255,7 +255,7 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
-                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -313,7 +313,7 @@ namespace Banking.API.Controllers
             {
                 // Return Internal Server Error 500 on general exception.
                 _logger?.LogError(WTF, "Unexpected Error in GetTransactionDetailsByAccountID!");
-                return StatusCode(StatusCodes.Status500InternalServerError, WTF);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }
