@@ -43,7 +43,7 @@ namespace Banking.API.Controllers
 
         //put
         [HttpPut("payLoan/{id}/{amount}")]
-        public async Task<ActionResult> ProcessLoanPayment(int id, int amount)
+        public async Task<ActionResult> ProcessLoanPayment(int id, decimal amount)
         {
             if (amount <= 0) //make sure payment amount is positive
             {
