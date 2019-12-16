@@ -53,6 +53,7 @@ namespace Banking.API.Repositories.Repos
             Transaction newTrans = new Transaction()
             {
                 AccountId = account.Id,
+                Ammount = account.Balance > 0 ? account.Balance : 0,
                 TimeStamp = DateTime.Now,
                 TransactionTypeId = 7
             };
