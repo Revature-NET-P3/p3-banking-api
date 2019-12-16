@@ -70,7 +70,7 @@ namespace Banking.Tests.Controllers
 
             // Assert.
             Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, null, string.Format("Return value not {0}", (-1).ToString()));
         }
 
         [TestMethod]
@@ -142,7 +142,7 @@ namespace Banking.Tests.Controllers
 
             // Assert.
             Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, null, string.Format("Return value not {0}", (-1).ToString()));
         }
 
         [TestMethod]
@@ -215,7 +215,7 @@ namespace Banking.Tests.Controllers
 
             // Assert.
             Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, null, string.Format("Return value not {0}", (-1).ToString()));
         }
 
         [TestMethod]
@@ -287,7 +287,7 @@ namespace Banking.Tests.Controllers
 
             // Assert.
             Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, null, string.Format("Return value not {0}", (-1).ToString()));
         }
 
         [TestMethod]
@@ -443,7 +443,7 @@ namespace Banking.Tests.Controllers
         [TestMethod]
         [DataRow(1, 2, "1-1-2000", "1-1-2002", 1, 200.0f)]
         [DataRow(2, 2, "1-1-2000", "1-1-2001", 1, 300.0f)]
-        [DataRow(3, 2, "1-1-1990", "12-1-1990", 2, 200.0f)]
+        [DataRow(3, 2, "1-1-1990", "12-1-1990", 2, 100.0f)]
         [DataRow(4, 2, "4-4-2002", "6-6-2002", 1, 600.0f)]
         public void GetTransactionDetailsByAccountIDWithLimitAndDateRange_ValidResponse(int accountID, int limit, string start, string end, int listCount, float amount)
         {
