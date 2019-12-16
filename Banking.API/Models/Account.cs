@@ -15,6 +15,7 @@ namespace Banking.API.Models
         public int UserId { get; set; }
         [Required]
         public int AccountTypeId { get; set; }
+        public string AccNickname { get; set; }
         [Required, Column(TypeName = "decimal(20,2)")]
         public decimal Balance { get; set; }
         [Required]
