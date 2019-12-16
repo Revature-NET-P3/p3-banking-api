@@ -168,6 +168,15 @@ namespace Banking.API.Repositories.Repos
             {
                 accToClose.IsClosed = true;
                 _context.Update(accToClose);
+
+                // record the transaction and save it the db.
+                Transaction newTrans = new Transaction()
+                {
+                    AccountId = accToClose.Id,
+                    TimeStamp = DateTime.Now,
+                    TransactionTypeId = 8,
+                };
+                await _context.Transactions.AddAsync(newTrans);
             }
             return false;
         }
