@@ -69,7 +69,12 @@ namespace Banking.API.Controllers
                 }
                 else
                 {
-                    await _repo.PayLoan(id, amount);
+                    if (!await _repo.PayLoan(id, amount))
+                    {
+                        _logger?.LogWarning(string.Format("LoanAccountController PUT request failed, Account not is already closed.  Account with ID: {0}", id));
+                        return NotFound(id);
+                    }
+                   
                     await _repo.SaveChanges();
                     return NoContent();
                 }
