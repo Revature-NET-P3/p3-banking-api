@@ -44,7 +44,10 @@ namespace Banking.API.Repositories.Repos
         //add a new account
         public async Task<Account> OpenAccount(Account account)
         {
-            var accounts = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == account.Id);
+            account.CreateDate = DateTime.Now;
+            account.IsClosed = false;
+            _context.Add(account);
+            _context.SaveChanges();
 
             // record the transaction and save it the db.
             Transaction newTrans = new Transaction()
@@ -53,9 +56,9 @@ namespace Banking.API.Repositories.Repos
                 TimeStamp = DateTime.Now,
                 TransactionTypeId = 7
             };
-            _context.Transactions.Add(newTrans);
-            _context.Add(account);
-            return accounts;
+            await _context.Transactions.AddAsync(newTrans);
+
+            return account;
         }
 
         // deposit account method
@@ -165,6 +168,15 @@ namespace Banking.API.Repositories.Repos
             {
                 accToClose.IsClosed = true;
                 _context.Update(accToClose);
+
+                // record the transaction and save it the db.
+                Transaction newTrans = new Transaction()
+                {
+                    AccountId = accToClose.Id,
+                    TimeStamp = DateTime.Now,
+                    TransactionTypeId = 8,
+                };
+                await _context.Transactions.AddAsync(newTrans);
             }
             return false;
         }
