@@ -51,6 +51,7 @@ namespace Banking.API.Controllers
                     
                     _Logger.LogInformation($"Withdrawing from Term CD {id}.");
                     await _Context.Withdraw(id, ammountToWithdraw);
+                    await _Context.SaveChanges();
                     return NoContent();
                 }
                 else
@@ -101,6 +102,7 @@ namespace Banking.API.Controllers
 
                     _Logger.LogInformation($"Transfering from Term CD {fromID} to deposit Account {toID}.");
                     await _Context.TransferBetweenAccounts(fromID, ammountToTransfer, toID, ammountToTransfer);
+                    await _Context.SaveChanges();
                     return NoContent();
                 }
                 else
@@ -126,8 +128,9 @@ namespace Banking.API.Controllers
                 {
                     _Logger.LogInformation($"Creating new TermCD account.");
                     await _Context.OpenAccount(addMe);
+                    await _Context.SaveChanges();
                     _Logger.LogInformation($"Created new TermCD account #{addMe.Id}.");
-                    return CreatedAtAction("Post", new { id = addMe.Id }, addMe);
+                    return CreatedAtAction("AddTermCD", new { id = addMe.Id }, addMe);
                     //return Ok();
                 }
 
