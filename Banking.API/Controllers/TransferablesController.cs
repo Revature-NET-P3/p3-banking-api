@@ -17,7 +17,7 @@ namespace Banking.API.Controllers
         private readonly IAccountTypeRepo _repoAccountType; //access to account type table
         private readonly ILogger<TransferablesController> _logger;
 
-        public TransferablesController(IAccountRepo repoAccount, IAccountTypeRepo repoType, ILogger<TransferablesController> logger) //TODO: add dependency injection of repo
+        public TransferablesController(IAccountRepo repoAccount, IAccountTypeRepo repoType, ILogger<TransferablesController> logger) 
         {
             _repoAccountType = repoType;
             _repoAccount = repoAccount;
@@ -76,11 +76,17 @@ namespace Banking.API.Controllers
 
                 if (acctFound == null) //make sure account exist in database
                 {
-                    _logger?.LogWarning(string.Format("PUT request failed, No Account found with ID: {0}", id.ToString()));
+                    _logger?.LogWarning(string.Format("PUT request failed, No Account found with ID: {0} or Account is already closed", id.ToString()));
                     return NotFound(id);
                 }
 
-                await _repoAccount.Deposit(acctFound.Id, amount); //deposit into account with id
+                //deposit into account with id if it returns false then account is closed
+                if (!await _repoAccount.Deposit(acctFound.Id, amount))
+                {
+                    _logger?.LogWarning(string.Format("PUT, deposit failed, Account is already closed", id.ToString()));
+                    return NotFound(id);
+                }
+
                 _logger?.LogInformation("PUT Success deposited into account with ID: {0} Amount: {2}", id.ToString(), amount.ToString());
                 await _repoAccount.SaveChanges();
 
@@ -113,9 +119,9 @@ namespace Banking.API.Controllers
 
                 acctFound = await _repoAccount.GetAccountDetailsByAccountID(id); //retrieve the account 
 
-                if (acctFound == null) //make sure that account exist 
+                if (acctFound == null) //make sure that account exist or the account is closed for it to return null
                 {
-                    _logger?.LogWarning(string.Format("PUT request failed, No Account found with ID: {0}", id.ToString()));
+                    _logger?.LogWarning(string.Format("PUT request failed, No Account found with ID: {0} or Account is already closed", id.ToString()));
                     return NotFound(id);
                 }
 
@@ -123,7 +129,7 @@ namespace Banking.API.Controllers
                 if((acctFound.Balance - amount) < 0)
                 {
                     //check if it is checking account return an error
-                    if (acctFound.AccountTypeId == 1) //TODO: 1 hard coded to represent checking account replace with actual AccountType check
+                    if (acctFound.AccountTypeId == 1) // 1 hard coded to represent checking account replace with actual AccountType check
                     {
                         _logger?.LogWarning(string.Format("PUT request failed, Withdraw would overdraft Checking Account with ID: {0}", id.ToString()));
                         return StatusCode(400);
@@ -134,9 +140,14 @@ namespace Banking.API.Controllers
                         AccountType acctType = await _repoAccountType.GetAccountTypeById(acctFound.AccountTypeId); //need account type for interset rate
 
                         //calculates the penalty for overdrafting on a business account  returns total amount to withdraw
-                        decimal totalAmount = CalculatePenalty(acctFound.Balance, amount, acctType.InterestRate, ref overdraft); 
+                        decimal totalAmount = CalculatePenalty(acctFound.Balance, amount, acctType.InterestRate, ref overdraft);
 
-                        await _repoAccount.Withdraw(acctFound.Id, totalAmount); //Warning: possible problem pass in totalAmount = amount + overdraftPenalty
+                        //returns true if account is closed
+                        if (!await _repoAccount.Withdraw(acctFound.Id, totalAmount)) //Warning: possible problem pass in totalAmount = amount + overdraftPenalty
+                        {
+                            _logger?.LogWarning(string.Format("PUT, withdraw failed, Account is already closed", id.ToString()));
+                            return NotFound(id);
+                        } 
                         await _repoAccount.Overdraft(id, overdraft); //record the overdraft in transactions table
                         _logger?.LogInformation("PUT Success withdrew from account but with overdraft, account ID: {0} totalAmount: {1}", id.ToString(), totalAmount.ToString());
                         await _repoAccount.SaveChanges();
@@ -145,8 +156,12 @@ namespace Banking.API.Controllers
                     }
                 }
 
-                //no overdraft, so normal withdraw
-                await _repoAccount.Withdraw(acctFound.Id, amount);
+                //no overdraft, so normal withdraw returns true if account is closed
+                if (!await _repoAccount.Withdraw(acctFound.Id, amount))
+                {
+                    _logger?.LogWarning(string.Format("PUT, withdraw failed, Account is already closed", id.ToString()));
+                    return NotFound(id);
+                }
                 _logger?.LogInformation("PUT Success withdrew from account with ID: {0}", id.ToString());
                 await _repoAccount.SaveChanges();
 
@@ -205,7 +220,7 @@ namespace Banking.API.Controllers
                 if ((acctFoundFrom.Balance - amount) < 0)
                 {
                     //check if it is checking account return an error
-                    if (acctFoundFrom.AccountTypeId == 1) //TODO: 1 hard coded to represent checking account replace with actual AccountType check
+                    if (acctFoundFrom.AccountTypeId == 1) // 1 hard coded to represent checking account replace with actual AccountType check
                     {
                         _logger?.LogWarning(string.Format("PUT request failed, transfer would cause overdraft from Checking Account with ID: {0}", idFrom.ToString()));
                         return StatusCode(400);
@@ -214,7 +229,14 @@ namespace Banking.API.Controllers
                     {
                         decimal overdraft = 0;
                         decimal totalAmount = CalculatePenalty(acctFoundFrom.Balance, amount, acctType.InterestRate, ref overdraft);//calculates the penalty for overdrafting on a business account, returns total amount to withdraw
-                        await _repoAccount.TransferBetweenAccounts(acctFoundFrom.Id, totalAmount, acctFoundTo.Id, amount); //transfer between the two accounts
+
+                        //transfer between the two accounts returns true if one or both accounts is closed
+                        if (!await _repoAccount.TransferBetweenAccounts(acctFoundFrom.Id, totalAmount, acctFoundTo.Id, amount))
+                        {
+                            _logger?.LogWarning(string.Format("PUT, transfer failed, either AccountFrom ID: {0} or AccountTo ID {1}", idFrom.ToString(), idTo.ToString()));
+                            return NotFound(idFrom);
+                        }
+
                         await _repoAccount.Overdraft(idFrom, overdraft); //record the overdraft in the transactions table
 
                         _logger?.LogInformation("PUT Success, transfer FromAccount ID: {0} ToAccount ID: {1} Amount: {2} TotalAmount {3}", idFrom.ToString(), idTo.ToString(), amount.ToString(), totalAmount.ToString());
@@ -229,8 +251,13 @@ namespace Banking.API.Controllers
                     }
                 }
 
-                await _repoAccount.TransferBetweenAccounts(acctFoundFrom.Id, amount, acctFoundTo.Id, amount);
 
+                if (!await _repoAccount.TransferBetweenAccounts(acctFoundFrom.Id, amount, acctFoundTo.Id, amount))
+                {
+                    _logger?.LogWarning(string.Format("PUT, transfer failed, either AccountFrom ID: {0} or AccountTo ID {1}", idFrom.ToString(), idTo.ToString()));
+                    return NotFound(idFrom);
+                }
+                
                 _logger?.LogInformation("PUT Success, transfer FromAccount ID: {0} ToAccount ID: {1} Amount: {2}", idFrom.ToString(),idTo.ToString(), amount.ToString());
                 await _repoAccount.SaveChanges();
                 return NoContent();
@@ -256,7 +283,6 @@ namespace Banking.API.Controllers
 
             try
             {
-                //TODO: Add Logic to find account and update its balance
                 Account acctFound = null;
 
                 acctFound = await _repoAccount.GetAccountDetailsByAccountID(id);
@@ -293,7 +319,7 @@ namespace Banking.API.Controllers
             if (balance <= 0) //true means the business account already been overdrafted or no funds (negative funds)
             {
                 //penalty on the whole withdraw amount
-                overdraftAmount = amount * interestRate; //TODO: Hard Coded interest rate of, replace with AccountType interest rate
+                overdraftAmount = amount * interestRate; //Hard Coded interest rate of, replace with AccountType interest rate
                 totalPenalty = overdraftAmount + amount;
             }
             else //first time account overdrafts

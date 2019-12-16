@@ -50,7 +50,14 @@ namespace Banking.API.Controllers
                     }
                     
                     _Logger.LogInformation($"Withdrawing from Term CD {id}.");
-                    await _Context.Withdraw(id, ammountToWithdraw);
+
+                    if (!await _Context.Withdraw(id, ammountToWithdraw))
+                    {
+                        _Logger.LogWarning($"Cannot withdraw account is closed");
+                        return NotFound(id);
+                    }
+
+                 
                     return NoContent();
                 }
                 else
