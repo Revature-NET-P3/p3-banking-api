@@ -48,7 +48,7 @@ namespace Banking.API.Controllers
 
                 return CreatedAtAction("Post", new { id = newAccount.Id }, newAccount);
 
-               // return Ok();
+                // return Ok();
             }
             catch (Exception e)
             {
@@ -200,11 +200,18 @@ namespace Banking.API.Controllers
                 //check to see account with id exist
                 acctFoundFrom = await _repoAccount.GetAccountDetailsByAccountID(idFrom);
                 acctFoundTo = await _repoAccount.GetAccountDetailsByAccountID(idTo);
+                acctType = await _repoAccountType.GetAccountTypeById(acctFoundFrom.AccountTypeId); //need account type for interset rate
 
                 if (acctFoundFrom == null || acctFoundTo == null)
                 {
                     _logger?.LogWarning(string.Format("PUT request failed, No Account found with ID: {0} or To ID: {1}", idFrom.ToString(), idTo.ToString()));
                     return NotFound(idFrom);
+                }
+
+                if(acctFoundFrom.AccountTypeId == 3 || acctFoundFrom.AccountTypeId == 4) //reject account from is Loan/CD Account
+                {
+                    _logger?.LogWarning(string.Format("PUT request failed, transfer not allowed for Account with ID: {0}", idFrom.ToString()));
+                    return StatusCode(400);
                 }
 
                 //check if withdraw from origin account will cause in an overdraft
@@ -216,9 +223,8 @@ namespace Banking.API.Controllers
                         _logger?.LogWarning(string.Format("PUT request failed, transfer would cause overdraft from Checking Account with ID: {0}", idFrom.ToString()));
                         return StatusCode(400);
                     }
-                    else//if account is business account do penalty calculation
+                    else if(acctFoundFrom.AccountTypeId == 2)//if account is business account do penalty calculation
                     {
-                        acctType = await _repoAccountType.GetAccountTypeById(acctFoundFrom.AccountTypeId); //need account type for interset rate
                         decimal overdraft = 0;
 
                         decimal totalAmount = CalculatePenalty(acctFoundFrom.Balance, amount, acctType.InterestRate, ref overdraft);
@@ -232,6 +238,11 @@ namespace Banking.API.Controllers
                         await _repoAccount.SaveChanges();
 
                         return NoContent();
+                    }
+                    else
+                    {
+                        _logger?.LogWarning(string.Format("PUT request failed, transfer not allowed for Account with ID: {0}", idFrom.ToString()));
+                        return StatusCode(400);
                     }
                 }
 
