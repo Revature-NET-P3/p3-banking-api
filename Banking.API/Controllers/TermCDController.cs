@@ -131,14 +131,23 @@ namespace Banking.API.Controllers
         [HttpPost("open")]
         public async Task<IActionResult> AddTermCD([FromBody]Account addMe)
         {
-            if (addMe.AccountTypeId == termDepositId)
+            try
             {
-                await _Context.OpenAccount(addMe);
-                return Ok();
-            }
-            else
-            {
+                if (addMe.AccountTypeId == termDepositId)
+                {
+                    _Logger.LogInformation($"Creating new TermCD account.");
+                    await _Context.OpenAccount(addMe);
+                    _Logger.LogInformation($"Created new TermCD account #{addMe.Id}.");
+                    return CreatedAtAction("Post", new { id = addMe.Id }, addMe);
+                    //return Ok();
+                }
+
                 return BadRequest();
+            }
+            catch (Exception e)
+            {
+                _Logger.LogError(e, "Unexpected Error in TermCDController Withdraw Action!");
+                return StatusCode(500, e);
             }
         }
     }
