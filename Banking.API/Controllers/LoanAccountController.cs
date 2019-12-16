@@ -87,7 +87,7 @@ namespace Banking.API.Controllers
         {
             try
             {
-                var acct = await _repo.GetTransactionDetailsByAccountID(id);
+                Account acct = await _repo.GetAccountDetailsByAccountID(id);
 
                 if (acct == null)
                 {
@@ -96,9 +96,17 @@ namespace Banking.API.Controllers
                 }
                 else
                 {
-                    await _repo.CloseAccount(id);
-                    await _repo.SaveChanges();
-                    return NoContent();
+                    if(acct.Balance > 0)
+                    {
+                        _logger?.LogWarning(string.Format("LoanAccountController DELETE request failed, Account not empty.  Account with ID: {0}", id));
+                        return StatusCode(400);
+                    }
+                    else
+                    {
+                        await _repo.CloseAccount(id);
+                        await _repo.SaveChanges();
+                        return NoContent();
+                    }
                 }
             }
             catch (Exception e)
