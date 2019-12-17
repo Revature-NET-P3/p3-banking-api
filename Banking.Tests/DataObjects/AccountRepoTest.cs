@@ -1,11 +1,10 @@
-﻿using Banking.API.Models;
-using Banking.API.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
+using Banking.API.Models;
+using Banking.API.Repositories.Interfaces;
 
 namespace Banking.Tests.DataObjects
 {
