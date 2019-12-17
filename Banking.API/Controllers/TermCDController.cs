@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Banking.API.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Banking.API.Repositories.Repos;
-using System.Net.Http;
-using Banking.API.Repositories.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
+
+using Banking.API.Models;
+using Banking.API.Repositories.Interfaces;
 
 namespace Banking.API.Controllers
 {
