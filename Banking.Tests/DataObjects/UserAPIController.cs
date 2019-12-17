@@ -12,7 +12,7 @@ namespace Banking.Tests.Controllers
         public void GetUser_Valid_Id()
         {
             #region Assign
-             UserRepo testData = new UserRepo();
+             UserRepoTest testData = new UserRepoTest();
             UserAPIController testController = new UserAPIController(testData);
 
             #endregion
@@ -36,7 +36,7 @@ namespace Banking.Tests.Controllers
         public void GetUser_InValid_Id()
         {
             #region Assign
-            UserRepo testData = new UserRepo();
+            UserRepoTest testData = new UserRepoTest();
 
             UserAPIController testController = new UserAPIController(testData);
 
@@ -59,7 +59,7 @@ namespace Banking.Tests.Controllers
         public void GetUserByID_NonExits()
         {
             #region Assign
-            UserRepo testData = new UserRepo();
+            UserRepoTest testData = new UserRepoTest();
             UserAPIController testController = new UserAPIController(testData);
 
             #endregion
