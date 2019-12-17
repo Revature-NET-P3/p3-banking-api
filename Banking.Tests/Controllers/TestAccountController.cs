@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using Moq;
-using System.Collections.Generic;
 
 using Banking.API.Controllers;
 using Banking.API.Models;
