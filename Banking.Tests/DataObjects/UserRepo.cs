@@ -64,5 +64,12 @@ namespace Banking.Tests.DataObjects
             await Task.Delay(10);
             return (User)gotUserid;
         }
+
+        public async Task<List<User>> GetUsersAsync()
+        {
+            var users = usersList.ToList();
+            await Task.Delay(10);
+            return users;
+        }
     }
 }
