@@ -32,12 +32,10 @@ namespace Banking.API.Controllers
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(User user)
         {
-            bool result = await _context.CreateUser(user);
+            await _context.CreateUser(user);
             return true;
-         
-
-
         }
+
         /// <summary>
         /// This method wil return the user by Id. 
         /// </summary>
