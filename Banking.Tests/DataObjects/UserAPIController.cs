@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Banking.API.Controllers;
+using Banking.Tests.DataObjects;
 
-namespace Banking.Tests.DataObjects
+namespace Banking.Tests.Controllers
 {
     [TestClass]
     public class TestUserAPIController
