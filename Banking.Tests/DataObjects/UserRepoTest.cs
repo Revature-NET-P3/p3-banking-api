@@ -7,11 +7,11 @@ using Banking.API.Repositories.Interfaces;
 
 namespace Banking.Tests.DataObjects
 {
-    public class UserRepo : IUserRepo
+    public class UserRepoTest : IUserRepo
     {
         readonly List<User> usersList;
 
-        public UserRepo()
+        public UserRepoTest()
         {
             usersList = new List<User>()
             {
