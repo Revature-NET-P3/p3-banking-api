@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Banking.API.Models;
 
@@ -11,5 +12,7 @@ namespace Banking.API.Repositories.Interfaces
         Task<User> ViewByUsername(string username);
         Task<bool> UpdateUser(User user);
         Task<bool> VerifyLogin(string username, string passhash);
+        Task<List<User>> GetUsersAsync();
+
     }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using Banking.API.Repositories.Interfaces;
 using Banking.API.Models;
+using System.Collections.Generic;
 
 namespace Banking.API.Repositories
 {
@@ -25,6 +26,12 @@ namespace Banking.API.Repositories
         {
             User gotUser = await _context.Users.FirstOrDefaultAsync(o => o.Id == id);
             return gotUser;
+        }
+
+        public async Task<List<User>> GetUsersAsync()
+        {
+            var listOfUsers = await _context.Users.ToListAsync();
+            return listOfUsers;
         }
         public async Task<User> ViewByUsername(string username)
         {
