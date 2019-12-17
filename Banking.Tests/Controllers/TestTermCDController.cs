@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 using Banking.API.Controllers;
-using Banking.Tests.DataObjects;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Banking.API.Models;
+using Banking.Tests.DataObjects;
 
 namespace Banking.Tests.Controllers
 {
