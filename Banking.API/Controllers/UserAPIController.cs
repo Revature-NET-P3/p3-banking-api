@@ -100,8 +100,8 @@ namespace Banking.API.Controllers
 
         public class UserName
         {
-            public string username { get; set; }
-            public string passhash { get; set; }
+            public string Username { get; set; }
+            public string Passhash { get; set; }
         }
     }
 }
