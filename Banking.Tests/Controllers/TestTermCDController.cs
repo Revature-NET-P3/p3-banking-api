@@ -40,11 +40,13 @@ namespace Banking.Tests.Controllers
         [TestMethod]
         public void TestValidWithdraw()
         {
-            Account termTest = new Account();
-            termTest.Id = 40;
-            termTest.AccountTypeId = 4;
-            termTest.Balance = 1000;
-            termTest.CreateDate = new System.DateTime(3/10/2015);
+            Account termTest = new Account
+            {
+                Id = 40,
+                AccountTypeId = 4,
+                Balance = 1000,
+                CreateDate = new System.DateTime(3 / 10 / 2015)
+            };
             testAccountRepo._accounts.Add(termTest);
             decimal withdrawAmmount = 500.50m;
             decimal expectedBalance = 499.50m;
@@ -57,11 +59,13 @@ namespace Banking.Tests.Controllers
         [TestMethod]
         public void TestInvalidWithdraw()
         {
-            Account termTest = new Account();
-            termTest.Id = 40;
-            termTest.AccountTypeId = 4;
-            termTest.Balance = 1000;
-            termTest.CreateDate = new System.DateTime(3/10/2015);
+            Account termTest = new Account
+            {
+                Id = 40,
+                AccountTypeId = 4,
+                Balance = 1000,
+                CreateDate = new System.DateTime(3 / 10 / 2015)
+            };
             testAccountRepo._accounts.Add(termTest);
             decimal withdrawAmmount = 9999.99m;
             decimal expectedBalance = 1000m;
@@ -74,14 +78,18 @@ namespace Banking.Tests.Controllers
         [TestMethod]
         public void TestValidTransfer()
         {
-            Account termTest = new Account();
-            termTest.Id = 40;
-            termTest.AccountTypeId = 4;
-            termTest.Balance = 1000;
-            termTest.CreateDate = new System.DateTime(3 / 10 / 2015);
-            Account otherTest = new Account();
-            otherTest.Id = 45;
-            otherTest.Balance = 1500;
+            Account termTest = new Account
+            {
+                Id = 40,
+                AccountTypeId = 4,
+                Balance = 1000,
+                CreateDate = new System.DateTime(3 / 10 / 2015)
+            };
+            Account otherTest = new Account
+            {
+                Id = 45,
+                Balance = 1500
+            };
             testAccountRepo._accounts.Add(termTest);
             testAccountRepo._accounts.Add(otherTest);
             decimal transferAmmount = 250m;
@@ -96,14 +104,18 @@ namespace Banking.Tests.Controllers
         [TestMethod]
         public void TestInvalidTransfer()
         {
-            Account termTest = new Account();
-            termTest.Id = 40;
-            termTest.AccountTypeId = 4;
-            termTest.Balance = 1000;
-            termTest.CreateDate = new System.DateTime(3 / 10 / 2015);
-            Account otherTest = new Account();
-            otherTest.Id = 45;
-            otherTest.Balance = 1500;
+            Account termTest = new Account
+            {
+                Id = 40,
+                AccountTypeId = 4,
+                Balance = 1000,
+                CreateDate = new System.DateTime(3 / 10 / 2015)
+            };
+            Account otherTest = new Account
+            {
+                Id = 45,
+                Balance = 1500
+            };
             testAccountRepo._accounts.Add(termTest);
             testAccountRepo._accounts.Add(otherTest);
             decimal transferAmmount = 9999m;
@@ -118,8 +130,10 @@ namespace Banking.Tests.Controllers
         [TestMethod]
         public  void TestAddAccount_ValidTermCDId()
         {
-            Account addThis = new Account();
-            addThis.AccountTypeId = 4;
+            Account addThis = new Account
+            {
+                AccountTypeId = 4
+            };
 
             var response = testTermCDController.AddTermCD(addThis);
             response.Wait(1);
@@ -132,8 +146,10 @@ namespace Banking.Tests.Controllers
         [TestMethod]
         public void TestAddAccount_InvalidTermCDId()
         {
-            Account addThis = new Account();
-            addThis.AccountTypeId = 3;
+            Account addThis = new Account
+            {
+                AccountTypeId = 3
+            };
 
             var response = testTermCDController.AddTermCD(addThis);
             response.Wait(1);
