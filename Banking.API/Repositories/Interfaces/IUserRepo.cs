@@ -10,6 +10,7 @@ namespace Banking.API.Repositories.Interfaces
     {
         Task<bool> CreateUser(User user);
         Task<User> ViewById(int id);
+        Task<User> ViewByUsername(string username);
         Task<bool> UpdateUser(User user);
         Task<bool> VerifyLogin(string username, string passhash);
     }

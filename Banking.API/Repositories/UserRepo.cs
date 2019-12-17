@@ -28,6 +28,11 @@ namespace Banking.API.Repositories
             User gotUser = await _context.Users.FirstOrDefaultAsync(o => o.Id == id);
             return gotUser;
         }
+        public async Task<User> ViewByUsername(string username)
+        {
+            User gotUser = await _context.Users.FirstOrDefaultAsync(o => o.Username == username);
+            return gotUser;
+        }
         public async Task<bool> UpdateUser(User user)
         {
             _context.Update(user);
@@ -37,7 +42,7 @@ namespace Banking.API.Repositories
         public async Task<bool> VerifyLogin(string username, string passhash)
         {
             User user = await _context.Users.FirstOrDefaultAsync(o => o.Username == username);
-            if(user.PasswordHash == passhash)
+            if(user != null && user.PasswordHash == passhash)
             {
                 return true;
             }
