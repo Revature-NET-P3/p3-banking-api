@@ -7,7 +7,7 @@ using Banking.API.Controllers;
 using Banking.API.Models;
 using Banking.Tests.DataObjects;
 
-namespace Banking.Tests
+namespace Banking.Tests.Controllers
 {
     [TestClass]
     public class Test_AccountTypeController
