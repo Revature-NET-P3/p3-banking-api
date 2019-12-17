@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Banking.API.Models;
-using Banking.API.Repositories;
-using Banking.API.Repositories.Interfaces;
-using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
+using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,6 +11,7 @@ using Banking.API.Repositories.Interfaces;
 
 namespace Banking.API.Controllers
 {
+    [EnableCors("DefaultPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserAPIController : ControllerBase
@@ -35,12 +32,10 @@ namespace Banking.API.Controllers
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(User user)
         {
-            bool result = await _context.CreateUser(user);
+            await _context.CreateUser(user);
             return true;
-         
-
-
         }
+
         /// <summary>
         /// This method wil return the user by Id. 
         /// </summary>
@@ -103,8 +98,8 @@ namespace Banking.API.Controllers
 
         public class UserName
         {
-            public string username { get; set; }
-            public string passhash { get; set; }
+            public string Username { get; set; }
+            public string Passhash { get; set; }
         }
     }
 }

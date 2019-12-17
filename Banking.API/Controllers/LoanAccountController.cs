@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
+
 using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Banking.API.Controllers
 {
+    [EnableCors("DefaultPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class LoanAccountController : ControllerBase
