@@ -160,12 +160,12 @@ namespace Banking.Tests.Controllers
             var amount = 100;
             var id = 10;
             var transferableLogger = new Mock<ILogger<TransferablesController>>();
-            var accountLogger = new Mock<ILogger<AccountsController>>();
+            //var accountLogger = new Mock<ILogger<AccountsController>>();
 
             var accountMock = new AccountRepoTest();
             var accountTypeMock = new AccountTypeRepo();
             // Generate controller
-            var testAccountController = new AccountsController(accountMock, accountLogger.Object);
+            //var testAccountController = new AccountsController(accountMock, accountLogger.Object);
             var testTransferablesController = new TransferablesController(accountMock, accountTypeMock, transferableLogger.Object);
             //Act
             var acctResponse = testTransferablesController.Deposit(id, amount);
