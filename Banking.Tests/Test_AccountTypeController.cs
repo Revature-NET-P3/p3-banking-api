@@ -1,36 +1,29 @@
-﻿using Banking.API.Controllers;
-using Banking.API.Models;
-using Banking.Tests.DataObjects;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Banking.API.Controllers;
+using Banking.API.Models;
+using Banking.Tests.DataObjects;
+
 namespace Banking.Tests
-
 {
-
     [TestClass]
-
     public class Test_AccountTypeController
-
     {
         NullLogger<AccountTypesApiController> testLogger = new NullLogger<AccountTypesApiController>();
 
         List<AccountType> test_accountTypes = new List<AccountType>()
-            {
-                new AccountType{ Id = 1 , Name = "Checking" , InterestRate = .008M },
-                new AccountType{ Id = 2 , Name = "Business" , InterestRate = .02M },
-                new AccountType{ Id = 3 , Name = "Loan" , InterestRate = .01M },
-                new AccountType{ Id = 4 , Name = "Term Deposit" , InterestRate = .01M }
-            };
+        {
+            new AccountType{ Id = 1 , Name = "Checking" , InterestRate = .008M },
+            new AccountType{ Id = 2 , Name = "Business" , InterestRate = .02M },
+            new AccountType{ Id = 3 , Name = "Loan" , InterestRate = .01M },
+            new AccountType{ Id = 4 , Name = "Term Deposit" , InterestRate = .01M }
+        };
 
         [TestMethod]
-
         public void GetAccountTypes()
-
         {
             #region Assign
             AccountTypeRepo testRepo = new AccountTypeRepo();
@@ -43,15 +36,13 @@ namespace Banking.Tests
             #endregion
 
             #region Assert
-            foreach(AccountType element in taskResults)
+            foreach (AccountType element in taskResults)
             {
                 Assert.AreEqual(test_accountTypes[taskResults.IndexOf(element)].Id, element.Id);
                 Assert.AreEqual(test_accountTypes[taskResults.IndexOf(element)].Name, element.Name);
                 Assert.AreEqual(test_accountTypes[taskResults.IndexOf(element)].InterestRate, element.InterestRate);
             }
             #endregion
-
-
         }
 
         [TestMethod]
@@ -70,9 +61,9 @@ namespace Banking.Tests
                 #endregion
 
                 #region Assert
-                    Assert.AreEqual(element.Id, taskResult.Id);
-                    Assert.AreEqual(element.Name, taskResult.Name);
-                    Assert.AreEqual(element.InterestRate, taskResult.InterestRate);
+                Assert.AreEqual(element.Id, taskResult.Id);
+                Assert.AreEqual(element.Name, taskResult.Name);
+                Assert.AreEqual(element.InterestRate, taskResult.InterestRate);
                 #endregion
             }
         }
@@ -122,5 +113,4 @@ namespace Banking.Tests
             #endregion
         }
     }
-
 }
