@@ -26,7 +26,9 @@ namespace Banking.Tests.DataObjects
                     new Account() { Id = 2, UserId = 20, AccountTypeId = 1, Balance = 300, CreateDate = DateTime.Today},
                     new Account() { Id = 3, UserId = 30, AccountTypeId = 2, Balance = 500, CreateDate = DateTime.Today },
                     new Account() { Id = 4, UserId = 30, AccountTypeId = 4, Balance = 600, CreateDate = DateTime.Now },
-                    new Account() { Id = 5, UserId = 30, AccountTypeId = 1, Balance = 0, CreateDate = DateTime.Now, IsClosed = false }
+                    new Account() { Id = 5, UserId = 30, AccountTypeId = 1, Balance = 0, CreateDate = DateTime.Now, IsClosed = false },
+                    new Account() { Id = 6, UserId = 30, AccountTypeId = 1, Balance = 0, CreateDate = DateTime.Now, IsClosed = true }
+
                 };
 
                 _transactions = new List<Transaction>()
@@ -60,7 +62,11 @@ namespace Banking.Tests.DataObjects
         {
             var depositAccount = _accounts.FirstOrDefault(e => e.Id == Id);
             await Task.Delay(10);
-            if (depositAccount != null)
+            if (depositAccount.IsClosed)
+            {
+                return false;
+            }
+            else if (depositAccount != null)
             {
                 depositAccount.Balance += amount;
                 return true;
@@ -138,6 +144,10 @@ namespace Banking.Tests.DataObjects
         {
             var loanAccount = _accounts.FirstOrDefault(e => e.Id == Id);
             await Task.Delay(10);
+            if (loanAccount.IsClosed)
+            {
+                return false;
+            }
             if (loanAccount != null)
             {
                 loanAccount.Balance = loanAccount.Balance <= amount ? 0 : loanAccount.Balance - amount;
@@ -159,6 +169,13 @@ namespace Banking.Tests.DataObjects
             var transferAccount = _accounts.FirstOrDefault(e => e.Id == Id);
             var accountTo = _accounts.FirstOrDefault(m => m.Id == toAccId);
             await Task.Delay(10);
+
+            //check that account is open
+            if (transferAccount.IsClosed || accountTo.IsClosed)
+            {
+                return false;
+            }
+
             if (transferAccount != null && accountTo != null)
             {
                 if (transferAccount.AccountTypeId == 2)
@@ -181,6 +198,12 @@ namespace Banking.Tests.DataObjects
         {
             var withdrawAccount = _accounts.FirstOrDefault(e => e.Id == Id);
             await Task.Delay(10);
+
+            if (withdrawAccount.IsClosed)
+            {
+                return false;
+            }
+
             if (withdrawAccount != null)
             {
                 if (withdrawAccount.AccountTypeId == 2)

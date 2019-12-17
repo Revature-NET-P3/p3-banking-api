@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Banking.API.Models;
 using Banking.API.Repositories;
+using Banking.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Banking.API.Repositories.Interfaces;
@@ -98,10 +99,12 @@ namespace Banking.API.Controllers
          
            var result =  await _context.VerifyLogin(credentials.Username, credentials.Passhash);
             return result;
-                   
-
         }
 
-
+        public class UserName
+        {
+            public string username { get; set; }
+            public string passhash { get; set; }
+        }
     }
 }

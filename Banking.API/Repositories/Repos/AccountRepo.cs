@@ -44,18 +44,22 @@ namespace Banking.API.Repositories.Repos
         //add a new account
         public async Task<Account> OpenAccount(Account account)
         {
-            var accounts = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == account.Id);
+            account.CreateDate = DateTime.Now;
+            account.IsClosed = false;
+            _context.Add(account);
+            _context.SaveChanges();
 
             // record the transaction and save it the db.
             Transaction newTrans = new Transaction()
             {
                 AccountId = account.Id,
+                Ammount = account.Balance > 0 ? account.Balance : 0,
                 TimeStamp = DateTime.Now,
                 TransactionTypeId = 7
             };
-            _context.Transactions.Add(newTrans);
-            _context.Add(account);
-            return accounts;
+            await _context.Transactions.AddAsync(newTrans);
+
+            return account;
         }
 
         // deposit account method
@@ -63,6 +67,13 @@ namespace Banking.API.Repositories.Repos
         {
             // update account
             var depositAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+
+            //check that account is open
+            if (depositAccount.IsClosed)
+            {
+                return false;
+            }
+
             depositAccount.Balance += amount;
 
             // record the transaction and save it the db.
@@ -83,6 +94,13 @@ namespace Banking.API.Repositories.Repos
         public async Task<bool> Withdraw(int Id, decimal amount)
         {
             var withdrawAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+
+            //check that account is open
+            if(withdrawAccount.IsClosed)
+            {
+                return false;
+            }
+
             withdrawAccount.Balance -= amount;
             // record the transaction and save it the db.
             Transaction newTrans = new Transaction()
@@ -119,6 +137,13 @@ namespace Banking.API.Repositories.Repos
         {
             var transferAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
             var accountTo = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == toAccId);
+
+            //check that account is open
+            if (transferAccount.IsClosed || accountTo.IsClosed)
+            {
+                return false;
+            }
+
             transferAccount.Balance -= fromAmount;
             accountTo.Balance += toAmount;
 
@@ -152,8 +177,26 @@ namespace Banking.API.Repositories.Repos
         public async Task<bool> PayLoan(int Id, decimal amount)
         {
             var loanAccount = await _context.Accounts.FirstOrDefaultAsync(e => e.Id == Id);
+
+            //check that account is open
+            if (loanAccount.IsClosed)
+            {
+                return false;
+            }
+
+
             loanAccount.Balance -= amount;
             _context.Update(loanAccount);
+            // record the transaction and save it the db.
+            Transaction newTrans = new Transaction()
+            {
+                AccountId = loanAccount.Id,
+                TimeStamp = DateTime.Now,
+                Ammount = amount,
+                TransactionTypeId = 6,
+            };
+            await _context.Transactions.AddAsync(newTrans);
+
             return true;
         }
 
@@ -165,6 +208,15 @@ namespace Banking.API.Repositories.Repos
             {
                 accToClose.IsClosed = true;
                 _context.Update(accToClose);
+
+                // record the transaction and save it the db.
+                Transaction newTrans = new Transaction()
+                {
+                    AccountId = accToClose.Id,
+                    TimeStamp = DateTime.Now,
+                    TransactionTypeId = 8,
+                };
+                await _context.Transactions.AddAsync(newTrans);
             }
             return false;
         }

@@ -142,7 +142,7 @@ namespace Banking.Tests.Controllers
 
             Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
 
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, null, string.Format("Return value not {0}", (-1).ToString()));
 
         }
 
@@ -214,9 +214,8 @@ namespace Banking.Tests.Controllers
 
             // Assert.
 
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
 
         }
 
@@ -286,7 +285,7 @@ namespace Banking.Tests.Controllers
 
             Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
 
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, null, string.Format("Return value not {0}", (-1).ToString()));
 
         }
 
@@ -358,9 +357,8 @@ namespace Banking.Tests.Controllers
 
             // Assert.
 
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
 
         }
 
@@ -432,7 +430,7 @@ namespace Banking.Tests.Controllers
 
             Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
 
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, null, string.Format("Return value not {0}", (-1).ToString()));
 
         }
 
@@ -504,9 +502,8 @@ namespace Banking.Tests.Controllers
 
             // Assert.
 
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
 
         }
 
@@ -576,7 +573,7 @@ namespace Banking.Tests.Controllers
 
             Assert.IsInstanceOfType(responseResult, typeof(NotFoundObjectResult), "HTTP Response NOT 404 Not Found!");
 
-            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, -1, string.Format("Return value not {0}", (-1).ToString()));
+            Assert.AreEqual((responseResult as NotFoundObjectResult).Value, null, string.Format("Return value not {0}", (-1).ToString()));
 
         }
 
@@ -648,9 +645,8 @@ namespace Banking.Tests.Controllers
 
             // Assert.
 
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
 
         }
 
@@ -760,9 +756,8 @@ namespace Banking.Tests.Controllers
 
             // Assert.
 
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
 
         }
 
@@ -874,9 +869,8 @@ namespace Banking.Tests.Controllers
 
             // Assert.
 
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
 
         }
 
@@ -888,7 +882,7 @@ namespace Banking.Tests.Controllers
 
         [DataRow(2, 2, "1-1-2000", "1-1-2001", 1, 300.0f)]
 
-        [DataRow(3, 2, "1-1-1990", "12-1-1990", 2, 200.0f)]
+        [DataRow(3, 2, "1-1-1990", "12-1-1990", 2, 100.0f)]
 
         [DataRow(4, 2, "4-4-2002", "6-6-2002", 1, 600.0f)]
 
@@ -1026,9 +1020,8 @@ namespace Banking.Tests.Controllers
 
             // Assert.
 
-            Assert.IsInstanceOfType(responseResult, typeof(ObjectResult), "HTTP Response NOT an ObjectResult!");
-
-            Assert.AreEqual((responseResult as ObjectResult).StatusCode, 500, "HTTP Response status code NOT 500!");
+            Assert.IsInstanceOfType(responseResult, typeof(StatusCodeResult), "HTTP Response NOT an ObjectResult!");
+            Assert.AreEqual((responseResult as StatusCodeResult).StatusCode, 500, "HTTP Response status code NOT 500!");
 
         }
 
