@@ -1,10 +1,9 @@
-﻿using Banking.API.Models;
-using Banking.API.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+
+using Banking.API.Models;
+using Banking.API.Repositories.Interfaces;
 
 namespace Banking.API.Repositories
 {
