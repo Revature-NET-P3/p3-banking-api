@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Banking.API.Repositories.Interfaces;
+
 using Banking.API.Models;
+using Banking.API.Repositories.Interfaces;
 
 namespace Banking.Tests.DataObjects
 {
