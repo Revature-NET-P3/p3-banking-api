@@ -9,9 +9,9 @@ using Banking.API.Repositories.Interfaces;
 
 namespace Banking.API.Controllers
 {
+    [EnableCors("DefaultPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("DefaultPolicy")]
     public class TransferablesController : ControllerBase
     {
         private readonly IAccountRepo _repoAccount; //access to account table

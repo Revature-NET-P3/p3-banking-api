@@ -11,6 +11,7 @@ using Banking.API.Repositories.Interfaces;
 
 namespace Banking.API.Controllers
 {
+    [EnableCors("DefaultPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserAPIController : ControllerBase
