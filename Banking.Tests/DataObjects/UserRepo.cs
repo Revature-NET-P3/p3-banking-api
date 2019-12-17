@@ -58,5 +58,11 @@ namespace Banking.Tests.DataObjects
             }
         }
 
+        public async Task<User> ViewByUsername(string username)
+        {
+            User gotUserid = usersList.FirstOrDefault(o => o.Username == username);
+            await Task.Delay(10);
+            return (User)gotUserid;
+        }
     }
 }
