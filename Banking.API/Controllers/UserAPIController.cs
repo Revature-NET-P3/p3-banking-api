@@ -29,11 +29,29 @@ namespace Banking.API.Controllers
         /// <param name="user"></param>
         /// <returns>New User</returns>
         // POST: api/Createuser
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<bool>> CreateUser(User user)
         {
-            await _context.CreateUser(user);
-            return true;
+            bool canCreate = true;
+            user.Id = 0;
+            var listOfUsers = await _context.GetUsersAsync();
+            foreach (var registeredUser in listOfUsers)
+            {
+                if (registeredUser.Email == user.Email && registeredUser.Username == user.Username)
+                {
+                    canCreate = false;
+                    break;
+                }
+            }
+            if (canCreate)
+            {
+                bool result = await _context.CreateUser(user);
+                return result;
+            }
+            else
+            {
+                return canCreate;
+            }
         }
 
         /// <summary>
