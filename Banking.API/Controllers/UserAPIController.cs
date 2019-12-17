@@ -7,8 +7,11 @@ using Banking.API.Repositories;
 using Banking.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Banking.API.Repositories.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+//post "api/UserAPI/Verify"
 
 namespace Banking.API.Controllers
 {
@@ -57,6 +60,19 @@ namespace Banking.API.Controllers
             return user;
         }
 
+        [HttpGet("username/{username}")]
+        public async Task<ActionResult<User>> GetUser(string username)
+        {
+            var user = await _context.ViewByUsername(username);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+
         /// <summary>
         /// This method will work to update user.
         /// </summary>
@@ -77,11 +93,11 @@ namespace Banking.API.Controllers
       /// <param name="username"></param>
       /// <param name="passhash"></param>
       /// <returns></returns>
-        // GET: api/Verifylogin/
-        [HttpPost("verify")]
-        public async Task<ActionResult<bool>> VerifyLogin([FromBody]UserName newUser)
+        [HttpPost("Verify")]
+        public async Task<ActionResult<bool>> VerifyLogin(LoginCredentials credentials)
         {
-            var result = await _context.VerifyLogin(newUser.username, newUser.passhash);
+         
+           var result =  await _context.VerifyLogin(credentials.Username, credentials.Passhash);
             return result;
         }
 

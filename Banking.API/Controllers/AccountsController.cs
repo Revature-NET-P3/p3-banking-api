@@ -10,12 +10,14 @@ using Banking.API.Models;
 using Banking.API.Repositories.Repos;
 using Banking.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Banking.API.Controllers
 {
     [EnableCors("DefaultPolicy")]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AccountsController : ControllerBase
     {
         readonly ILogger<AccountsController> _logger;
