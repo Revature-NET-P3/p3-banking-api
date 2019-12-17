@@ -9,7 +9,7 @@ namespace Banking.Tests.DataObjects
 {
     public class UserRepo : IUserRepo
     {
-        List<User> usersList;
+        readonly List<User> usersList;
 
         public UserRepo()
         {
