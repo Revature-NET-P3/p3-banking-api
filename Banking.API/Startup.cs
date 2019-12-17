@@ -1,23 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
+using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
 using Banking.API.Repositories.Repos;
 using Banking.API.Repositories;
-using Banking.API.Models;
 
 namespace Banking.API
 {
@@ -61,8 +52,22 @@ namespace Banking.API
             {
                 options.AddPolicy("DefaultPolicy",
                     builder =>
-                    builder.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://localhost:5000", "https://localhost:5000", "http://p3ng.azurewebsites.net", "https://p3ng.azurewebsites.net",
-                    "35.167.74.121", "35.166.202.113", "35.160.3.103", "54.183.64.135", "54.67.77.38", "54.67.15.170", "54.183.204.205", "35.171.156.124", "18.233.90.226", "3.211.189.167")
+                    builder.WithOrigins("http://localhost:4200", 
+                                        "https://localhost:4200", 
+                                        "http://localhost:5000", 
+                                        "https://localhost:5000", 
+                                        "http://p3ng.azurewebsites.net", 
+                                        "https://p3ng.azurewebsites.net",
+                                        "35.167.74.121", 
+                                        "35.166.202.113", 
+                                        "35.160.3.103", 
+                                        "54.183.64.135", 
+                                        "54.67.77.38", 
+                                        "54.67.15.170", 
+                                        "54.183.204.205", 
+                                        "35.171.156.124", 
+                                        "18.233.90.226", 
+                                        "3.211.189.167")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());

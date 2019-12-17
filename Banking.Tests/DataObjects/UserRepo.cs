@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Banking.API.Repositories.Interfaces;
+
 using Banking.API.Models;
+using Banking.API.Repositories.Interfaces;
 
 namespace Banking.Tests.DataObjects
 {
     public class UserRepo : IUserRepo
     {
-        List<User> usersList;
+        readonly List<User> usersList;
 
         public UserRepo()
         {
@@ -58,5 +58,11 @@ namespace Banking.Tests.DataObjects
             }
         }
 
+        public async Task<User> ViewByUsername(string username)
+        {
+            User gotUserid = usersList.FirstOrDefault(o => o.Username == username);
+            await Task.Delay(10);
+            return (User)gotUserid;
+        }
     }
 }

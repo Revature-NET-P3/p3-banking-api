@@ -1,16 +1,17 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Cors;
+using System;
+using System.Threading.Tasks;
+
 using Banking.API.Models;
 using Banking.API.Repositories.Interfaces;
-using Microsoft.AspNetCore.Cors;
 
 namespace Banking.API.Controllers
 {
+    [EnableCors("DefaultPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("DefaultPolicy")]
     public class TransferablesController : ControllerBase
     {
         private readonly IAccountRepo _repoAccount; //access to account table
