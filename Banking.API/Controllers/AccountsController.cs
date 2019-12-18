@@ -16,7 +16,7 @@ namespace Banking.API.Controllers
     [EnableCors("DefaultPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class AccountsController : ControllerBase
     {
         readonly ILogger<AccountsController> _logger;
