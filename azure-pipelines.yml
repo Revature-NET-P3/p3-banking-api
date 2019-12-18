@@ -32,8 +32,7 @@ stages:
          tags: |
           $(tag)
           release
-          latest
-        
+          no-authorize 
      - task: Docker@2
        displayName: Push Release
        inputs:
@@ -43,4 +42,4 @@ stages:
         tags: |
           $(tag)
           release
-          latest
+          no-authorize
